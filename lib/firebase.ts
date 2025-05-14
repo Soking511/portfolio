@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
@@ -13,16 +13,25 @@ const firebaseConfig = {
   measurementId: "G-YZFLN1KTGX",
 };
 
-// Initialize Firebase
-const app =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Initialize Firebase only once
+let app;
+let db;
+let auth;
+let analytics = null;
 
-// Initialize Analytics
-let analytics;
+// Initialize on client side only
 if (typeof window !== "undefined") {
-  analytics = getAnalytics(app);
+  if (!app) {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+    analytics = getAnalytics(app);
+  }
+} else {
+  // Server-side initialization
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  auth = getAuth(app);
 }
 
 export { app, auth, db, analytics };

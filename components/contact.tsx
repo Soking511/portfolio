@@ -1,10 +1,7 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef } from "react"
-import { motion } from "framer-motion"
-import { useInView } from "framer-motion"
+import { useState, useRef, useEffect } from "react"
+import { motion, useInView } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,8 +10,22 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Mail, Phone, MapPin, Linkedin, Loader2, Code } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Script from "next/script"
-import { db } from "@/lib/firebase"
-import { collection, addDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc } from "firebase/firestore"
+import { initializeApp } from "firebase/app"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDLfqvbq4LvJZ52M7X9L9vp0bK9fM1aGwo",
+  authDomain: "portfolio-6040a.firebaseapp.com",
+  projectId: "portfolio-6040a",
+  storageBucket: "portfolio-6040a.firebasestorage.app",
+  messagingSenderId: "554381798763",
+  appId: "1:554381798763:web:87ef0076e2addfec2f302e",
+  measurementId: "G-YZFLN1KTGX",
+}
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
 type FormData = {
   name: string
