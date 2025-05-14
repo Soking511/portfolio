@@ -113,6 +113,9 @@ export function Contact() {
         throw new Error('Please enter a valid email address')
       }
 
+      const { collection, addDoc } = await import('firebase/firestore')
+      const { db } = await import('@/lib/firebase')
+
       // Save message to Firestore
       await addDoc(collection(db, "messages"), {
         ...formData,

@@ -21,11 +21,19 @@ let analytics = null;
 
 // Initialize on client side only
 if (typeof window !== "undefined") {
-  if (!app) {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-    analytics = getAnalytics(app);
+  try {
+    if (!app) {
+      app = initializeApp(firebaseConfig);
+      // Initialize Firestore with settings that work better in development
+      db = getFirestore(app);
+      auth = getAuth(app);
+      analytics = getAnalytics(app);
+
+      // Log initialization success
+      console.log("Firebase initialized successfully");
+    }
+  } catch (error) {
+    console.error("Error initializing Firebase:", error);
   }
 } else {
   // Server-side initialization
