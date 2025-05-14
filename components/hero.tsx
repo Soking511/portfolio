@@ -153,7 +153,7 @@ export function Hero() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="group rounded-full">
-                <a href="/[MEAN Stack] Youseef Tareq.pdf" download>
+                <a href="/[MEAN%20Stack]%20Youseef%20Tareq.pdf" download="Youseef Tareq - Resume.pdf">
                   Download Resume
                   <ArrowDown className="ml-2 group-hover:translate-y-1 transition-transform" size={18} />
                 </a>
