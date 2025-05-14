@@ -26,7 +26,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section className="relative flex items-center justify-center min-h-[85vh] sm:min-h-screen overflow-hidden px-3 sm:px-4 py-8 sm:py-0 bg-dot-pattern">
+    <section className="relative flex items-center justify-center h-[100dvh] overflow-hidden px-3 sm:px-4 bg-dot-pattern">
       {/* Animated Background */}
       <div className="absolute inset-0 z-0">
         {/* Primary gradient background */}
@@ -187,7 +187,7 @@ export function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.5 }}
@@ -201,7 +201,7 @@ export function Hero() {
           <ArrowDown size={18} className="text-muted-foreground hidden sm:block" />
           <ArrowDown size={16} className="text-muted-foreground sm:hidden" />
         </motion.div>
-      </motion.div>
+      </motion.div> */}
     </section>
   )
 }
