@@ -155,7 +155,7 @@ export function Hero() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="group rounded-full w-full sm:w-auto">
-                <a href="/[MEAN%20Stack]%20Youseef%20Tareq.pdf" download="Youseef Tareq - Resume.pdf">
+                <a href="/[MEAN%20Stack]%20Youseef%20Tareq.pdf" download="Youseef_Tareq_CV.pdf">
                   Download Resume
                   <ArrowDown className="ml-2 group-hover:translate-y-1 transition-transform" size={16} />
                 </a>
