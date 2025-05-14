@@ -166,14 +166,14 @@ export function Projects() {
   }
 
   return (
-    <section id="projects" className="py-20 px-6 bg-muted/30">
+    <section id="projects" className="py-12 sm:py-20 px-4 sm:px-6 bg-muted/30">
       <div className="max-w-7xl mx-auto">
         <motion.div
           ref={ref}
           variants={container}
           initial="hidden"
           animate={isInView ? "show" : "hidden"}
-          className="space-y-12"
+          className="space-y-8 sm:space-y-12"
         >
           <motion.div variants={item} className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
@@ -183,7 +183,7 @@ export function Projects() {
             </p>
           </motion.div>
 
-          <motion.div variants={item} className="flex flex-wrap justify-center gap-2 mb-8">
+          <motion.div variants={item} className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8 px-2">
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               size="sm"
@@ -226,16 +226,16 @@ function ProjectCard({ project }: { project: Project }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col h-full"
+      className="flex flex-col h-full w-full"
     >
-      <Card className="overflow-hidden h-full flex flex-col group border border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg bg-background/50 backdrop-blur-sm">
-        <div className="relative overflow-hidden aspect-video">
+      <Card className="overflow-hidden h-full w-full flex flex-col group border border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg bg-background/50 backdrop-blur-sm">
+        {/* <div className="relative overflow-hidden aspect-video">
           <img
             src={project.image || "/placeholder.svg"}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </div>
+        </div> */}
         <CardContent className="flex-grow p-6">
           <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
           <p className="text-muted-foreground mb-4">{project.description}</p>
@@ -273,11 +273,11 @@ function ProjectCard({ project }: { project: Project }) {
 
 function ProjectDetail({ project }: { project: Project }) {
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-1 gap-8">
       <div>
-        <div className="relative overflow-hidden rounded-lg mb-4">
+        {/* <div className="relative overflow-hidden rounded-lg mb-4">
           <img src={project.image || "/placeholder.svg"} alt={project.title} className="w-full h-auto object-cover" />
-        </div>
+        </div> */}
         <div className="flex flex-wrap gap-2 mb-4">
           {project.tags.map((tag, index) => (
             <Badge key={index} variant="secondary" className="rounded-full">

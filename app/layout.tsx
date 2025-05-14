@@ -38,8 +38,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="canonical" href="https://youseeftareq.dev" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <Script id="structured-data" type="application/ld+json">
@@ -64,7 +65,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
+          {/* <Header /> */}
           {children}
           <Footer />
         </ThemeProvider>

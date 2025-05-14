@@ -35,7 +35,7 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3 sm:py-4 px-4 sm:px-6 w-full overflow-x-hidden",
         isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-md" : "bg-transparent",
       )}
     >
@@ -84,7 +84,7 @@ export function Header() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-          className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border p-4 shadow-lg"
+          className="md:hidden fixed top-[60px] left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border p-4 shadow-lg"
         >
           <nav className="flex flex-col space-y-4">
             {navItems.map((item) => (
