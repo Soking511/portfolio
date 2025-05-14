@@ -13,6 +13,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Mail, Phone, MapPin, Linkedin, Loader2, Code } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Script from "next/script"
+import { db } from "@/lib/firebase"
+import { collection, addDoc } from "firebase/firestore"
 
 type FormData = {
   name: string
@@ -88,16 +90,32 @@ export function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
     try {
-      // Replace with actual form submission logic
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Validate form data
+      if (!formData.name || !formData.email || !formData.message) {
+        throw new Error('Please fill in all required fields')
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(formData.email)) {
+        throw new Error('Please enter a valid email address')
+      }
+
+      // Save message to Firestore
+      await addDoc(collection(db, "messages"), {
+        ...formData,
+        createdAt: new Date().toISOString(),
+        status: "unread",
+        emailNotified: false
+      })
 
       toast({
         title: "Message sent!",
-        description: "Thanks for reaching out. I'll get back to you soon.",
+        description: "Thank you for your message. I'll get back to you soon.",
       })
 
+      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -105,9 +123,10 @@ export function Contact() {
         message: "",
       })
     } catch (error) {
+      console.error("Error sending message:", error)
       toast({
-        title: "Something went wrong",
-        description: "Please try again later.",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
         variant: "destructive",
       })
     } finally {
