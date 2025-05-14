@@ -305,7 +305,7 @@ export function Contact() {
                         href="mailto:youseeftareq5176@gmail.com"
                         className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
                       >
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200">
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200" aria-hidden="true">
                           <Mail className="h-4 w-4" />
                         </span>
                         <span>youseeftareq5176@gmail.com</span>
@@ -315,7 +315,7 @@ export function Contact() {
                         href="tel:+201557337989"
                         className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
                       >
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200">
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200" aria-hidden="true">
                           <Phone className="h-4 w-4" />
                         </span>
                         <div className="flex items-center gap-2">
@@ -325,7 +325,7 @@ export function Contact() {
                       </a>
 
                       <div className="flex items-center gap-3.5 text-muted-foreground">
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary">
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary" aria-hidden="true">
                           <MapPin className="h-4 w-4" />
                         </span>
                         <span>Cairo, Egypt</span>
@@ -349,6 +349,8 @@ export function Contact() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
+                            aria-label="Contact on WhatsApp"
+                            title="Contact on WhatsApp"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -359,6 +361,8 @@ export function Contact() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               className="h-4 w-4"
+                              aria-hidden="true"
+                              role="img"
                             >
                               <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
                               <path d="M9 10a0.5.0.5 0 0 0 1 0V9a0.5.0.5 0 0 0-1 0v1Zm0 0a5 5 0 0 0 5 5h1a0.5.0.5 0 0 0 0-1h-1a4 4 0 0 1-4-4" />
@@ -369,8 +373,10 @@ export function Contact() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
+                            aria-label="Visit Portfolio Website"
+                            title="Visit Portfolio Website"
                           >
-                            <Code className="h-4 w-4" />
+                            <Code className="h-4 w-4" aria-hidden="true" />
                           </a>
                         </div>
                       </div>
