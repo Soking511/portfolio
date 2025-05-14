@@ -288,7 +288,7 @@ function ProjectDetail({ project }: { project: Project }) {
         {/* <div className="flex space-x-4">
           <Button asChild size="sm">
             <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="flex items-center">
-              <ExternalLink size={16} className="mr-2" /> Live Demo
+              <ExternalLink size={16} className="mr-2" aria-hidden="true" title="Visit Live Demo" /> Live Demo
             </a>
           </Button>
           <Button asChild variant="outline" size="sm">
@@ -300,9 +300,12 @@ function ProjectDetail({ project }: { project: Project }) {
       </div>
 
       <div>
-        <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
+        <DialogClose 
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          aria-label={`Close ${project.title} details`}
+        >
+          <X className="h-4 w-4" aria-hidden="true" />
+          <span className="sr-only">Close {project.title} details</span>
         </DialogClose>
         <h2 className="text-2xl font-bold mb-4">{project.title}</h2>
         <p className="text-muted-foreground mb-6">{project.longDescription}</p>

@@ -93,6 +93,7 @@ export function Footer() {
             transition={{ duration: 0.2 }}
             className="mt-4 sm:mt-0 p-2 rounded-full bg-muted hover:bg-muted-foreground/10 transition-colors"
             aria-label="Scroll to top"
+            title="Scroll to top"
           >
             <ArrowUp size={18} />
           </motion.button>

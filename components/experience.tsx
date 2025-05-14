@@ -97,7 +97,7 @@ export function Experience() {
 
   return (
     <section id="experience" className="py-20 px-6 bg-gradient-to-b from-muted/30 to-background">
-      <motion.div 
+      <motion.div
         style={{ opacity, scale }}
         className="max-w-7xl mx-auto"
       >
@@ -138,7 +138,7 @@ function ExperienceCard({
   const isCardInView = useInView(cardRef, { once: true, amount: 0.3 })
 
   return (
-    <motion.div 
+    <motion.div
       ref={cardRef}
       initial={{ opacity: 0, x: -20 }}
       animate={isCardInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
@@ -170,7 +170,7 @@ function ExperienceCard({
         <div className="flex-1 min-w-0">
           <Card className="group overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
             <CardContent className="p-6">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
@@ -180,7 +180,7 @@ function ExperienceCard({
                 <span className="text-sm text-muted-foreground md:text-right mt-1 md:mt-0">{experience.period}</span>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={isCardInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.4, delay: 0.3 }}
@@ -191,7 +191,7 @@ function ExperienceCard({
                 </p>
               </motion.div>
 
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={isCardInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 }}
@@ -200,15 +200,15 @@ function ExperienceCard({
                 {experience.description}
               </motion.p>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                 transition={{ duration: 0.4, delay: 0.5 }}
                 className="flex flex-wrap gap-2"
               >
                 {experience.technologies.map((tech, index) => (
-                  <Badge 
-                    key={index} 
+                  <Badge
+                    key={index}
                     variant="secondary"
                     className="bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
                   >

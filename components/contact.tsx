@@ -339,8 +339,10 @@ export function Contact() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
+                            aria-label="Visit LinkedIn Profile"
+                            title="Visit LinkedIn Profile"
                           >
-                            <Linkedin className="h-4 w-4" />
+                            <Linkedin className="h-4 w-4" aria-hidden="true" />
                           </a>
                           <a
                             href="https://wa.me/201557337989"

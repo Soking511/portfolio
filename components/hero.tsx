@@ -178,9 +178,9 @@ export function Hero() {
                 size="lg"
                 className="group rounded-xl px-6 h-12 bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 transition-opacity"
               >
-                <Link href="#projects">
+                <Link href="#projects" aria-label="View all projects">
                   View Projects
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </Link>
               </Button>
 
@@ -190,8 +190,8 @@ export function Hero() {
                 size="lg"
                 className="group rounded-xl px-6 h-12 hover:bg-primary/5"
               >
-                <a href="/Youseef_Tareq_CV.pdf" download>
-                  <Download className="mr-2 w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                <a href="/Youseef_Tareq_CV.pdf" download aria-label="Download CV (PDF)">
+                  <Download className="mr-2 w-4 h-4 group-hover:translate-y-0.5 transition-transform" aria-hidden="true" />
                   Download CV
                 </a>
               </Button>
