@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Mail, Phone, MapPin, Linkedin, Loader2, Code } from "lucide-react"
+import { Mail, Phone, MapPin, Linkedin, Loader2, Code, ExternalLink, SendHorizontal, CheckCircle2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Script from "next/script"
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { initializeApp } from "firebase/app"
+import type { Firestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLfqvbq4LvJZ52M7X9L9vp0bK9fM1aGwo",
@@ -70,6 +71,7 @@ export function Contact() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [activeField, setActiveField] = useState<string | null>(null)
   const { toast } = useToast()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
@@ -79,14 +81,14 @@ export function Contact() {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   }
 
   const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -114,7 +116,7 @@ export function Contact() {
       }
 
       const { collection, addDoc } = await import('firebase/firestore')
-      const { db } = await import('@/lib/firebase')
+      const { db } = await import('@/lib/firebase') as { db: Firestore }
 
       // Save message to Firestore
       await addDoc(collection(db, "messages"), {
@@ -148,201 +150,245 @@ export function Contact() {
     }
   }
 
+  const handleFocus = (fieldName: string) => {
+    setActiveField(fieldName)
+  }
+
+  const handleBlur = () => {
+    setActiveField(null)
+  }
+
   return (
-    <section id="contact" className="py-20 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section id="contact" className="relative py-20 px-4 sm:px-6 overflow-hidden bg-dot-pattern">
+      {/* Modern gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background to-background pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto">
         <motion.div
           ref={ref}
           variants={container}
           initial="hidden"
           animate={isInView ? "show" : "hidden"}
-          className="space-y-12"
+          className="space-y-10"
         >
-          <motion.div variants={item} className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
-            <p className="text-lg max-w-3xl mx-auto text-muted-foreground">
-              Have a project in mind or want to discuss potential opportunities? I'd love to hear from you!
+          <motion.div variants={item} className="text-center max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-1.5 mb-4 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+              Contact Me
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold">
+              Let's Work Together
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Have a project in mind? I'd love to hear about it. Let's discuss how we can help your business grow.
             </p>
           </motion.div>
 
           <motion.div variants={item}>
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-6">Send Me a Message</h3>
-
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+            <div className="grid lg:grid-cols-[1fr,0.8fr] gap-6 lg:gap-8">
+              {/* Contact Form Card */}
+              <Card className="group overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-lg hover:border-border/60 transition-all duration-300">
+                <CardContent className="p-6 sm:p-8">
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      {/* Name Field */}
+                      <div className="space-y-2.5">
                         <label htmlFor="name" className="text-sm font-medium">
-                          Your Name
+                          Name<span className="text-destructive ml-1">*</span>
                         </label>
                         <Input
                           id="name"
                           name="name"
-                          placeholder="John Doe"
+                          placeholder="Your name"
                           required
                           value={formData.name}
                           onChange={handleChange}
+                          onFocus={() => handleFocus('name')}
+                          onBlur={handleBlur}
+                          className={`transition-all duration-200 ${
+                            activeField === 'name' ? 'border-primary/50 ring-1 ring-primary/20' : ''
+                          }`}
                         />
                       </div>
 
-                      <div className="space-y-2">
+                      {/* Email Field */}
+                      <div className="space-y-2.5">
                         <label htmlFor="email" className="text-sm font-medium">
-                          Your Email
+                          Email<span className="text-destructive ml-1">*</span>
                         </label>
                         <Input
                           id="email"
                           name="email"
                           type="email"
-                          placeholder="john@example.com"
+                          placeholder="you@example.com"
                           required
                           value={formData.email}
                           onChange={handleChange}
+                          onFocus={() => handleFocus('email')}
+                          onBlur={handleBlur}
+                          className={`transition-all duration-200 ${
+                            activeField === 'email' ? 'border-primary/50 ring-1 ring-primary/20' : ''
+                          }`}
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+                    {/* Subject Field */}
+                    <div className="space-y-2.5">
                       <label htmlFor="subject" className="text-sm font-medium">
                         Subject
                       </label>
                       <Input
                         id="subject"
                         name="subject"
-                        placeholder="Project Inquiry"
-                        required
+                        placeholder="What's this about?"
                         value={formData.subject}
                         onChange={handleChange}
+                        onFocus={() => handleFocus('subject')}
+                        onBlur={handleBlur}
+                        className={`transition-all duration-200 ${
+                          activeField === 'subject' ? 'border-primary/50 ring-1 ring-primary/20' : ''
+                        }`}
                       />
                     </div>
 
-                    <div className="space-y-2">
+                    {/* Message Field */}
+                    <div className="space-y-2.5">
                       <label htmlFor="message" className="text-sm font-medium">
-                        Message
+                        Message<span className="text-destructive ml-1">*</span>
                       </label>
                       <Textarea
                         id="message"
                         name="message"
                         placeholder="Tell me about your project..."
-                        rows={5}
+                        rows={6}
                         required
                         value={formData.message}
                         onChange={handleChange}
+                        onFocus={() => handleFocus('message')}
+                        onBlur={handleBlur}
+                        className={`transition-all duration-200 resize-none ${
+                          activeField === 'message' ? 'border-primary/50 ring-1 ring-primary/20' : ''
+                        }`}
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    <Button
+                      type="submit"
+                      className="w-full h-11 text-base transition-transform active:scale-[0.98]"
+                      disabled={isSubmitting}
+                    >
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Sending...
                         </>
                       ) : (
-                        "Send Message"
+                        <>
+                          <SendHorizontal className="mr-2 h-4 w-4" />
+                          Send Message
+                        </>
                       )}
                     </Button>
                   </form>
                 </CardContent>
               </Card>
 
-              <div className="space-y-8">
-                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm">
-                  <CardContent className="p-6">
+              {/* Info Cards */}
+              <div className="space-y-6">
+                {/* Contact Info Card */}
+                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-6 sm:p-8">
                     <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
+                    <div className="space-y-5">
+                      {/* Contact Methods */}
+                      <a
+                        href="mailto:youseeftareq5176@gmail.com"
+                        className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      >
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200">
+                          <Mail className="h-4 w-4" />
+                        </span>
+                        <span>youseeftareq5176@gmail.com</span>
+                      </a>
 
-                    <div className="space-y-4">
-                      <div className="flex items-start space-x-4">
-                        <Mail className="h-5 w-5 text-primary mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Email</h4>
+                      <a
+                        href="tel:+201557337989"
+                        className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      >
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200">
+                          <Phone className="h-4 w-4" />
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span>+201557337989</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">Available</span>
+                        </div>
+                      </a>
+
+                      <div className="flex items-center gap-3.5 text-muted-foreground">
+                        <span className="p-2 rounded-lg bg-primary/5 text-primary">
+                          <MapPin className="h-4 w-4" />
+                        </span>
+                        <span>Cairo, Egypt</span>
+                      </div>
+
+                      {/* Social Links */}
+                      <div className="pt-5 border-t border-border/60">
+                        <div className="flex gap-3">
                           <a
-                            href="mailto:youseeftareq5176@gmail.com"
-                            className="text-muted-foreground hover:text-primary transition-colors"
+                            href="https://linkedin.com/in/youseef-tareq"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
                           >
-                            youseeftareq5176@gmail.com
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                          <a
+                            href="https://wa.me/201557337989"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4"
+                            >
+                              <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+                              <path d="M9 10a0.5.0.5 0 0 0 1 0V9a0.5.0.5 0 0 0-1 0v1Zm0 0a5 5 0 0 0 5 5h1a0.5.0.5 0 0 0 0-1h-1a4 4 0 0 1-4-4" />
+                            </svg>
+                          </a>
+                          <a
+                            href="https://soking.tech"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
+                          >
+                            <Code className="h-4 w-4" />
                           </a>
                         </div>
-                      </div>
-
-                      <div className="flex items-start space-x-4">
-                        <Phone className="h-5 w-5 text-primary mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Phone</h4>
-                          <a
-                            href="tel:+201557337989"
-                            className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
-                          >
-                            +201557337989
-                            <span className="text-xs text-muted-foreground">(WhatsApp available)</span>
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start space-x-4">
-                        <MapPin className="h-5 w-5 text-primary mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Location</h4>
-                          <p className="text-muted-foreground">Cairo, Egypt</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8">
-                      <h4 className="font-medium mb-4">Connect</h4>
-                      <div className="flex space-x-4">
-                        <a
-                          href="https://linkedin.com/in/youseef-tareq"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-background/80 hover:bg-primary/10 border border-border hover:border-primary/30 text-foreground hover:text-primary p-2 rounded-full transition-colors"
-                          aria-label="LinkedIn Profile"
-                        >
-                          <Linkedin className="h-5 w-5" />
-                        </a>                         <a
-                          href="https://wa.me/201557337989"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-background/80 hover:bg-primary/10 border border-border hover:border-primary/30 text-foreground hover:text-primary p-2 rounded-full transition-colors"
-                          aria-label="WhatsApp Chat"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-5 w-5"
-                          >
-                            <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
-                            <path d="M9 10a0.5.0.5 0 0 0 1 0V9a0.5.0.5 0 0 0-1 0v1Zm0 0a5 5 0 0 0 5 5h1a0.5.0.5 0 0 0 0-1h-1a4 4 0 0 1-4-4" />
-                          </svg>
-                        </a>
-                        <a
-                          href="https://soking.tech"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-background/80 hover:bg-primary/10 border border-border hover:border-primary/30 text-foreground hover:text-primary p-2 rounded-full transition-colors"
-                          aria-label="Portfolio Website"
-                        >
-                          <Code className="h-5 w-5" />
-                        </a>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-6">FAQ</h3>
-
+                {/* FAQ Card */}
+                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-6 sm:p-8">
+                    <h3 className="text-xl font-semibold mb-6">FAQs</h3>
                     <Accordion type="single" collapsible className="w-full">
                       {faqs.map((faq, index) => (
                         <AccordionItem key={index} value={`item-${index}`}>
-                          <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                          <AccordionContent>{faq.answer}</AccordionContent>
+                          <AccordionTrigger className="text-left hover:text-primary transition-colors duration-200">
+                            {faq.question}
+                          </AccordionTrigger>
+                          <AccordionContent className="text-muted-foreground">
+                            {faq.answer}
+                          </AccordionContent>
                         </AccordionItem>
                       ))}
                     </Accordion>
