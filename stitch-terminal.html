@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Youseef Tareq | Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --terracotta: #E2725B;
+            --off-white: #FAF9F6;
+            --dark-grey: #333333;
+            --flat-grey: #EDEDED;
+            --terminal-black: #1A1A1A;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--dark-grey);
+        }
+        .mono {
+            font-family: 'Fira Code', monospace;
+        }
+        .no-round {
+            border-radius: 0 !important;
+        }
+        .flat-border {
+            border: 2px solid var(--dark-grey);
+        }
+        .terracotta-bg {
+            background-color: var(--terracotta);
+        }
+        .terracotta-text {
+            color: var(--terracotta);
+        }
+        .terminal-window {
+            background-color: var(--terminal-black);
+            color: #D1D1D1;
+            border: 4px solid var(--dark-grey);
+        }
+        .terminal-header {
+            background-color: var(--dark-grey);
+            height: 32px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#E2725B",
+                        "dark-grey": "#333333",
+                        "off-white": "#FAF9F6",
+                        "flat-grey": "#EDEDED",
+                        "terminal-black": "#1A1A1A"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Fira Code", "monospace"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display selection:bg-primary selection:text-white">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="fixed top-0 z-50 w-full border-b-2 border-dark-grey bg-white">
+<div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-12">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1">
+<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-black uppercase tracking-tighter text-dark-grey">Youseef Tareq</h2>
+</div>
+<nav class="hidden items-center gap-8 md:flex">
+<a class="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#about">About</a>
+<a class="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#projects">Projects</a>
+<a class="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#stack">Stack</a>
+<a class="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#contact">Contact</a>
+<button class="no-round border-2 border-dark-grey bg-primary px-6 py-2 text-sm font-bold uppercase text-white hover:bg-dark-grey transition-all">
+                    Resume
+                </button>
+</nav>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-dark-grey cursor-pointer">menu</span>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<section class="relative flex min-h-screen items-center overflow-hidden pt-20">
+<div class="absolute right-0 top-0 -z-10 h-full w-1/2 opacity-10">
+<div class="absolute top-20 right-20 h-40 w-40 bg-primary"></div>
+<div class="absolute top-80 right-60 h-64 w-64 bg-primary"></div>
+<div class="absolute bottom-20 right-10 h-32 w-32 bg-primary"></div>
+</div>
+<div class="mx-auto max-w-7xl px-6 lg:px-12">
+<div class="flex flex-col gap-12 lg:flex-row lg:items-center">
+<div class="flex flex-col gap-8 lg:w-3/5">
+<div class="space-y-6">
+<span class="inline-block bg-primary px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-white">Full-Stack Developer</span>
+<h1 class="text-6xl font-black uppercase leading-[0.9] tracking-tighter text-dark-grey md:text-8xl lg:text-9xl">
+                                Youseef <br/> <span class="text-primary">Tareq</span>
+</h1>
+<p class="max-w-xl text-xl font-medium leading-relaxed text-dark-grey/70">
+                                Crafting high-performance digital experiences with precision, logic, and a solid technical foundation.
+                            </p>
+</div>
+<div class="flex flex-wrap gap-4">
+<a class="no-round border-2 border-dark-grey bg-dark-grey px-10 py-5 text-sm font-bold uppercase tracking-widest text-white hover:bg-primary hover:border-primary transition-all" href="#projects">
+                                View Projects
+                            </a>
+<a class="no-round border-2 border-dark-grey bg-transparent px-10 py-5 text-sm font-bold uppercase tracking-widest text-dark-grey hover:bg-flat-grey transition-all" href="#contact">
+                                Let's Talk
+                            </a>
+</div>
+</div>
+<div class="relative lg:w-2/5">
+<div class="no-round relative aspect-[4/5] w-full border-4 border-dark-grey bg-flat-grey">
+<img alt="Professional portrait of Youseef Tareq" class="h-full w-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAzSbGUwiLo02RMBMqsMUcfzo4fWcgMzolGL3dAkfhzMChO2rMyzdRU45OE8c7Tha9Y2M4gg06RU3VcNZmBiDaf-zX8QT3Auu14vdeKZdWB5S2Y6PdYAsDIrA4X06bqVXukccJqZ_Auh3J-kChu0QqXqXrRwQRm_L3KV9MVGIqOZoXfETT9KFgJYEKRTYVSLcqg4YEz7iDI90byzOSV0K2q4iDPZc6DAGBivp6jzcG2KI4SzYLtHEI3F_xK5xEOMk_m4Q5Uf9Mf5Pq"/>
+<div class="absolute -bottom-6 -left-6 -z-10 h-full w-full bg-primary"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white py-32" id="about">
+<div class="mx-auto max-w-7xl px-6 lg:px-12">
+<div class="mb-12">
+<h2 class="text-4xl font-black uppercase tracking-tighter text-dark-grey">Initialize Biography</h2>
+</div>
+<div class="terminal-window no-round w-full overflow-hidden shadow-2xl">
+<div class="terminal-header">
+<div class="dot bg-[#FF5F56]"></div>
+<div class="dot bg-[#FFBD2E]"></div>
+<div class="dot bg-[#27C93F]"></div>
+<span class="ml-4 text-[10px] font-bold uppercase tracking-widest text-white/50 mono">youseef@bio-shell ~ zsh</span>
+</div>
+<div class="p-8 mono text-sm md:text-base leading-relaxed">
+<div class="mb-6">
+<p class="text-primary mb-2">yousef@portfolio:~$ <span class="text-white">ls -la</span></p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-white/80">
+<span>drwxr-xr-x about.txt</span>
+<span>drwxr-xr-x skills/</span>
+<span>drwxr-xr-x experience/</span>
+<span>-rw-r--r-- profile.sh</span>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-primary mb-2">yousef@portfolio:~$ <span class="text-white">cat about.txt</span></p>
+<p class="text-white/90">
+                                I am a passionate Full-Stack Developer dedicated to building scalable, user-centric web applications. 
+                                With a focus on performance and clean code, I transform complex problems into elegant digital solutions.
+                                <br/><br/>
+                                Over the last 5 years, I've partnered with startups and established brands to architect systems that 
+                                are both robust and visually compelling. My approach combines technical rigor with a deep understanding of UX.
+                            </p>
+</div>
+<div class="mb-6">
+<p class="text-primary mb-2">yousef@portfolio:~$ <span class="text-white">ls skills/</span></p>
+<div class="flex flex-wrap gap-x-6 gap-y-1 text-[#27C93F]">
+<span>frontend/</span>
+<span>backend/</span>
+<span>devops/</span>
+<span>architecture/</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-primary">yousef@portfolio:~$</p>
+<span class="w-2 h-5 bg-primary animate-pulse"></span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-off-white py-32" id="projects">
+<div class="mx-auto max-w-7xl px-6 lg:px-12">
+<div class="mb-20 flex flex-col items-start gap-4">
+<h2 class="text-4xl font-black uppercase tracking-tighter text-dark-grey">Selected Projects</h2>
+<div class="h-2 w-32 bg-dark-grey"></div>
+</div>
+<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+<div class="no-round flex flex-col bg-flat-grey border-2 border-dark-grey">
+<div class="h-64 w-full overflow-hidden border-b-2 border-dark-grey">
+<img alt="SaaS dashboard" class="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxuSTWs4lkXFaFHDSNWn_qR2CbYKDp5H0I133LGHB9qDXcoEFX0UTSxKWDgtSYXgHc_yqsT-O33z0LKWzLkBIFX--UuPtubKWs8rH46ovB8RX1X4xI_U61pieOo49fOnKIgcROheN3QTxATQYbi4aSaImP3qB1pHnvSfFY_UgHot1rPZV5mCWMrYUkYdtQict-Uh6FCp3YvNLKETx6Hn7nvTShJpBND_2464OMBE5OfVPlxTtKw3LjhPXUBzZHOZAjmj4-XVTHGGNL"/>
+</div>
+<div class="flex flex-1 flex-col p-8">
+<h3 class="text-2xl font-black uppercase tracking-tight text-dark-grey">Analytics Pro</h3>
+<p class="mt-4 flex-1 text-sm font-medium leading-relaxed text-dark-grey/70">A real-time data visualization platform built with React, D3.js, and Node.js for enterprise insights.</p>
+<div class="mt-8">
+<button class="no-round w-full bg-primary py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-dark-grey transition-colors">
+                                    Learn More
+                                </button>
+</div>
+</div>
+</div>
+<div class="no-round flex flex-col bg-flat-grey border-2 border-dark-grey">
+<div class="h-64 w-full overflow-hidden border-b-2 border-dark-grey">
+<img alt="E-commerce app" class="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyIQ-JODyH0CWv2aZiLIiSc3eXJPNOtfM_k3q-kWj52S7YWZRECZRkm9_7FwUC-9Iv_lPzKxBDwXBnEzC8M0qEOLYh7aXRyDAAnRX9umHmpNDTE_C0s9QQ74zK--9al9ORKZizITridE2zI_ATtHHxx61IyApSh0odoRSi0JzizwUfyoUDSRwRCBa55_uEsqmizVU0ev0NaNZpXnk6BVeOm4UyCMJyEs7ejV5q9JhGBfvRFU2IDZfzQAGkTeBoWRcuSbDd4SvWIHjd"/>
+</div>
+<div class="flex flex-1 flex-col p-8">
+<h3 class="text-2xl font-black uppercase tracking-tight text-dark-grey">SwiftShop</h3>
+<p class="mt-4 flex-1 text-sm font-medium leading-relaxed text-dark-grey/70">High-performance E-commerce engine featuring headless architecture and seamless checkout flow.</p>
+<div class="mt-8">
+<button class="no-round w-full bg-primary py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-dark-grey transition-colors">
+                                    Learn More
+                                </button>
+</div>
+</div>
+</div>
+<div class="no-round flex flex-col bg-flat-grey border-2 border-dark-grey">
+<div class="h-64 w-full overflow-hidden border-b-2 border-dark-grey">
+<img alt="Management tool" class="h-full w-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7_4qnLaS9-lrRZuoTpcRRnth0ECAplOmVaD6b4ju8sAKId-kpLPqv_0Uq0bzfS9MXHFo8lKZw-jXAb6CNVJBysDEHStDpR2MgpXVl4mT-bxfCEfpGLtP646BuZjx-wB5s_bi6HfAU8wj_YJvDjG8h1F3CqsiW8ILdFBLashIMhG1rkwipLYIsnZr2R8zg-EEYEaL5xsNW5BjFQV1qoLio29qqVg0pijn091K8RXiiEJPu8RXlSa9iROnWGypPS5gfs4I9jMBdF76z"/>
+</div>
+<div class="flex flex-1 flex-col p-8">
+<h3 class="text-2xl font-black uppercase tracking-tight text-dark-grey">TaskFlow</h3>
+<p class="mt-4 flex-1 text-sm font-medium leading-relaxed text-dark-grey/70">Collaborative task management tool with real-time updates and integrated CI/CD tracking.</p>
+<div class="mt-8">
+<button class="no-round w-full bg-primary py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-dark-grey transition-colors">
+                                    Learn More
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white py-32" id="stack">
+<div class="mx-auto max-w-7xl px-6 lg:px-12">
+<div class="mb-20 text-center">
+<h2 class="text-4xl font-black uppercase tracking-tighter text-dark-grey">The Arsenal</h2>
+<p class="mt-4 font-bold uppercase tracking-widest text-primary text-sm">Technologies &amp; Frameworks</p>
+</div>
+<div class="grid grid-cols-2 gap-12 md:grid-cols-3 lg:grid-cols-6">
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">javascript</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">JavaScript</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">code</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">TypeScript</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">layers</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">React</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">terminal</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">Node.js</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">database</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">PostgreSQL</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-4xl">cloud</span>
+</div>
+<span class="text-xs font-black uppercase tracking-widest">AWS</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-off-white py-32" id="contact">
+<div class="mx-auto max-w-4xl px-6 lg:px-12">
+<div class="mb-12">
+<h2 class="text-4xl font-black uppercase tracking-tighter text-dark-grey">Establish Connection</h2>
+</div>
+<div class="terminal-window no-round w-full shadow-2xl">
+<div class="terminal-header">
+<div class="dot bg-[#FF5F56]"></div>
+<div class="dot bg-[#FFBD2E]"></div>
+<div class="dot bg-[#27C93F]"></div>
+<span class="ml-4 text-[10px] font-bold uppercase tracking-widest text-white/50 mono">youseef@remote-connect ~ bash</span>
+</div>
+<div class="p-8 mono space-y-8">
+<div>
+<p class="text-white/60 text-sm mb-4">-- System Ready. Select a command to retrieve contact details --</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<button class="group no-round border-2 border-dark-grey bg-dark-grey/50 p-6 text-left hover:border-primary transition-all">
+<p class="text-primary text-xs font-bold mb-2">execute_command:</p>
+<p class="text-white text-xl font-bold">email</p>
+<div class="mt-4 hidden group-focus:block group-active:block">
+<p class="text-sm text-[#27C93F]">youseef.tareq@example.com</p>
+</div>
+</button>
+<button class="group no-round border-2 border-dark-grey bg-dark-grey/50 p-6 text-left hover:border-primary transition-all">
+<p class="text-primary text-xs font-bold mb-2">execute_command:</p>
+<p class="text-white text-xl font-bold">linkedin</p>
+<div class="mt-4 hidden group-focus:block group-active:block">
+<p class="text-sm text-[#27C93F]">linkedin.com/in/youseef-tareq</p>
+</div>
+</button>
+<button class="group no-round border-2 border-dark-grey bg-dark-grey/50 p-6 text-left hover:border-primary transition-all">
+<p class="text-primary text-xs font-bold mb-2">execute_command:</p>
+<p class="text-white text-xl font-bold">github</p>
+<div class="mt-4 hidden group-focus:block group-active:block">
+<p class="text-sm text-[#27C93F]">github.com/youseeftareq</p>
+</div>
+</button>
+</div>
+</div>
+<div class="pt-8 border-t border-white/10">
+<div class="flex flex-col md:flex-row md:items-center gap-4">
+<div class="flex items-center gap-3">
+<span class="text-primary font-bold">youseef@portfolio:~#</span>
+<span class="text-white bg-dark-grey px-4 py-1 text-sm">connect --mode=direct</span>
+</div>
+<a class="no-round bg-primary px-8 py-3 text-sm font-bold uppercase tracking-widest text-white hover:bg-white hover:text-dark-grey transition-all text-center" href="mailto:hello@youseef.com">
+                                    Open SMTP Channel
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 text-center">
+<p class="text-7xl md:text-9xl font-black uppercase tracking-tighter text-dark-grey/5 select-none">LETS BUILD</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="border-t-4 border-dark-grey bg-white py-16">
+<div class="mx-auto max-w-7xl px-6 lg:px-12">
+<div class="flex flex-col items-center justify-between gap-8 md:flex-row">
+<div class="flex items-center gap-4">
+<div class="bg-dark-grey p-1 text-white">
+<svg class="w-6 h-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
+</svg>
+</div>
+<span class="text-sm font-black uppercase tracking-widest text-dark-grey">© 2024 Youseef Tareq</span>
+</div>
+<div class="flex gap-10">
+<a class="text-dark-grey hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">alternate_email</span>
+</a>
+<a class="text-dark-grey hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">link</span>
+</a>
+<a class="text-dark-grey hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">terminal</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

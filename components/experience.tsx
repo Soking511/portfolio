@@ -1,10 +1,6 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView, useScroll, useTransform } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Briefcase, GraduationCap } from "lucide-react"
+import { Briefcase, GraduationCap, ChevronRight } from "lucide-react"
 
 type ExperienceItem = {
   title: string
@@ -33,7 +29,7 @@ const experienceItems: ExperienceItem[] = [
     location: "Remote",
     period: "2024 - 2025",
     description:
-      "Contributed to and designed a number of projects that demonstrated skills in Django, Lua, Mean Stack, C#, and other technologies. Worked with clients worldwide to deliver custom web an  Lua, Mean Stack, C#, and other technologies. Worked with clients worldwide to deliver custom web and desktop applications.",
+      "Contributed to and designed a number of projects that demonstrated skills in Django, Lua, Mean Stack, C#, and other technologies. Worked with clients worldwide to deliver custom web and desktop applications.",
     technologies: ["Angular", "Django", "Node.js", "Lua", "MongoDB"],
     type: "work",
   },
@@ -70,156 +66,53 @@ const experienceItems: ExperienceItem[] = [
 ]
 
 export function Experience() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.1 })
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8])
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-  }
-
   return (
-    <section id="experience" className="py-20 px-6 bg-gradient-to-b from-muted/30 to-background">
-      <motion.div
-        style={{ opacity, scale }}
-        className="max-w-7xl mx-auto"
-      >
-        <motion.div
-          ref={ref}
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="space-y-12"
-        >
-          <motion.div variants={item} className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience & Education</h2>
-            <p className="text-lg max-w-3xl mx-auto text-muted-foreground">
-              My professional journey and educational background in the field of software development and web
-              technologies.
-            </p>
-          </motion.div>
-
-          <motion.div variants={item} className="space-y-8">
-            {experienceItems.map((experience, index) => (
-              <ExperienceCard key={index} experience={experience} isLast={index === experienceItems.length - 1} />
-            ))}
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </section>
-  )
-}
-
-function ExperienceCard({
-  experience,
-  isLast,
-}: {
-  experience: ExperienceItem
-  isLast: boolean
-}) {
-  const cardRef = useRef(null)
-  const isCardInView = useInView(cardRef, { once: true, amount: 0.3 })
-
-  return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, x: -20 }}
-      animate={isCardInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`relative ${!isLast ? "pb-8" : ""}`}
-    >
-      {!isLast && (
-        <div className="absolute top-12 left-11 -ml-px h-full w-0.5 bg-gradient-to-b from-primary/50 via-border to-border" aria-hidden="true" />
-      )}
-
-      <div className="relative flex space-x-4">
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-primary shadow-lg ring-1 ring-primary/20">
-            {experience.type === "work" ? (
-              <motion.div whileHover={{ rotate: 15 }}>
-                <Briefcase className="h-6 w-6" />
-              </motion.div>
-            ) : (
-              <motion.div whileHover={{ rotate: -15 }}>
-                <GraduationCap className="h-6 w-6" />
-              </motion.div>
-            )}
-          </span>
-        </motion.div>
-
-        <div className="flex-1 min-w-0">
-          <Card className="group overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
-            <CardContent className="p-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="flex flex-col md:flex-row md:items-center justify-between mb-2"
-              >
-                <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{experience.title}</h3>
-                <span className="text-sm text-muted-foreground md:text-right mt-1 md:mt-0">{experience.period}</span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={isCardInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-                className="mb-4"
-              >
-                <p className="font-medium text-primary/80">
-                  {experience.company} • {experience.location}
-                </p>
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={isCardInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-                className="text-muted-foreground mb-4"
-              >
+    <section id="experience" className="py-20 px-6 max-w-7xl mx-auto">
+      <div className="flat-card p-8">
+        <h2 className="text-3xl font-black uppercase text-dark-grey mb-12 flex items-center gap-4">
+          <Briefcase className="text-primary w-8 h-8" />
+          Experience & Education
+        </h2>
+        
+        <div className="space-y-12 pl-4 border-l-4 border-dark-grey ml-2">
+          {experienceItems.map((experience, index) => (
+            <div key={index} className="relative pl-8 group">
+              {/* Timeline dot */}
+              <div className="absolute -left-[28px] top-1.5 w-5 h-5 bg-off-white border-4 border-dark-grey rounded-full group-hover:bg-primary transition-colors"></div>
+              
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-tight text-dark-grey flex items-center gap-2">
+                    {experience.type === "work" ? <Briefcase className="w-5 h-5 text-primary" /> : <GraduationCap className="w-5 h-5 text-primary" />}
+                    {experience.title}
+                  </h3>
+                  <div className="text-primary font-bold mt-2 text-sm uppercase tracking-widest">
+                    {experience.company} <span className="text-dark-grey/30 px-2">|</span> {experience.location}
+                  </div>
+                </div>
+                <div className="text-xs font-bold uppercase tracking-widest border-2 border-dark-grey px-4 py-2 text-dark-grey self-start bg-flat-grey transition-colors hover:bg-dark-grey hover:text-white">
+                  {experience.period}
+                </div>
+              </div>
+              
+              <p className="text-dark-grey/80 mt-4 mb-6 max-w-3xl leading-relaxed font-medium">
                 {experience.description}
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={isCardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                transition={{ duration: 0.4, delay: 0.5 }}
-                className="flex flex-wrap gap-2"
-              >
-                {experience.technologies.map((tech, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="bg-primary/5 hover:bg-primary/10 transition-colors duration-200"
+              </p>
+              
+              <div className="flex flex-wrap gap-2">
+                {experience.technologies.map((tech, idx) => (
+                  <span 
+                    key={idx} 
+                    className="text-xs font-bold uppercase tracking-widest bg-flat-grey text-dark-grey px-3 py-1 border-2 border-dark-grey hover:text-primary transition-colors"
                   >
                     {tech}
-                  </Badge>
+                  </span>
                 ))}
-              </motion.div>
-            </CardContent>
-          </Card>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </motion.div>
+    </section>
   )
 }

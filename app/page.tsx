@@ -3,9 +3,7 @@ import { About } from "@/components/about"
 import { Projects } from "@/components/projects"
 import { TechStack } from "@/components/tech-stack"
 import { Experience } from "@/components/experience"
-import { Testimonials } from "@/components/testimonials"
 import { Contact } from "@/components/contact"
-import { ScrollProgress } from "@/components/scroll-progress"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -38,14 +36,12 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <ScrollProgress />
       <main className="flex min-h-screen flex-col">
         <Hero />
         <About />
         <Projects />
         <TechStack />
         <Experience />
-        {/* <Testimonials /> */}
         <Contact />
       </main>
     </>

@@ -2,109 +2,54 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { Menu, X } from "lucide-react"
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  const navItems = [
-    { title: "About", href: "#about" },
-    { title: "Projects", href: "#projects" },
-    { title: "Skills", href: "#skills" },
-    { title: "Experience", href: "#experience" },
-    { title: "Contact", href: "#contact" },
-  ]
-
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3 sm:py-4 px-4 sm:px-6 w-full overflow-x-hidden",
-        isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-md" : "bg-transparent",
-      )}
-    >
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold hover:text-primary transition-colors">
-          YT
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="text-sm text-foreground/80 hover:text-primary transition-colors"
-            >
-              {item.title}
-            </Link>
-          ))}
-          <Button asChild variant="default">
-            <a href="/resume.pdf" download>
-              Download Resume
-            </a>
-          </Button>
-          <ModeToggle />
+    <header className="fixed top-0 z-50 w-full border-b-2 border-dark-grey bg-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-12">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary p-1">
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
+            </svg>
+          </div>
+          <h2 className="text-xl font-black uppercase tracking-tighter text-dark-grey">Youseef Tareq</h2>
+        </div>
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#about">About</Link>
+          <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#projects">Projects</Link>
+          <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#stack">Stack</Link>
+          <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#contact">Contact</Link>
+          <a href="/[Full-Stack]Youseef%20Tareq.pdf" download className="no-round border-2 border-dark-grey bg-primary px-6 py-2 text-sm font-bold uppercase text-white hover:bg-dark-grey transition-all">
+              Resume
+          </a>
         </nav>
-
-        {/* Mobile Navigation Toggle */}
-        <div className="flex items-center gap-4 md:hidden">
-          <ModeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
+        <div className="md:hidden">
+          <span 
+            className="material-symbols-outlined text-dark-grey cursor-pointer"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {mobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
-          </Button>
+            {mobileMenuOpen ? "close" : "menu"}
+          </span>
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-          className="md:hidden fixed top-[60px] left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border p-4 shadow-lg"
-        >
-          <nav className="flex flex-col space-y-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="text-sm hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.title}
-              </Link>
-            ))}
-            <Button asChild variant="default" className="w-full">
-              <a href="/resume.pdf" download>
-                Download Resume
+        <div className="bg-white border-b-2 border-dark-grey p-4 md:hidden">
+            <nav className="flex flex-col gap-4">
+              <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#about" onClick={() => setMobileMenuOpen(false)}>About</Link>
+              <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#projects" onClick={() => setMobileMenuOpen(false)}>Projects</Link>
+              <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#stack" onClick={() => setMobileMenuOpen(false)}>Stack</Link>
+              <Link className="text-sm font-bold uppercase tracking-widest text-dark-grey hover:text-primary transition-colors" href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+              <a href="/[Full-Stack]Youseef%20Tareq.pdf" download className="no-round border-2 border-dark-grey bg-primary px-6 py-2 text-sm font-bold uppercase text-white hover:bg-dark-grey transition-all text-center">
+                  Resume
               </a>
-            </Button>
-          </nav>
-        </motion.div>
+            </nav>
+        </div>
       )}
-    </motion.header>
+    </header>
   )
 }

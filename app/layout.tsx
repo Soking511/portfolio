@@ -1,13 +1,11 @@
 import type React from "react"
 import "./globals.css"
-import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Inter, Fira_Code } from "next/font/google"
 import type { Metadata } from "next"
 import Script from "next/script"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const firaCode = Fira_Code({ subsets: ["latin"], variable: "--font-fira-code" })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://soking.tech"),
@@ -31,6 +29,9 @@ export const metadata: Metadata = {
   robots: "index, follow",
     generator: 'v0.dev'
 }
+
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function RootLayout({
   children,
@@ -63,12 +64,10 @@ export default function RootLayout({
   `}
         </Script>
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {/* <Header /> */}
-          {children}
-          <Footer />
-        </ThemeProvider>
+      <body className={`${inter.variable} ${firaCode.variable} font-display selection:bg-primary selection:text-white antialiased`}>
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
   )

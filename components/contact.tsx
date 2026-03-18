@@ -1,18 +1,10 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { motion, useInView } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Mail, Phone, MapPin, Linkedin, Loader2, Code, ExternalLink, SendHorizontal, CheckCircle2 } from "lucide-react"
+import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
-import Script from "next/script"
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { initializeApp } from "firebase/app"
-import type { Firestore } from 'firebase/firestore'
+import { SendHorizontal, Loader2, Mail, MapPin } from "lucide-react"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLfqvbq4LvJZ52M7X9L9vp0bK9fM1aGwo",
@@ -31,65 +23,17 @@ const db = getFirestore(app)
 type FormData = {
   name: string
   email: string
-  subject: string
   message: string
 }
-
-type FaqItem = {
-  question: string
-  answer: string
-}
-
-const faqs: FaqItem[] = [
-  {
-    question: "What services do you offer?",
-    answer:
-      "I offer full-stack web development services including frontend and backend development, responsive design, API development, database design, and more. I specialize in Angular, React, Node.js, and Django, but can adapt to various tech stacks based on project requirements.",
-  },
-  {
-    question: "How do you handle project pricing?",
-    answer:
-      "Project pricing depends on the scope, complexity, and timeline. I offer flexible engagement models including fixed price for well-defined projects, hourly rates for ongoing work, and retainer arrangements for long-term collaboration. Contact me with your requirements for a custom quote.",
-  },
-  {
-    question: "What is your development process?",
-    answer:
-      "My development process typically includes discovery and requirements gathering, planning and architecture, development sprints with regular checkpoints, testing and quality assurance, deployment, and post-launch support. I maintain clear communication throughout the process and adapt to your preferred project management approach.",
-  },
-  {
-    question: "Do you provide ongoing maintenance?",
-    answer:
-      "Yes, I offer ongoing maintenance and support services to ensure your application remains secure, performant, and up-to-date. This can include bug fixes, feature updates, security patches, and performance optimizations.",
-  },
-]
 
 export function Contact() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
-    subject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeField, setActiveField] = useState<string | null>(null)
   const { toast } = useToast()
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.1 })
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -104,21 +48,15 @@ export function Contact() {
     setIsSubmitting(true)
 
     try {
-      // Validate form data
       if (!formData.name || !formData.email || !formData.message) {
         throw new Error('Please fill in all required fields')
       }
 
-      // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(formData.email)) {
         throw new Error('Please enter a valid email address')
       }
 
-      const { collection, addDoc } = await import('firebase/firestore')
-      const { db } = await import('@/lib/firebase') as { db: Firestore }
-
-      // Save message to Firestore
       await addDoc(collection(db, "messages"), {
         ...formData,
         createdAt: new Date().toISOString(),
@@ -131,11 +69,9 @@ export function Contact() {
         description: "Thank you for your message. I'll get back to you soon.",
       })
 
-      // Reset form
       setFormData({
         name: "",
         email: "",
-        subject: "",
         message: "",
       })
     } catch (error) {
@@ -150,287 +86,111 @@ export function Contact() {
     }
   }
 
-  const handleFocus = (fieldName: string) => {
-    setActiveField(fieldName)
-  }
-
-  const handleBlur = () => {
-    setActiveField(null)
-  }
-
   return (
-    <section id="contact" className="relative py-20 px-4 sm:px-6 overflow-hidden bg-dot-pattern">
-      {/* Modern gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background to-background pointer-events-none" />
-
-      <div className="relative max-w-7xl mx-auto">
-        <motion.div
-          ref={ref}
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="space-y-10"
-        >
-          <motion.div variants={item} className="text-center max-w-3xl mx-auto">
-            <span className="inline-block px-4 py-1.5 mb-4 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
-              Contact Me
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Let's Work Together
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Have a project in mind? I'd love to hear about it. Let's discuss how we can help your business grow.
-            </p>
-          </motion.div>
-
-          <motion.div variants={item}>
-            <div className="grid lg:grid-cols-[1fr,0.8fr] gap-6 lg:gap-8">
-              {/* Contact Form Card */}
-              <Card className="group overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-lg hover:border-border/60 transition-all duration-300">
-                <CardContent className="p-6 sm:p-8">
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid sm:grid-cols-2 gap-5">
-                      {/* Name Field */}
-                      <div className="space-y-2.5">
-                        <label htmlFor="name" className="text-sm font-medium">
-                          Name<span className="text-destructive ml-1">*</span>
-                        </label>
-                        <Input
-                          id="name"
-                          name="name"
-                          placeholder="Your name"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                          onFocus={() => handleFocus('name')}
-                          onBlur={handleBlur}
-                          className={`transition-all duration-200 ${
-                            activeField === 'name' ? 'border-primary/50 ring-1 ring-primary/20' : ''
-                          }`}
-                        />
-                      </div>
-
-                      {/* Email Field */}
-                      <div className="space-y-2.5">
-                        <label htmlFor="email" className="text-sm font-medium">
-                          Email<span className="text-destructive ml-1">*</span>
-                        </label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="you@example.com"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          onFocus={() => handleFocus('email')}
-                          onBlur={handleBlur}
-                          className={`transition-all duration-200 ${
-                            activeField === 'email' ? 'border-primary/50 ring-1 ring-primary/20' : ''
-                          }`}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Subject Field */}
-                    <div className="space-y-2.5">
-                      <label htmlFor="subject" className="text-sm font-medium">
-                        Subject
-                      </label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        placeholder="What's this about?"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        onFocus={() => handleFocus('subject')}
-                        onBlur={handleBlur}
-                        className={`transition-all duration-200 ${
-                          activeField === 'subject' ? 'border-primary/50 ring-1 ring-primary/20' : ''
-                        }`}
-                      />
-                    </div>
-
-                    {/* Message Field */}
-                    <div className="space-y-2.5">
-                      <label htmlFor="message" className="text-sm font-medium">
-                        Message<span className="text-destructive ml-1">*</span>
-                      </label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="Tell me about your project..."
-                        rows={6}
-                        required
-                        value={formData.message}
-                        onChange={handleChange}
-                        onFocus={() => handleFocus('message')}
-                        onBlur={handleBlur}
-                        className={`transition-all duration-200 resize-none ${
-                          activeField === 'message' ? 'border-primary/50 ring-1 ring-primary/20' : ''
-                        }`}
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full h-11 text-base transition-transform active:scale-[0.98]"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <SendHorizontal className="mr-2 h-4 w-4" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-
-              {/* Info Cards */}
-              <div className="space-y-6">
-                {/* Contact Info Card */}
-                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
-                  <CardContent className="p-6 sm:p-8">
-                    <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
-                    <div className="space-y-5">
-                      {/* Contact Methods */}
-                      <a
-                        href="mailto:youseeftareq5176@gmail.com"
-                        className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
-                      >
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200" aria-hidden="true">
-                          <Mail className="h-4 w-4" />
-                        </span>
-                        <span>youseeftareq5176@gmail.com</span>
-                      </a>
-
-                      <a
-                        href="tel:+201557337989"
-                        className="flex items-center gap-3.5 group/item text-muted-foreground hover:text-foreground transition-colors duration-200"
-                      >
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary group-hover/item:bg-primary/10 transition-colors duration-200" aria-hidden="true">
-                          <Phone className="h-4 w-4" />
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span>+201557337989</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">Available</span>
-                        </div>
-                      </a>
-
-                      <div className="flex items-center gap-3.5 text-muted-foreground">
-                        <span className="p-2 rounded-lg bg-primary/5 text-primary" aria-hidden="true">
-                          <MapPin className="h-4 w-4" />
-                        </span>
-                        <span>Cairo, Egypt</span>
-                      </div>
-
-                      {/* Social Links */}
-                      <div className="pt-5 border-t border-border/60">
-                        <div className="flex gap-3">
-                          <a
-                            href="https://linkedin.com/in/youseef-tareq"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
-                            aria-label="Visit LinkedIn Profile"
-                            title="Visit LinkedIn Profile"
-                          >
-                            <Linkedin className="h-4 w-4" aria-hidden="true" />
-                          </a>
-                          <a
-                            href="https://wa.me/201557337989"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
-                            aria-label="Contact on WhatsApp"
-                            title="Contact on WhatsApp"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4"
-                              aria-hidden="true"
-                              role="img"
-                            >
-                              <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
-                              <path d="M9 10a0.5.0.5 0 0 0 1 0V9a0.5.0.5 0 0 0-1 0v1Zm0 0a5 5 0 0 0 5 5h1a0.5.0.5 0 0 0 0-1h-1a4 4 0 0 1-4-4" />
-                            </svg>
-                          </a>
-                          <a
-                            href="https://soking.tech"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2.5 rounded-lg bg-background hover:bg-primary/5 text-muted-foreground hover:text-primary border border-border/60 hover:border-primary/20 transition-colors duration-200"
-                            aria-label="Visit Portfolio Website"
-                            title="Visit Portfolio Website"
-                          >
-                            <Code className="h-4 w-4" aria-hidden="true" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* FAQ Card */}
-                <Card className="overflow-hidden border border-border/40 bg-background/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
-                  <CardContent className="p-6 sm:p-8">
-                    <h3 className="text-xl font-semibold mb-6">FAQs</h3>
-                    <Accordion type="single" collapsible className="w-full">
-                      {faqs.map((faq, index) => (
-                        <AccordionItem key={index} value={`item-${index}`}>
-                          <AccordionTrigger className="text-left hover:text-primary transition-colors duration-200">
-                            {faq.question}
-                          </AccordionTrigger>
-                          <AccordionContent className="text-muted-foreground">
-                            {faq.answer}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </CardContent>
-                </Card>
+    <section className="bg-white py-32 border-y-8 border-dark-grey" id="contact">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          
+          {/* Left Column: Big Typography & Info */}
+          <div className="flex flex-col gap-12">
+            <div>
+              <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-dark-grey leading-none">
+                Get In <br className="hidden lg:block" /> Touch
+              </h2>
+              <div className="mt-8 inline-block bg-primary text-white font-black uppercase tracking-widest px-6 py-3 border-4 border-dark-grey box-shadow-solid -rotate-2">
+                Let's Collaborate
               </div>
             </div>
-          </motion.div>
-        </motion.div>
-      </div>
+            
+            <p className="text-xl font-bold text-dark-grey max-w-md bg-flat-grey p-6 border-4 border-dark-grey">
+              Have an exciting project you need help with?
+              Send me an email or drop a message via the form!
+            </p>
 
-      {/* Structured data for FAQ */}
-      <Script id="faq-schema" type="application/ld+json">
-        {`
-          {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-              ${faqs
-                .map(
-                  (faq) => `{
-                "@type": "Question",
-                "name": "${faq.question}",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "${faq.answer}"
-                }
-              }`,
-                )
-                .join(",")}
-            ]
-          }
-        `}
-      </Script>
+            <div className="flex flex-col gap-6 font-black uppercase tracking-widest mt-4">
+              <a href="mailto:youseeftareq5176@gmail.com" className="flex items-center gap-4 text-sm md:text-xl hover:text-primary transition-colors group">
+                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-primary group-hover:text-white transition-colors">
+                  <Mail strokeWidth={3} className="w-8 h-8" />
+                </div>
+                <span className="break-all">youseeftareq5176@gmail.com</span>
+              </a>
+              <div className="flex items-center gap-4 text-sm md:text-xl text-dark-grey">
+                <div className="bg-flat-grey p-4 border-4 border-dark-grey">
+                  <MapPin strokeWidth={3} className="w-8 h-8" />
+                </div>
+                <span>Remote / Worldwide</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Form */}
+          <div className="bg-off-white p-6 md:p-12 border-4 border-dark-grey box-shadow-solid relative">
+             {/* Decorative element */}
+             <div className="absolute -top-6 -right-6 w-12 h-12 bg-primary border-4 border-dark-grey rounded-full hidden md:block"></div>
+             
+             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+               <div className="flex flex-col gap-2">
+                  <label htmlFor="name" className="text-sm font-black uppercase tracking-widest text-dark-grey">Name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all"
+                    placeholder="Your Name"
+                    type="text"
+                  />
+               </div>
+               
+               <div className="flex flex-col gap-2">
+                  <label htmlFor="email" className="text-sm font-black uppercase tracking-widest text-dark-grey">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all"
+                    placeholder="you@example.com"
+                    type="email"
+                  />
+               </div>
+               
+               <div className="flex flex-col gap-2">
+                  <label htmlFor="message" className="text-sm font-black uppercase tracking-widest text-dark-grey">Message</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    className="min-h-[200px] border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all resize-none"
+                    placeholder="How can I help you?"
+                  ></textarea>
+               </div>
+               
+               <button
+                 type="submit"
+                 disabled={isSubmitting}
+                 className="mt-6 bg-primary py-6 text-xl font-black uppercase tracking-widest text-white border-4 border-dark-grey box-shadow-solid hover:translate-x-1 hover:-translate-y-1 hover:bg-dark-grey transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:hover:transform-none disabled:hover:bg-primary"
+               >
+                 {isSubmitting ? (
+                   <>
+                     <Loader2 className="h-6 w-6 animate-spin" strokeWidth={3} />
+                     <span>Sending...</span>
+                   </>
+                 ) : (
+                   <>
+                     <span>Send Message</span>
+                     <SendHorizontal className="h-6 w-6" strokeWidth={3} />
+                   </>
+                 )}
+               </button>
+             </form>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }

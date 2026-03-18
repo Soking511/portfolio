@@ -2,92 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add base styles to control overflow */
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-  position: relative;
-}
-
-/* Reset margins and paddings that might cause overflow */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 346.8 77.2% 49.8%;
-    --secondary-foreground: 355.7 100% 97.3%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 262.1 83.3% 57.8%;
-    --radius: 0.75rem;
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    background-color: var(--flat-grey);
+    color: var(--dark-grey);
   }
 
-  .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 346.8 77.2% 49.8%;
-    --secondary-foreground: 355.7 100% 97.3%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 263.4 70% 50.4%;
-  }
-}
-
-@layer base {
   * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  html {
-    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 }
 
-/* Frosted glass effect classes */
-.glass {
-  @apply bg-background/30 backdrop-blur-xl border border-border/40;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --terracotta: #E2725B;
+  --off-white: #FAF9F6;
+  --dark-grey: #333333;
+  --flat-grey: #EDEDED;
+  --terminal-black: #1A1A1A;
 }
 
-.glassmorphism {
-  @apply bg-background/60 backdrop-blur-xl border border-border/50 shadow-md;
+.mono {
+    font-family: 'Fira Code', monospace;
 }
-
-.neumorphism {
-  @apply bg-background shadow-[6px_6px_12px_0px_rgba(0,0,0,0.2),-6px_-6px_12px_0px_rgba(255,255,255,0.05)];
+.no-round {
+    border-radius: 0 !important;
+}
+.flat-border {
+    border: 2px solid var(--dark-grey);
+}
+.terracotta-bg {
+    background-color: var(--terracotta);
+}
+.terracotta-text {
+    color: var(--terracotta);
+}
+.flat-card {
+    background-color: var(--off-white);
+    color: var(--dark-grey);
+    border: 3px solid var(--dark-grey);
+    box-shadow: 6px 6px 0px 0px var(--dark-grey);
 }
 
 /* Custom scrollbar */
@@ -97,13 +60,13 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-muted/30;
+  background-color: var(--flat-grey);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/30 rounded-full;
+  background-color: var(--dark-grey);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/50;
+  background-color: var(--terracotta);
 }
