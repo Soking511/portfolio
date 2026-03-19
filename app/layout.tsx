@@ -10,24 +10,33 @@ const firaCode = Fira_Code({ subsets: ["latin"], variable: "--font-fira-code" })
 export const metadata: Metadata = {
   metadataBase: new URL("https://soking.tech"),
   title: {
-    default: "Youseef Tareq | Full-Stack Developer",
+    default: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
     template: "%s | Youseef Tareq",
   },
   description:
-    "Full-Stack Developer specializing in Angular, Node.js, and Django with a focus on building high-performance, accessible web applications.",
+    "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
   keywords: [
     "full-stack developer",
     "frontend developer",
     "backend developer",
     "angular",
     "node.js",
-    "django",
+    "typescript",
+    "mongodb",
+    "cloudflare",
     "web development",
+    "مطور ويب",
+    "مبرمج مواقع",
+    "تصميم مواقع",
+    "تطوير واجهات برمجة التطبيقات",
+    "مطور واجهات أمامية",
+    "مطور واجهات خلفية",
+    "next.js"
   ],
   authors: [{ name: "Youseef Tareq" }],
   creator: "Youseef Tareq",
   robots: "index, follow",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 import { Header } from "@/components/header"
@@ -50,9 +59,11 @@ export default function RootLayout({
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Youseef Tareq",
+      "alternateName": "يوسف طارق",
       "url": "https://soking.tech",
       "jobTitle": "Full-Stack Developer",
-      "knowsAbout": ["Angular", "Node.js", "Django", "Web Development", "UI/UX Design"],
+      "knowsLanguage": ["en", "ar", "ar-EG"],
+      "knowsAbout": ["Angular", "Node.js", "TypeScript", "MongoDB", "Cloudflare", "Web Development", "مطور ويب"],
       "worksFor": {
         "@type": "Organization",
         "name": "Freelance"

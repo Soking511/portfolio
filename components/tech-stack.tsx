@@ -6,9 +6,10 @@ const skills = [
   { name: "Tailwind CSS", icon: Layout, category: "Styling" },
   { name: "Node.js", icon: TerminalSquare, category: "Backend" },
   { name: "Express", icon: Server, category: "Backend" },
-  { name: "Django", icon: Server, category: "Backend" },
   { name: "MongoDB", icon: Database, category: "Database" },
   { name: "Docker", icon: Container, category: "DevOps" },
+  { name: "Cloudflare", icon: Cloud, category: "Infrastructure" },
+  { name: "Linux / VPS", icon: Server, category: "Infrastructure" },
 ]
 
 export function TechStack() {

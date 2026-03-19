@@ -25,8 +25,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           <div className="lg:col-span-2 space-y-6">
-            <Link href="/" className="inline-flex items-center gap-2 text-3xl font-black uppercase bg-white border-4 border-dark-grey px-6 py-3 box-shadow-solid hover:translate-x-1 hover:-translate-y-1 transition-transform">
-              <Code className="w-8 h-8 text-primary" strokeWidth={3} />
+            <Link href="/" className="inline-flex items-center text-3xl font-black uppercase bg-white border-4 border-dark-grey px-6 py-3 box-shadow-solid hover:translate-x-1 hover:-translate-y-1 transition-transform">
               Youseef<span className="text-primary">.dev</span>
             </Link>
             <p className="text-xl font-bold max-w-md mt-6 bg-white/90 p-6 border-4 border-dark-grey">

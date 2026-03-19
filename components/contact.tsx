@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { initializeApp } from "firebase/app"
-import { SendHorizontal, Loader2, Mail, MapPin } from "lucide-react"
+import { SendHorizontal, Loader2, Mail, MapPin, Phone, Facebook, MessageSquare } from "lucide-react"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLfqvbq4LvJZ52M7X9L9vp0bK9fM1aGwo",
@@ -114,7 +114,25 @@ export function Contact() {
                 </div>
                 <span className="break-all">youseeftareq5176@gmail.com</span>
               </a>
-              <div className="flex items-center gap-4 text-sm md:text-xl text-dark-grey">
+              <a href="https://wa.me/201557337989" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-sm md:text-xl hover:text-[#25D366] transition-colors group">
+                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#25D366] group-hover:text-white transition-colors">
+                  <Phone strokeWidth={3} className="w-8 h-8" />
+                </div>
+                <span className="break-all">+20 155 733 7989</span>
+              </a>
+              <a href="https://www.facebook.com/SokingElectron" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-sm md:text-xl hover:text-[#1877F2] transition-colors group">
+                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#1877F2] group-hover:text-white transition-colors">
+                  <Facebook strokeWidth={3} className="w-8 h-8" />
+                </div>
+                <span className="break-all">Facebook</span>
+              </a>
+              <div className="flex items-center gap-4 text-sm md:text-xl hover:text-[#5865F2] transition-colors group">
+                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#5865F2] group-hover:text-white transition-colors cursor-pointer" onClick={() => { navigator.clipboard.writeText('soking_'); toast({ title: "Copied!", description: "Discord username copied to clipboard." }); }}>
+                  <MessageSquare strokeWidth={3} className="w-8 h-8" />
+                </div>
+                <span className="break-all min-w-[150px]">Discord: soking_</span>
+              </div>
+              <div className="flex items-center gap-4 text-sm md:text-xl text-dark-grey hidden lg:flex">
                 <div className="bg-flat-grey p-4 border-4 border-dark-grey">
                   <MapPin strokeWidth={3} className="w-8 h-8" />
                 </div>

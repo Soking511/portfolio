@@ -7,13 +7,13 @@ import { Contact } from "@/components/contact"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Youseef Tareq | Full-Stack Developer",
+  title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
   description:
-    "Full-Stack Developer specializing in Angular, Node.js, and Django with a focus on building high-performance, accessible web applications.",
+    "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
   openGraph: {
-    title: "Youseef Tareq | Full-Stack Developer",
+    title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
     description:
-      "Full-Stack Developer specializing in Angular, Node.js, and Django with a focus on building high-performance, accessible web applications.",
+      "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
     images: [
       {
         url: "/images/og-image.jpg",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Youseef Tareq | Full-Stack Developer",
+    title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
     description:
-      "Full-Stack Developer specializing in Angular, Node.js, and Django with a focus on building high-performance, accessible web applications.",
+      "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
     images: ["/images/og-image.jpg"],
   },
 }
