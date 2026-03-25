@@ -5,25 +5,43 @@ const projects = [
     title: "EG-Pricey",
     description: "Egyptian price-tracking platform featuring real-time updates on currencies, gold, fuel, and food prices. Includes interactive financial tools for loans and investments.",
     link: "https://eg-pricey.com/",
-    tags: ["Full-Stack", "Real-Time", "Financial"],
+    tags: ["Full-Stack", "Real-Time", "Financial", "MongoDB", "Express.js", "Angular", "Node.js", "Socket.IO"],
   },
   {
     title: "XTranslator SaaS",
     description: "Translation platform supporting multiple languages and regions. Integrated with Lemon Squeezy for secure global payment processing and strict rate-limiting for high performance.",
     link: "https://xtranslator.app/",
-    tags: ["SaaS", "Payments", "Performance"],
+    tags: ["SaaS", "Payments", "Performance", "Lemon Squeezy", "Global Translation"],
   },
   {
     title: "TileGreen Web",
     description: "Official website for a pioneering Egyptian startup transforming non-recyclable plastic waste into sustainable, carbon-negative building materials.",
     link: "https://tilegreen.org/",
-    tags: ["Frontend", "Sustainable", "Startup"],
+    tags: ["Frontend", "Sustainable", "Startup", "Angular", "SCSS", "Framer Motion"],
   },
   {
     title: "Faculty of Nursing",
     description: "Developed the official website for the Faculty of Nursing at Damanhour University, showcasing its academic identity and institutional accreditation.",
     link: "https://nursing.dmu.edu.eg/",
-    tags: ["Institution", "Frontend", "Academic"],
+    tags: ["Institution", "Frontend", "Academic", "Angular", "Responsive Design"],
+  },
+  {
+    title: "uFeed",
+    description: "Advanced HR evaluation & analytics system specializing in job evaluation automation and employee performance analytics with interactive data-driven dashboards.",
+    link: "",
+    tags: ["HR System", "Analytics", "Angular", "Django", "PostgreSQL", "Data Visualization"],
+  },
+  {
+    title: "Jafy",
+    description: "Premium furniture brand platform featuring immersive gallery-style user experience with high-fidelity visual assets and seamless navigation across premium collections.",
+    link: "",
+    tags: ["E-commerce", "Branding", "Angular", "TypeScript", "Responsive Design"],
+  },
+  {
+    title: "Dr. Genedy",
+    description: "Medical & aesthetic surgery platform balancing clinical professionalism with modern, high-trust aesthetic for patient education and service discovery.",
+    link: "",
+    tags: ["Healthcare", "Medical", "Angular", "SCSS", "UI/UX Optimization"],
   }
 ]
 
@@ -34,16 +52,16 @@ export function Projects() {
         <div className="mb-20 flex flex-col items-start gap-6 relative">
           {/* Decorative background block behind title */}
           <div className="absolute -left-4 -top-4 w-48 h-20 bg-primary border-4 border-dark-grey lg:block hidden"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-dark-grey relative z-10 bg-white border-4 border-dark-grey px-8 py-4 box-shadow-solid">
             Selected Works
           </h2>
         </div>
-        
+
         <div className="grid gap-12 md:grid-cols-2">
           {projects.map((project, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="group flex flex-col bg-flat-grey border-4 border-dark-grey box-shadow-solid hover:-translate-y-2 hover:translate-x-2 transition-all duration-300 relative"
             >
               <div className="flex-1 p-8 md:p-10 flex flex-col">
@@ -54,18 +72,18 @@ export function Projects() {
                     </span>
                   ))}
                 </div>
-                
+
                 <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-dark-grey mb-4">
                   {project.title}
                 </h3>
-                
+
                 <p className="mt-2 flex-1 text-lg font-bold leading-relaxed text-dark-grey/80 border-l-4 border-primary pl-4">
                   {project.description}
                 </p>
               </div>
-              
+
               <div className="border-t-4 border-dark-grey">
-                <a 
+                <a
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
