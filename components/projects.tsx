@@ -26,21 +26,21 @@ const projects = [
     tags: ["Institution", "Frontend", "Academic", "Angular", "Responsive Design"],
   },
   {
-    title: "uFeed",
+    title: "UFeed",
     description: "Advanced HR evaluation & analytics system specializing in job evaluation automation and employee performance analytics with interactive data-driven dashboards.",
-    link: "",
+    link: "https://ufeed.thepost.digital/",
     tags: ["HR System", "Analytics", "Angular", "Django", "PostgreSQL", "Data Visualization"],
   },
   {
     title: "Jafy",
     description: "Premium furniture brand platform featuring immersive gallery-style user experience with high-fidelity visual assets and seamless navigation across premium collections.",
-    link: "",
+    link: "http://jafy.co/",
     tags: ["E-commerce", "Branding", "Angular", "TypeScript", "Responsive Design"],
   },
   {
     title: "Dr. Genedy",
     description: "Medical & aesthetic surgery platform balancing clinical professionalism with modern, high-trust aesthetic for patient education and service discovery.",
-    link: "",
+    link: "https://drgenedy.com/",
     tags: ["Healthcare", "Medical", "Angular", "SCSS", "UI/UX Optimization"],
   }
 ]
