@@ -8,12 +8,38 @@ export function Header() {
   const { t, lang, setLang } = useT();
   const isAR = lang === "ar";
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
+  // Close menu when viewport grows past the mobile breakpoint.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 781px)");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
   }, []);
 
   return (
@@ -25,12 +51,14 @@ export function Header() {
         insetInlineEnd: 0,
         zIndex: 50,
         transition: "all .35s ease",
-        background: scrolled
-          ? "color-mix(in oklab, var(--bg) 78%, transparent)"
-          : "transparent",
-        backdropFilter: scrolled ? "blur(14px) saturate(140%)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(14px) saturate(140%)" : "none",
-        borderBottom: scrolled ? "1px solid var(--rule)" : "1px solid transparent",
+        background:
+          scrolled || open
+            ? "color-mix(in oklab, var(--bg) 78%, transparent)"
+            : "transparent",
+        backdropFilter: scrolled || open ? "blur(14px) saturate(140%)" : "none",
+        WebkitBackdropFilter: scrolled || open ? "blur(14px) saturate(140%)" : "none",
+        borderBottom:
+          scrolled || open ? "1px solid var(--rule)" : "1px solid transparent",
       }}
     >
       <div
@@ -40,7 +68,7 @@ export function Header() {
           gridTemplateColumns: "auto 1fr auto",
           alignItems: "center",
           height: 64,
-          gap: 24,
+          gap: 16,
         }}
       >
         <a
@@ -69,14 +97,7 @@ export function Header() {
           </Latin>
         </a>
 
-        <nav
-          style={{
-            display: "flex",
-            gap: 4,
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
+        <nav className="nav-items">
           {t.nav.items.map(([label, href], i) => (
             <a
               key={i}
@@ -115,7 +136,7 @@ export function Header() {
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
-            gap: 14,
+            gap: 10,
             fontSize: 11.5,
           }}
         >
@@ -125,7 +146,7 @@ export function Header() {
             aria-label="Switch language"
             className="mono"
             style={{
-              padding: "5px 10px",
+              padding: "8px 14px",
               borderRadius: 999,
               border: "1px solid var(--rule)",
               fontSize: 11,
@@ -135,7 +156,48 @@ export function Header() {
           >
             {t.nav.langLabel}
           </button>
+
+          <button
+            type="button"
+            className="nav-burger"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+              {open ? (
+                <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+              ) : (
+                <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+              )}
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <div
+        className={"nav-panel" + (open ? " open" : "")}
+        onClick={() => setOpen(false)}
+      >
+        {t.nav.items.map(([label, href], i) => (
+          <a
+            key={i}
+            href={href}
+            className="mono"
+            style={{
+              color: "var(--fg)",
+              textTransform: isAR ? "none" : "uppercase",
+              letterSpacing: ".08em",
+            }}
+          >
+            <Latin>
+              <span style={{ color: "var(--fg-dim)", marginInlineEnd: 10 }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </Latin>
+            {label}
+          </a>
+        ))}
       </div>
     </header>
   );

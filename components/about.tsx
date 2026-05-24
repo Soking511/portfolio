@@ -35,20 +35,14 @@ export function About() {
           <span className="rule" style={{ flex: 1 }} />
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.05fr .95fr",
-            gap: 80,
-          }}
-        >
+        <div className="r-2col-eq">
           <div data-reveal>
             <h2
               className="serif"
               style={{
                 margin: 0,
                 fontWeight: 400,
-                fontSize: isAR ? "clamp(36px, 4.6vw, 72px)" : "clamp(40px, 5.4vw, 84px)",
+                fontSize: isAR ? "clamp(26px, 6vw, 72px)" : "clamp(30px, 7vw, 84px)",
                 lineHeight: 1.05,
                 letterSpacing: "-.02em",
               }}
@@ -78,22 +72,16 @@ export function About() {
         </div>
 
         <div
+          className="r-stats-4"
           data-reveal
           data-reveal-delay="2"
-          style={{
-            marginTop: 96,
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            borderTop: "1px solid var(--rule)",
-            borderBottom: "1px solid var(--rule)",
-          }}
+          style={{ marginTop: 96 }}
         >
           {A.stats.map(([n, l], i) => (
             <div
               key={i}
               style={{
                 padding: "28px 24px",
-                borderInlineEnd: i < 3 ? "1px solid var(--rule)" : "none",
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,

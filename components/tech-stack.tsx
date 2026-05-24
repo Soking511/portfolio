@@ -41,21 +41,16 @@ export function TechStack() {
         </div>
 
         <div
+          className="r-2col-12"
           data-reveal
           data-reveal-delay="1"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.2fr .9fr",
-            gap: 60,
-            alignItems: "end",
-            marginBottom: 60,
-          }}
+          style={{ marginBottom: 60 }}
         >
           <h2
             className="serif"
             style={{
               margin: 0,
-              fontSize: isAR ? "clamp(40px, 5.6vw, 96px)" : "clamp(48px, 7vw, 116px)",
+              fontSize: isAR ? "clamp(28px, 7.5vw, 96px)" : "clamp(34px, 9vw, 116px)",
               lineHeight: 1,
               fontWeight: 400,
               letterSpacing: "-.02em",
@@ -70,15 +65,7 @@ export function TechStack() {
           <p style={{ margin: 0, fontSize: 16, lineHeight: 1.65, color: "var(--fg-dim)" }}>{S.intro}</p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 1,
-            background: "var(--rule)",
-            border: "1px solid var(--rule)",
-          }}
-        >
+        <div className="r-grid-4">
           {S.groups.map((g, gi) => (
             <div
               key={gi}

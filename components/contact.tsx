@@ -91,7 +91,7 @@ export function Contact() {
           data-reveal-delay="1"
           style={{
             margin: "0 0 60px",
-            fontSize: isAR ? "clamp(56px, 11vw, 168px)" : "clamp(64px, 12vw, 188px)",
+            fontSize: isAR ? "clamp(40px, 12vw, 168px)" : "clamp(44px, 14vw, 188px)",
             lineHeight: 0.95,
             fontWeight: 400,
             letterSpacing: "-.02em",
@@ -104,14 +104,7 @@ export function Contact() {
           {C.headline_b}
         </h2>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 80,
-            alignItems: "start",
-          }}
-        >
+        <div className="r-2col-11">
           <div
             data-reveal
             data-reveal-delay="1"

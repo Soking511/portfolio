@@ -8,8 +8,15 @@ const LOAD_TIMEOUT_MS = 5000;
 const ROOT_MARGIN = "200px";
 
 // Coordinates concurrent iframe budget across all <WorkPreview> instances.
+// Mobile gets a tighter budget — iframes are expensive and the carousel only
+// shows ~1.1 cards at a time on phones, so 2 is plenty.
+const isMobile =
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(max-width: 780px)").matches;
+
 class IframeBudget {
-  private capacity = 3;
+  private capacity = isMobile ? 2 : 3;
   private active = new Set<symbol>();
   private waiters: Array<(release: () => void) => void> = [];
 

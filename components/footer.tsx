@@ -30,14 +30,9 @@ export function Footer() {
     >
       <div className="container-edge">
         <div
+          className="r-2col-1408"
           data-reveal
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr .8fr",
-            gap: 48,
-            alignItems: "stretch",
-            marginBottom: 64,
-          }}
+          style={{ marginBottom: 64 }}
         >
           <div
             style={{
@@ -66,7 +61,7 @@ export function Footer() {
               className="serif"
               style={{
                 margin: 0,
-                fontSize: isAR ? "clamp(32px, 4vw, 58px)" : "clamp(36px, 4.4vw, 64px)",
+                fontSize: isAR ? "clamp(24px, 5.5vw, 58px)" : "clamp(26px, 6vw, 64px)",
                 lineHeight: 1.1,
                 letterSpacing: "-.02em",
                 fontWeight: 400,
@@ -250,15 +245,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-            gap: 32,
-            paddingTop: 32,
-            borderTop: "1px solid var(--rule)",
-          }}
-        >
+        <div className="r-footer-cols">
           <div>
             <div
               className="mono"

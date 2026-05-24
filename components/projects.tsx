@@ -55,22 +55,17 @@ export function Projects() {
         </div>
 
         <div
+          className="r-2col-15"
           data-reveal
           data-reveal-delay="1"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.5fr 1fr",
-            gap: 24,
-            alignItems: "end",
-            marginBottom: 40,
-          }}
+          style={{ marginBottom: 40 }}
         >
           <h2
             className="serif"
             style={{
               margin: 0,
               fontWeight: 400,
-              fontSize: isAR ? "clamp(44px, 6.4vw, 108px)" : "clamp(52px, 8vw, 132px)",
+              fontSize: isAR ? "clamp(28px, 7.5vw, 108px)" : "clamp(34px, 9vw, 132px)",
               lineHeight: 0.95,
               letterSpacing: "-.02em",
             }}
@@ -112,9 +107,9 @@ export function Projects() {
           return (
             <article
               key={i}
+              className="r-work-card"
               style={{
                 flex: "0 0 auto",
-                width: "min(78vw, 720px)",
                 scrollSnapAlign: "start",
                 display: "flex",
                 flexDirection: "column",

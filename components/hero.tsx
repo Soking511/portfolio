@@ -58,14 +58,7 @@ export function Hero() {
         data-reveal
         style={{ paddingTop: 8, paddingBottom: 32, borderBottom: "1px solid var(--rule)" }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "160px 1fr",
-            gap: 28,
-            alignItems: "center",
-          }}
-        >
+        <div className="r-meta-row">
           <span
             className="mono"
             style={{
@@ -171,7 +164,7 @@ export function Hero() {
           style={{
             margin: 0,
             fontWeight: 400,
-            fontSize: isAR ? "clamp(56px, 9.5vw, 144px)" : "clamp(64px, 11vw, 168px)",
+            fontSize: isAR ? "clamp(40px, 10vw, 144px)" : "clamp(44px, 12vw, 168px)",
             lineHeight: 0.96,
             letterSpacing: isAR ? "-0.015em" : "-0.025em",
             maxWidth: "14ch",
@@ -185,12 +178,10 @@ export function Hero() {
         </h1>
 
         <div
+          className="r-2col-14"
           data-reveal
           data-reveal-delay="2"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr",
-            gap: 48,
             paddingTop: 24,
             borderTop: "1px solid var(--rule)",
           }}
@@ -261,22 +252,13 @@ export function Hero() {
           </aside>
         </div>
 
-        <div
-          data-reveal
-          data-reveal-delay="3"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 14,
-            alignItems: "center",
-            marginTop: 8,
-          }}
-        >
+        <div className="hero-cta-row" data-reveal data-reveal-delay="3">
           <a
             href="#works"
             style={{
               display: "inline-flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 10,
               padding: "14px 22px",
               borderRadius: 999,
@@ -296,6 +278,7 @@ export function Hero() {
             style={{
               display: "inline-flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 10,
               padding: "14px 22px",
               borderRadius: 999,
@@ -308,9 +291,8 @@ export function Hero() {
           <a
             href="/youseef-tareq-resume.pdf"
             download
-            className="mono"
+            className="mono cta-resume"
             style={{
-              marginInlineStart: "auto",
               fontSize: 11.5,
               letterSpacing: ".1em",
               textTransform: isAR ? "none" : "uppercase",
