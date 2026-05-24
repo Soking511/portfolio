@@ -1,102 +1,312 @@
-import { ExternalLink } from "lucide-react"
+"use client";
 
-const projects = [
-  {
-    title: "EG-Pricey",
-    description: "Egyptian price-tracking platform featuring real-time updates on currencies, gold, fuel, and food prices. Includes interactive financial tools for loans and investments.",
-    link: "https://eg-pricey.com/",
-    tags: ["Full-Stack", "Real-Time", "Financial", "MongoDB", "Express.js", "Angular", "Node.js", "Socket.IO"],
-  },
-  {
-    title: "XTranslator SaaS",
-    description: "Translation platform supporting multiple languages and regions. Integrated with Lemon Squeezy for secure global payment processing and strict rate-limiting for high performance.",
-    link: "https://xtranslator.app/",
-    tags: ["SaaS", "Payments", "Performance", "Lemon Squeezy", "Global Translation"],
-  },
-  {
-    title: "TileGreen Web",
-    description: "Official website for a pioneering Egyptian startup transforming non-recyclable plastic waste into sustainable, carbon-negative building materials.",
-    link: "https://tilegreen.org/",
-    tags: ["Frontend", "Sustainable", "Startup", "Angular", "SCSS", "Framer Motion"],
-  },
-  {
-    title: "Faculty of Nursing",
-    description: "Developed the official website for the Faculty of Nursing at Damanhour University, showcasing its academic identity and institutional accreditation.",
-    link: "https://nursing.dmu.edu.eg/",
-    tags: ["Institution", "Frontend", "Academic", "Angular", "Responsive Design"],
-  },
-  {
-    title: "UFeed",
-    description: "Advanced HR evaluation & analytics system specializing in job evaluation automation and employee performance analytics with interactive data-driven dashboards.",
-    link: "https://ufeed.thepost.digital/",
-    tags: ["HR System", "Analytics", "Angular", "Django", "PostgreSQL", "Data Visualization"],
-  },
-  {
-    title: "Jafy",
-    description: "Premium furniture brand platform featuring immersive gallery-style user experience with high-fidelity visual assets and seamless navigation across premium collections.",
-    link: "http://jafy.co/",
-    tags: ["E-commerce", "Branding", "Angular", "TypeScript", "Responsive Design"],
-  },
-  {
-    title: "Dr. Genedy",
-    description: "Medical & aesthetic surgery platform balancing clinical professionalism with modern, high-trust aesthetic for patient education and service discovery.",
-    link: "https://drgenedy.com/",
-    tags: ["Healthcare", "Medical", "Angular", "SCSS", "UI/UX Optimization"],
-  }
-]
+import { useRef, useState } from "react";
+import { useT } from "@/components/lang/provider";
+import { Latin } from "@/components/lang/latin";
+import { PROJECTS } from "@/lib/projects";
+import { WorkPreview } from "@/components/work-preview";
 
 export function Projects() {
-  return (
-    <section className="bg-white py-32 border-y-8 border-dark-grey overflow-hidden" id="projects">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="mb-20 flex flex-col items-start gap-6 relative">
-          {/* Decorative background block behind title */}
-          <div className="absolute -left-4 -top-4 w-48 h-20 bg-primary border-4 border-dark-grey lg:block hidden"></div>
+  const { t, lang } = useT();
+  const W = t.works;
+  const isAR = lang === "ar";
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [progress, setProgress] = useState(0);
 
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-dark-grey relative z-10 bg-white border-4 border-dark-grey px-8 py-4 box-shadow-solid">
-            Selected Works
-          </h2>
+  const onScroll = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setProgress(max > 0 ? Math.abs(el.scrollLeft) / max : 0);
+  };
+
+  const nudge = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const sign = isAR ? -dir : dir;
+    el.scrollBy({ left: sign * (el.clientWidth * 0.8), behavior: "smooth" });
+  };
+
+  return (
+    <section id="works" style={{ padding: "120px 0 120px", position: "relative" }}>
+      <div className="container-edge">
+        <div
+          data-reveal
+          style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 32 }}
+        >
+          <span
+            className="mono"
+            style={{ fontSize: 11, color: "var(--accent)", letterSpacing: ".18em" }}
+          >
+            ● {W.eyebrow}
+          </span>
+          <span
+            className="mono"
+            style={{
+              fontSize: 11,
+              color: "var(--fg-dim)",
+              letterSpacing: ".14em",
+              textTransform: isAR ? "none" : "uppercase",
+            }}
+          >
+            {W.sub}
+          </span>
+          <span className="rule" style={{ flex: 1 }} />
         </div>
 
-        <div className="grid gap-12 md:grid-cols-2">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="group flex flex-col bg-flat-grey border-4 border-dark-grey box-shadow-solid hover:-translate-y-2 hover:translate-x-2 transition-all duration-300 relative"
+        <div
+          data-reveal
+          data-reveal-delay="1"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.5fr 1fr",
+            gap: 24,
+            alignItems: "end",
+            marginBottom: 40,
+          }}
+        >
+          <h2
+            className="serif"
+            style={{
+              margin: 0,
+              fontWeight: 400,
+              fontSize: isAR ? "clamp(44px, 6.4vw, 108px)" : "clamp(52px, 8vw, 132px)",
+              lineHeight: 0.95,
+              letterSpacing: "-.02em",
+            }}
+          >
+            {W.headline_a}
+            <span className="italic" style={{ color: "var(--accent)" }}>
+              {W.headline_em}
+            </span>
+            {W.headline_b}
+          </h2>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: "var(--fg-dim)",
+              maxWidth: "36ch",
+            }}
+          >
+            {W.intro}
+          </p>
+        </div>
+      </div>
+
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="works-track"
+        style={{
+          display: "flex",
+          gap: 24,
+          overflowX: "auto",
+          padding: "8px var(--pad) 28px",
+          scrollSnapType: "x mandatory",
+        }}
+      >
+        {W.items.map((w, i) => {
+          const meta = PROJECTS[i];
+          return (
+            <article
+              key={i}
+              style={{
+                flex: "0 0 auto",
+                width: "min(78vw, 720px)",
+                scrollSnapAlign: "start",
+                display: "flex",
+                flexDirection: "column",
+                background: "var(--card)",
+                border: "1px solid var(--rule)",
+                borderRadius: 18,
+                overflow: "hidden",
+              }}
             >
-              <div className="flex-1 p-8 md:p-10 flex flex-col">
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map(tag => (
-                    <span key={tag} className="text-xs font-black uppercase tracking-widest bg-dark-grey text-white px-3 py-1 border-2 border-dark-grey">
+              <div style={{ position: "relative" }}>
+                <WorkPreview
+                  url={meta.url}
+                  swatch={meta.swatch}
+                  title={w.title}
+                  previewBlocked={meta.previewBlocked}
+                />
+                <a
+                  href={meta.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "flex-end",
+                    justifyContent: "flex-end",
+                    padding: 18,
+                    background: "transparent",
+                    transition: "background .3s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "linear-gradient(180deg, transparent 40%, rgba(0,0,0,.55))";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <span
+                    className="mono"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "10px 14px",
+                      borderRadius: 999,
+                      background: "var(--accent)",
+                      color: "var(--accent-ink)",
+                      fontSize: 11.5,
+                      letterSpacing: ".06em",
+                    }}
+                  >
+                    {t.misc.visit_project}
+                  </span>
+                </a>
+                <Latin
+                  as="div"
+                  className="mono"
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 14,
+                      insetInlineStart: 14,
+                      fontSize: 11,
+                      letterSpacing: ".14em",
+                      color: "#fff",
+                      background: "rgba(0,0,0,.55)",
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                    }}
+                  >
+                    {w.n} · {w.year}
+                  </span>
+                </Latin>
+              </div>
+
+              <div style={{ padding: "24px 26px 26px", display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {w.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="mono"
+                      style={{
+                        fontSize: 10.5,
+                        letterSpacing: ".08em",
+                        textTransform: isAR ? "none" : "uppercase",
+                        padding: "4px 9px",
+                        border: "1px solid var(--rule)",
+                        borderRadius: 999,
+                        color: "var(--fg-dim)",
+                      }}
+                    >
                       {tag}
                     </span>
                   ))}
                 </div>
-
-                <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-dark-grey mb-4">
-                  {project.title}
-                </h3>
-
-                <p className="mt-2 flex-1 text-lg font-bold leading-relaxed text-dark-grey/80 border-l-4 border-primary pl-4">
-                  {project.description}
-                </p>
-              </div>
-
-              <div className="border-t-4 border-dark-grey">
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-white px-8 py-6 text-lg font-black uppercase tracking-widest text-dark-grey hover:bg-primary hover:text-white transition-colors flex items-center justify-between group-hover:bg-primary group-hover:text-white"
+                <div>
+                  <h3
+                    className="serif"
+                    style={{ margin: 0, fontSize: 36, fontWeight: 400, letterSpacing: "-.01em" }}
+                  >
+                    {w.title}
+                  </h3>
+                  <p
+                    className="serif italic"
+                    style={{ margin: "4px 0 0", fontSize: 18, color: "var(--fg-dim)" }}
+                  >
+                    {w.kicker}
+                  </p>
+                </div>
+                <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "var(--fg-dim)" }}>{w.blurb}</p>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    marginTop: 6,
+                    paddingTop: 14,
+                    borderTop: "1px solid var(--rule)",
+                  }}
                 >
-                  <span>Visit Project</span>
-                  <ExternalLink strokeWidth={3} className="w-6 h-6 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </a>
+                  <span
+                    className="mono"
+                    style={{ fontSize: 11, color: "var(--fg-dim)", letterSpacing: ".06em" }}
+                  >
+                    <span style={{ opacity: 0.6 }}>{W.role_label}: </span>
+                    {w.role}
+                  </span>
+                  <span
+                    className="mono latin"
+                    style={{
+                      fontSize: 11,
+                      color: "var(--fg-dim)",
+                      letterSpacing: ".06em",
+                      textAlign: "end",
+                    }}
+                  >
+                    {w.stack.join(" · ")}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            </article>
+          );
+        })}
+        <div style={{ flex: "0 0 var(--pad)" }} />
+      </div>
+
+      <div
+        className="container-edge"
+        style={{ display: "flex", alignItems: "center", gap: 18, marginTop: 8 }}
+      >
+        <div style={{ flex: 1, height: 2, background: "var(--rule)", position: "relative", borderRadius: 99 }}>
+          <div
+            style={{
+              position: "absolute",
+              top: -2,
+              height: 6,
+              borderRadius: 99,
+              background: "var(--accent)",
+              insetInlineStart: `${progress * 100}%`,
+              width: `${Math.max(8, 100 / W.items.length)}%`,
+              transform: `translateX(${isAR ? "" : "-"}${progress * 100}%)`,
+              transition: "inset-inline-start .15s linear",
+            }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => nudge(-1)} aria-label="Previous" style={btnStyle}>
+            <span className="arrow-x">←</span>
+          </button>
+          <button onClick={() => nudge(1)} aria-label="Next" style={btnStyle}>
+            <span className="arrow-x">→</span>
+          </button>
         </div>
       </div>
     </section>
-  )
+  );
 }
+
+const btnStyle: React.CSSProperties = {
+  width: 44,
+  height: 44,
+  borderRadius: 999,
+  border: "1px solid var(--rule)",
+  background: "transparent",
+  color: "var(--fg)",
+  fontSize: 16,
+  cursor: "pointer",
+  transition: "background .2s, border-color .2s",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};

@@ -1,118 +1,142 @@
-"use client"
+"use client";
 
-import { Briefcase, GraduationCap, ChevronRight } from "lucide-react"
-
-type ExperienceItem = {
-  title: string
-  company: string
-  location: string
-  period: string
-  description: string
-  technologies: string[]
-  type: "work" | "education"
-}
-
-const experienceItems: ExperienceItem[] = [
-  {
-    title: "Full Stack Developer",
-    company: "The POST",
-    location: "Remote",
-    period: "2025 - Present",
-    description:
-      "Working as a full-stack developer on various projects, utilizing Angular, Node.js, and other technologies to build high-performance web applications.",
-    technologies: ["Angular", "Node.js", "Express", "MongoDB", "TypeScript"],
-    type: "work",
-  },
-  {
-    title: "Freelance Developer",
-    company: "Upwork, Fiverr, Khamsat",
-    location: "Remote",
-    period: "2024 - 2025",
-    description:
-      "Contributed to and designed a number of projects that demonstrated skills in Django, Lua, Mean Stack, C#, and other technologies. Worked with clients worldwide to deliver custom web and desktop applications.",
-    technologies: ["Angular", "Django", "Node.js", "Lua", "MongoDB"],
-    type: "work",
-  },
-  {
-    title: "Full Stack Training",
-    company: "NTI (National Telecommunication Institute)",
-    location: "Cairo, Egypt",
-    period: "2023",
-    description:
-      "Completed intensive training in full-stack development, focusing on modern web technologies and best practices for building scalable applications.",
-    technologies: ["JavaScript", "Node.js", "Angular", "MongoDB", "Express"],
-    type: "education",
-  },
-  {
-    title: "Summer Training",
-    company: "Cairo Higher Institute (CHI)",
-    location: "Cairo, Egypt",
-    period: "2023",
-    description:
-      "Participated in a summer training program focused on full-stack development, gaining hands-on experience with real-world projects and industry practices.",
-    technologies: ["Web Development", "Full-Stack", "JavaScript", "Python"],
-    type: "education",
-  },
-  {
-    title: "Bachelor of Science in Computer Science",
-    company: "Cairo Higher Institute",
-    location: "Cairo, Egypt",
-    period: "2020 - 2025",
-    description:
-      "Completed a Bachelor's degree in Computer Science, focusing on software engineering, algorithms, data structures, and web development.",
-    technologies: ["Computer Science", "Software Engineering", "Algorithms", "Data Structures"],
-    type: "education",
-  },
-]
+import { useT } from "@/components/lang/provider";
+import { Latin } from "@/components/lang/latin";
 
 export function Experience() {
+  const { t, lang } = useT();
+  const E = t.cv;
+  const isAR = lang === "ar";
+
   return (
-    <section id="experience" className="py-20 px-6 max-w-7xl mx-auto">
-      <div className="flat-card p-8">
-        <h2 className="text-3xl font-black uppercase text-dark-grey mb-12 flex items-center gap-4">
-          <Briefcase className="text-primary w-8 h-8" />
-          Experience & Education
-        </h2>
-        
-        <div className="space-y-12 pl-4 border-l-4 border-dark-grey ml-2">
-          {experienceItems.map((experience, index) => (
-            <div key={index} className="relative pl-8 group">
-              {/* Timeline dot */}
-              <div className="absolute -left-[28px] top-1.5 w-5 h-5 bg-off-white border-4 border-dark-grey rounded-full group-hover:bg-primary transition-colors"></div>
-              
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
-                <div>
-                  <h3 className="text-xl font-black uppercase tracking-tight text-dark-grey flex items-center gap-2">
-                    {experience.type === "work" ? <Briefcase className="w-5 h-5 text-primary" /> : <GraduationCap className="w-5 h-5 text-primary" />}
-                    {experience.title}
-                  </h3>
-                  <div className="text-primary font-bold mt-2 text-sm uppercase tracking-widest">
-                    {experience.company} <span className="text-dark-grey/30 px-2">|</span> {experience.location}
-                  </div>
+    <section id="cv" style={{ padding: "140px 0 80px" }}>
+      <div className="container-edge">
+        <div
+          data-reveal
+          style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 48 }}
+        >
+          <span className="mono" style={{ fontSize: 11, color: "var(--accent)", letterSpacing: ".18em" }}>
+            ● {E.eyebrow}
+          </span>
+          <span
+            className="mono"
+            style={{
+              fontSize: 11,
+              color: "var(--fg-dim)",
+              letterSpacing: ".14em",
+              textTransform: isAR ? "none" : "uppercase",
+            }}
+          >
+            {E.sub}
+          </span>
+          <span className="rule" style={{ flex: 1 }} />
+        </div>
+
+        <div
+          data-reveal
+          data-reveal-delay="1"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.2fr .8fr",
+            gap: 60,
+            alignItems: "end",
+            marginBottom: 60,
+          }}
+        >
+          <h2
+            className="serif"
+            style={{
+              margin: 0,
+              fontSize: isAR ? "clamp(40px, 5.6vw, 96px)" : "clamp(48px, 7vw, 116px)",
+              lineHeight: 1,
+              fontWeight: 400,
+              letterSpacing: "-.02em",
+            }}
+          >
+            {E.headline_pre}
+            <span className="italic" style={{ color: "var(--accent)" }}>
+              {E.headline_em}
+            </span>
+            {E.headline_post}
+          </h2>
+          <a
+            href="/youseef-tareq-resume.pdf"
+            download
+            className="mono"
+            style={{
+              justifySelf: "end",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "12px 18px",
+              border: "1px solid var(--rule)",
+              borderRadius: 999,
+              fontSize: 11.5,
+              letterSpacing: ".08em",
+              textTransform: isAR ? "none" : "uppercase",
+            }}
+          >
+            {E.download}
+          </a>
+        </div>
+
+        <ol style={{ listStyle: "none", margin: 0, padding: 0, borderTop: "1px solid var(--rule)" }}>
+          {E.rows.map((r, i) => (
+            <li
+              key={i}
+              data-reveal
+              style={{
+                padding: "28px 0",
+                borderBottom: "1px solid var(--rule)",
+                display: "grid",
+                gridTemplateColumns: "180px 1.2fr 1fr 1fr",
+                gap: 32,
+                alignItems: "baseline",
+              }}
+            >
+              <Latin as="div" className="mono">
+                <span style={{ fontSize: 12, color: "var(--fg-dim)", letterSpacing: ".04em" }}>
+                  {r.years}
+                </span>
+              </Latin>
+              <div>
+                <div
+                  className="serif"
+                  style={{ fontSize: 32, lineHeight: 1.1, fontWeight: 400, letterSpacing: "-.01em" }}
+                >
+                  {r.role}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest border-2 border-dark-grey px-4 py-2 text-dark-grey self-start bg-flat-grey transition-colors hover:bg-dark-grey hover:text-white">
-                  {experience.period}
+                <div
+                  className="serif italic"
+                  style={{ fontSize: 18, marginTop: 6, color: "var(--fg-dim)" }}
+                >
+                  {r.org} · {r.loc}
                 </div>
               </div>
-              
-              <p className="text-dark-grey/80 mt-4 mb-6 max-w-3xl leading-relaxed font-medium">
-                {experience.description}
-              </p>
-              
-              <div className="flex flex-wrap gap-2">
-                {experience.technologies.map((tech, idx) => (
-                  <span 
-                    key={idx} 
-                    className="text-xs font-bold uppercase tracking-widest bg-flat-grey text-dark-grey px-3 py-1 border-2 border-dark-grey hover:text-primary transition-colors"
+              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "var(--fg-dim)" }}>{r.blurb}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" }}>
+                {r.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="mono latin"
+                    style={{
+                      fontSize: 10.5,
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      padding: "4px 9px",
+                      border: "1px solid var(--rule)",
+                      borderRadius: 999,
+                      color: "var(--fg-dim)",
+                    }}
                   >
-                    {tech}
+                    {tag}
                   </span>
                 ))}
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
-  )
+  );
 }

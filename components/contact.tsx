@@ -1,214 +1,422 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useToast } from "@/hooks/use-toast"
-import { getFirestore, collection, addDoc } from "firebase/firestore"
-import { initializeApp } from "firebase/app"
-import { SendHorizontal, Loader2, Mail, MapPin, Phone, Facebook, MessageSquare } from "lucide-react"
+import { useState } from "react";
+import { useT } from "@/components/lang/provider";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDLfqvbq4LvJZ52M7X9L9vp0bK9fM1aGwo",
-  authDomain: "portfolio-6040a.firebaseapp.com",
-  projectId: "portfolio-6040a",
-  storageBucket: "portfolio-6040a.firebasestorage.app",
-  messagingSenderId: "554381798763",
-  appId: "1:554381798763:web:87ef0076e2addfec2f302e",
-  measurementId: "G-YZFLN1KTGX",
-}
+type FormState = { name: string; email: string; msg: string };
+type SendState = "idle" | "sending" | "sent" | "error";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
-
-type FormData = {
-  name: string
-  email: string
-  message: string
-}
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 export function Contact() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
+  const { t, lang } = useT();
+  const C = t.contact;
+  const isAR = lang === "ar";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+  const [form, setForm] = useState<FormState>({ name: "", email: "", msg: "" });
+  const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [send, setSend] = useState<SendState>("idle");
+  const [sentName, setSentName] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  const validate = () => {
+    const e: Partial<Record<keyof FormState, string>> = {};
+    if (!form.name.trim()) e.name = C.e_required;
+    if (!EMAIL_RE.test(form.email)) e.email = C.e_email;
+    if (form.msg.trim().length < 10) e.msg = C.e_msg;
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
 
+  const submit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (!validate()) return;
+    setSend("sending");
     try {
-      if (!formData.name || !formData.email || !formData.message) {
-        throw new Error('Please fill in all required fields')
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(formData.email)) {
-        throw new Error('Please enter a valid email address')
-      }
-
+      const [{ db }, { collection, addDoc }] = await Promise.all([
+        import("@/lib/firebase"),
+        import("firebase/firestore"),
+      ]);
+      if (!db) throw new Error("Firestore not initialized");
       await addDoc(collection(db, "messages"), {
-        ...formData,
+        name: form.name,
+        email: form.email,
+        message: form.msg,
+        lang,
         createdAt: new Date().toISOString(),
         status: "unread",
-        emailNotified: false
-      })
-
-      toast({
-        title: "Message sent!",
-        description: "Thank you for your message. I'll get back to you soon.",
-      })
-
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      })
-    } catch (error) {
-      console.error("Error sending message:", error)
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
+        emailNotified: false,
+      });
+      setSentName(form.name.split(" ")[0] || (isAR ? "صديقي" : "friend"));
+      setSend("sent");
+    } catch (err) {
+      console.error("Contact submit failed:", err);
+      setSend("error");
     }
-  }
+  };
+
+  const reset = () => {
+    setForm({ name: "", email: "", msg: "" });
+    setErrors({});
+    setSend("idle");
+    setSentName("");
+  };
 
   return (
-    <section className="bg-white py-32 border-y-8 border-dark-grey" id="contact">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          
-          {/* Left Column: Big Typography & Info */}
-          <div className="flex flex-col gap-12">
+    <section id="contact" style={{ padding: "160px 0 100px", position: "relative" }}>
+      <div className="container-edge">
+        <div
+          data-reveal
+          style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 32 }}
+        >
+          <span className="mono" style={{ fontSize: 11, color: "var(--accent)", letterSpacing: ".18em" }}>
+            ● {C.eyebrow}
+          </span>
+          <span
+            className="mono"
+            style={{
+              fontSize: 11,
+              color: "var(--fg-dim)",
+              letterSpacing: ".14em",
+              textTransform: isAR ? "none" : "uppercase",
+            }}
+          >
+            {C.sub}
+          </span>
+          <span className="rule" style={{ flex: 1 }} />
+        </div>
+
+        <h2
+          className="serif"
+          data-reveal
+          data-reveal-delay="1"
+          style={{
+            margin: "0 0 60px",
+            fontSize: isAR ? "clamp(56px, 11vw, 168px)" : "clamp(64px, 12vw, 188px)",
+            lineHeight: 0.95,
+            fontWeight: 400,
+            letterSpacing: "-.02em",
+          }}
+        >
+          {C.headline_a}
+          <span className="italic" style={{ color: "var(--accent)" }}>
+            {C.headline_em}
+          </span>
+          {C.headline_b}
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 80,
+            alignItems: "start",
+          }}
+        >
+          <div
+            data-reveal
+            data-reveal-delay="1"
+            style={{ display: "flex", flexDirection: "column", gap: 32 }}
+          >
+            <p style={{ margin: 0, fontSize: 20, lineHeight: 1.55 }}>{C.lead}</p>
+
             <div>
-              <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-dark-grey leading-none">
-                Get In <br className="hidden lg:block" /> Touch
-              </h2>
-              <div className="mt-8 inline-block bg-primary text-white font-black uppercase tracking-widest px-6 py-3 border-4 border-dark-grey box-shadow-solid -rotate-2">
-                Let's Collaborate
+              <div
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: ".14em",
+                  textTransform: isAR ? "none" : "uppercase",
+                  color: "var(--fg-dim)",
+                  marginBottom: 18,
+                }}
+              >
+                {C.details_label}
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto 1fr",
+                  gap: "14px 28px",
+                  alignItems: "baseline",
+                }}
+              >
+                {C.rows.map(([k, v, href], i) => (
+                  <RowFragment key={i} label={k} value={v} href={href} isAR={isAR} />
+                ))}
               </div>
             </div>
-            
-            <p className="text-xl font-bold text-dark-grey max-w-md bg-flat-grey p-6 border-4 border-dark-grey">
-              Have an exciting project you need help with?
-              Send me an email or drop a message via the form!
-            </p>
 
-            <div className="flex flex-col gap-6 font-black uppercase tracking-widest mt-4">
-              <a href="mailto:youseeftareq5176@gmail.com" className="flex items-center gap-4 text-sm md:text-xl hover:text-primary transition-colors group">
-                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-primary group-hover:text-white transition-colors">
-                  <Mail strokeWidth={3} className="w-8 h-8" />
-                </div>
-                <span className="break-all">youseeftareq5176@gmail.com</span>
-              </a>
-              <a href="https://wa.me/201557337989" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-sm md:text-xl hover:text-[#25D366] transition-colors group">
-                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#25D366] group-hover:text-white transition-colors">
-                  <Phone strokeWidth={3} className="w-8 h-8" />
-                </div>
-                <span className="break-all">+20 155 733 7989</span>
-              </a>
-              <a href="https://www.facebook.com/SokingElectron" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-sm md:text-xl hover:text-[#1877F2] transition-colors group">
-                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#1877F2] group-hover:text-white transition-colors">
-                  <Facebook strokeWidth={3} className="w-8 h-8" />
-                </div>
-                <span className="break-all">Facebook</span>
-              </a>
-              <div className="flex items-center gap-4 text-sm md:text-xl hover:text-[#5865F2] transition-colors group">
-                <div className="bg-flat-grey p-4 border-4 border-dark-grey group-hover:bg-[#5865F2] group-hover:text-white transition-colors cursor-pointer" onClick={() => { navigator.clipboard.writeText('soking_'); toast({ title: "Copied!", description: "Discord username copied to clipboard." }); }}>
-                  <MessageSquare strokeWidth={3} className="w-8 h-8" />
-                </div>
-                <span className="break-all min-w-[150px]">Discord: soking_</span>
-              </div>
-              <div className="flex items-center gap-4 text-sm md:text-xl text-dark-grey hidden lg:flex">
-                <div className="bg-flat-grey p-4 border-4 border-dark-grey">
-                  <MapPin strokeWidth={3} className="w-8 h-8" />
-                </div>
-                <span>Remote / Worldwide</span>
-              </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: 99,
+                  background: "#00E08A",
+                  boxShadow: "0 0 10px #00E08A",
+                }}
+              />
+              <span className="mono" style={{ fontSize: 11.5, letterSpacing: ".06em", color: "var(--fg-dim)" }}>
+                {C.availability}
+              </span>
             </div>
           </div>
 
-          {/* Right Column: Form */}
-          <div className="bg-off-white p-6 md:p-12 border-4 border-dark-grey box-shadow-solid relative">
-             {/* Decorative element */}
-             <div className="absolute -top-6 -right-6 w-12 h-12 bg-primary border-4 border-dark-grey rounded-full hidden md:block"></div>
-             
-             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-               <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="text-sm font-black uppercase tracking-widest text-dark-grey">Name</label>
-                  <input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all"
-                    placeholder="Your Name"
-                    type="text"
-                  />
-               </div>
-               
-               <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="text-sm font-black uppercase tracking-widest text-dark-grey">Email</label>
-                  <input
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all"
-                    placeholder="you@example.com"
-                    type="email"
-                  />
-               </div>
-               
-               <div className="flex flex-col gap-2">
-                  <label htmlFor="message" className="text-sm font-black uppercase tracking-widest text-dark-grey">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    className="min-h-[200px] border-4 border-dark-grey bg-white p-4 font-bold text-lg md:text-xl focus:border-primary focus:outline-none focus:-translate-y-1 focus:translate-x-1 hover:-translate-y-1 hover:translate-x-1 box-shadow-solid transition-all resize-none"
-                    placeholder="How can I help you?"
-                  ></textarea>
-               </div>
-               
-               <button
-                 type="submit"
-                 disabled={isSubmitting}
-                 className="mt-6 bg-primary py-6 text-xl font-black uppercase tracking-widest text-white border-4 border-dark-grey box-shadow-solid hover:translate-x-1 hover:-translate-y-1 hover:bg-dark-grey transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:hover:transform-none disabled:hover:bg-primary"
-               >
-                 {isSubmitting ? (
-                   <>
-                     <Loader2 className="h-6 w-6 animate-spin" strokeWidth={3} />
-                     <span>Sending...</span>
-                   </>
-                 ) : (
-                   <>
-                     <span>Send Message</span>
-                     <SendHorizontal className="h-6 w-6" strokeWidth={3} />
-                   </>
-                 )}
-               </button>
-             </form>
-          </div>
+          <form
+            onSubmit={submit}
+            data-reveal
+            data-reveal-delay="2"
+            style={{
+              padding: "28px 28px 26px",
+              background: "var(--card)",
+              border: "1px solid var(--rule)",
+              borderRadius: 18,
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+            }}
+          >
+            {send === "sent" ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "30px 0" }}>
+                <span className="mono" style={{ fontSize: 11, letterSpacing: ".14em", color: "var(--accent)" }}>
+                  {C.sent_label}
+                </span>
+                <h3
+                  className="serif"
+                  style={{ margin: 0, fontSize: 32, fontWeight: 400, letterSpacing: "-.01em" }}
+                >
+                  {C.sent_title(sentName)}
+                </h3>
+                <p style={{ margin: 0, fontSize: 15, color: "var(--fg-dim)", lineHeight: 1.6 }}>{C.sent_body}</p>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="mono"
+                  style={{
+                    marginTop: 8,
+                    alignSelf: "flex-start",
+                    padding: "10px 16px",
+                    border: "1px solid var(--rule)",
+                    borderRadius: 999,
+                    fontSize: 11.5,
+                    letterSpacing: ".08em",
+                  }}
+                >
+                  {C.sent_again}
+                </button>
+              </div>
+            ) : (
+              <>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    letterSpacing: ".14em",
+                    textTransform: isAR ? "none" : "uppercase",
+                    color: "var(--fg-dim)",
+                  }}
+                >
+                  / {C.form_label}
+                </div>
+
+                <Field
+                  name="name"
+                  type="input"
+                  label={C.f_name}
+                  placeholder={C.f_name_p}
+                  value={form.name}
+                  error={errors.name}
+                  isAR={isAR}
+                  onChange={(v) => setForm((f) => ({ ...f, name: v }))}
+                />
+                <Field
+                  name="email"
+                  type="email"
+                  label={C.f_email}
+                  placeholder={C.f_email_p}
+                  value={form.email}
+                  error={errors.email}
+                  isAR={isAR}
+                  onChange={(v) => setForm((f) => ({ ...f, email: v }))}
+                />
+                <Field
+                  name="msg"
+                  type="textarea"
+                  label={C.f_msg}
+                  placeholder={C.f_msg_p}
+                  value={form.msg}
+                  error={errors.msg}
+                  isAR={isAR}
+                  onChange={(v) => setForm((f) => ({ ...f, msg: v }))}
+                />
+
+                {send === "error" && (
+                  <div className="mono" style={{ fontSize: 12, color: "#ff5b6b" }}>
+                    {C.e_submit}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={send === "sending"}
+                  style={{
+                    marginTop: 6,
+                    alignSelf: "flex-start",
+                    padding: "14px 24px",
+                    borderRadius: 999,
+                    background: "var(--accent)",
+                    color: "var(--accent-ink)",
+                    fontWeight: 600,
+                    letterSpacing: ".02em",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 10,
+                    opacity: send === "sending" ? 0.7 : 1,
+                    cursor: send === "sending" ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {send === "sending" ? C.sending : C.f_send}
+                  {send !== "sending" && (
+                    <svg className="arrow-x" width="14" height="14" viewBox="0 0 14 14">
+                      <path
+                        d="M2 7h10M8 3l4 4-4 4"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        fill="none"
+                        strokeLinecap="square"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </>
+            )}
+          </form>
         </div>
       </div>
     </section>
-  )
+  );
+}
+
+function RowFragment({
+  label,
+  value,
+  href,
+  isAR,
+}: {
+  label: string;
+  value: string;
+  href: string | null;
+  isAR: boolean;
+}) {
+  const valIsLatin = /^[\x00-\x7F+\-.,/@]+$/.test(value);
+  return (
+    <>
+      <span
+        className="mono"
+        style={{
+          fontSize: 11,
+          letterSpacing: ".1em",
+          textTransform: isAR ? "none" : "uppercase",
+          color: "var(--fg-dim)",
+        }}
+      >
+        {label}
+      </span>
+      {href ? (
+        <a
+          href={href}
+          className={valIsLatin ? "serif latin" : "serif"}
+          style={{
+            fontSize: 20,
+            borderBottom: "1px solid var(--rule)",
+            paddingBottom: 2,
+            width: "fit-content",
+          }}
+        >
+          {value}
+        </a>
+      ) : (
+        <span className={valIsLatin ? "serif latin" : "serif"} style={{ fontSize: 20 }}>
+          {value}
+        </span>
+      )}
+    </>
+  );
+}
+
+function Field({
+  name,
+  type,
+  label,
+  placeholder,
+  value,
+  error,
+  isAR,
+  onChange,
+}: {
+  name: string;
+  type: "input" | "email" | "textarea";
+  label: string;
+  placeholder: string;
+  value: string;
+  error?: string;
+  isAR: boolean;
+  onChange: (v: string) => void;
+}) {
+  const sharedStyle: React.CSSProperties = {
+    width: "100%",
+    background: "transparent",
+    border: 0,
+    outline: "none",
+    color: "var(--fg)",
+    font: "inherit",
+    fontSize: type === "textarea" ? 17 : 20,
+    padding: "12px 0",
+    borderBottom: `1px solid ${error ? "#ff5b6b" : "var(--rule)"}`,
+    resize: type === "textarea" ? "vertical" : "none",
+    direction: "inherit",
+    textAlign: isAR ? "right" : "left",
+  };
+
+  return (
+    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <span
+          className="mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: ".1em",
+            textTransform: isAR ? "none" : "uppercase",
+            color: "var(--fg-dim)",
+          }}
+        >
+          {label}
+        </span>
+        {error && (
+          <span className="mono" style={{ fontSize: 11, color: "#ff5b6b", letterSpacing: ".04em" }}>
+            {error}
+          </span>
+        )}
+      </div>
+      {type === "textarea" ? (
+        <textarea
+          name={name}
+          rows={4}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={sharedStyle}
+        />
+      ) : (
+        <input
+          name={name}
+          type={type === "email" ? "email" : "text"}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={sharedStyle}
+        />
+      )}
+    </label>
+  );
 }

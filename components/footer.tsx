@@ -1,103 +1,417 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Linkedin, ArrowUp, Code, Github } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useT } from "@/components/lang/provider";
+import { Latin } from "@/components/lang/latin";
 
 export function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
-  }
+  const { t, lang } = useT();
+  const F = t.footer;
+  const isAR = lang === "ar";
+
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(
+      new Date().toLocaleDateString(isAR ? "ar-EG" : "en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    );
+  }, [isAR]);
 
   return (
-    <footer className="border-t-8 border-dark-grey mt-20 bg-primary text-dark-grey overflow-hidden relative">
-      <div className="absolute top-0 w-full h-4 bg-dark-grey"></div>
-      
-      {/* Huge typographic banner */}
-      <div className="border-b-8 border-dark-grey bg-flat-grey py-12 px-6 flex justify-center">
-        <h2 className="text-5xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-dark-grey text-center leading-none">
-          Let's Build <br className="hidden md:block" /> Something <br className="hidden md:block" /> Epic
-        </h2>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
-          <div className="lg:col-span-2 space-y-6">
-            <Link href="/" className="inline-flex items-center text-3xl font-black uppercase bg-white border-4 border-dark-grey px-6 py-3 box-shadow-solid hover:translate-x-1 hover:-translate-y-1 transition-transform">
-              Youseef<span className="text-primary">.dev</span>
-            </Link>
-            <p className="text-xl font-bold max-w-md mt-6 bg-white/90 p-6 border-4 border-dark-grey">
-              Full-Stack Developer specializing in Angular, Node.js, and Django with a focus on building high-performance web applications.
-            </p>
+    <footer
+      style={{
+        borderTop: "1px solid var(--rule)",
+        padding: "80px 0 32px",
+        background: "color-mix(in oklab, var(--fg) 3%, var(--bg))",
+      }}
+    >
+      <div className="container-edge">
+        <div
+          data-reveal
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.4fr .8fr",
+            gap: 48,
+            alignItems: "stretch",
+            marginBottom: 64,
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid var(--rule)",
+              borderRadius: 18,
+              padding: "40px 44px",
+              background: "var(--card)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 24,
+              justifyContent: "space-between",
+            }}
+          >
+            <div
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: ".16em",
+                color: "var(--fg-dim)",
+                textTransform: isAR ? "none" : "uppercase",
+              }}
+            >
+              {F.closing_label}
+            </div>
+            <h2
+              className="serif"
+              style={{
+                margin: 0,
+                fontSize: isAR ? "clamp(32px, 4vw, 58px)" : "clamp(36px, 4.4vw, 64px)",
+                lineHeight: 1.1,
+                letterSpacing: "-.02em",
+                fontWeight: 400,
+                maxWidth: "26ch",
+              }}
+            >
+              {F.closing_a}
+              <span className="italic" style={{ color: "var(--accent)" }}>
+                {F.closing_em}
+              </span>
+              {F.closing_b}
+            </h2>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+              <a
+                href="mailto:youseeftareq5176@gmail.com"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "14px 22px",
+                  borderRadius: 999,
+                  background: "var(--accent)",
+                  color: "var(--accent-ink)",
+                  fontWeight: 600,
+                  letterSpacing: ".02em",
+                }}
+              >
+                {F.closing_cta}
+                <svg className="arrow-x" width="14" height="14" viewBox="0 0 14 14">
+                  <path
+                    d="M2 7h10M8 3l4 4-4 4"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    fill="none"
+                    strokeLinecap="square"
+                  />
+                </svg>
+              </a>
+              <span className="mono" style={{ fontSize: 11.5, color: "var(--fg-dim)", letterSpacing: ".06em" }}>
+                {F.closing_or}
+              </span>
+            </div>
           </div>
 
-          <div className="bg-white border-4 border-dark-grey p-8 box-shadow-solid">
-            <h3 className="text-2xl font-black uppercase tracking-widest text-dark-grey mb-6 border-b-4 border-dark-grey pb-4">Sitemap</h3>
-            <ul className="space-y-4 font-black uppercase tracking-widest text-lg">
-              <li>
-                <Link href="#about" className="hover:text-primary transition-colors flex items-center gap-2 group">
-                  <span className="w-0 group-hover:w-4 h-1 bg-primary transition-all"></span> About
-                </Link>
-              </li>
-              <li>
-                <Link href="#projects" className="hover:text-primary transition-colors flex items-center gap-2 group">
-                  <span className="w-0 group-hover:w-4 h-1 bg-primary transition-all"></span> Projects
-                </Link>
-              </li>
-              <li>
-                <Link href="#stack" className="hover:text-primary transition-colors flex items-center gap-2 group">
-                  <span className="w-0 group-hover:w-4 h-1 bg-primary transition-all"></span> Skills
-                </Link>
-              </li>
-              <li>
-                <Link href="#experience" className="hover:text-primary transition-colors flex items-center gap-2 group">
-                  <span className="w-0 group-hover:w-4 h-1 bg-primary transition-all"></span> Experience
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <div
+            style={{
+              border: "1px solid var(--rule)",
+              borderRadius: 18,
+              padding: "28px 30px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 22,
+              position: "relative",
+              overflow: "hidden",
+              background: "var(--bg)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: 16,
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" style={{ color: "var(--accent)" }}>
+                    <rect x="1" y="1" width="20" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                    <path
+                      d="M6 7l5 5 5-5M11 12v4"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      fill="none"
+                      strokeLinecap="square"
+                    />
+                  </svg>
+                  <span
+                    className={`mono ${isAR ? "" : "latin"}`}
+                    style={{
+                      fontSize: 11.5,
+                      letterSpacing: ".16em",
+                      textTransform: isAR ? "none" : "uppercase",
+                      color: "var(--fg-dim)",
+                    }}
+                  >
+                    {F.identity_label}
+                  </span>
+                </div>
+                <div
+                  className="serif"
+                  style={{
+                    fontSize: "clamp(28px, 3vw, 40px)",
+                    lineHeight: 1.1,
+                    fontWeight: 500,
+                    letterSpacing: "-.02em",
+                  }}
+                >
+                  {F.identity_name}
+                </div>
+                <div
+                  className="serif italic"
+                  style={{ fontSize: 16, color: "var(--fg-dim)", lineHeight: 1.4, maxWidth: "24ch" }}
+                >
+                  {F.identity_tagline}
+                </div>
+              </div>
 
-          <div className="bg-white border-4 border-dark-grey p-8 box-shadow-solid">
-            <h3 className="text-2xl font-black uppercase tracking-widest text-dark-grey mb-6 border-b-4 border-dark-grey pb-4">Socials</h3>
-            <div className="flex flex-col space-y-4 font-black uppercase tracking-widest text-lg">
-              <a
-                href="https://linkedin.com/in/youseef-tareq"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors flex items-center gap-3 bg-flat-grey border-2 border-dark-grey p-3 hover:bg-dark-grey hover:text-white"
-                aria-label="LinkedIn Profile"
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 6,
+                  padding: "8px 12px",
+                  borderRadius: 10,
+                  background: "color-mix(in oklab, #00E08A 18%, transparent)",
+                  border: "1px solid color-mix(in oklab, #00E08A 35%, transparent)",
+                  whiteSpace: "nowrap",
+                }}
               >
-                <Linkedin size={24} strokeWidth={2.5} /> LinkedIn
-              </a>
-              <a
-                href="https://soking.tech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors flex items-center gap-3 bg-flat-grey border-2 border-dark-grey p-3 hover:bg-dark-grey hover:text-white"
-                aria-label="Portfolio Website"
-              >
-                <Github size={24} strokeWidth={2.5} /> GitHub
-              </a>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: 99,
+                      background: "#00E08A",
+                      boxShadow: "0 0 8px #00E08A",
+                    }}
+                  />
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: 10.5,
+                      letterSpacing: ".1em",
+                      textTransform: isAR ? "none" : "uppercase",
+                      color: "var(--fg)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {F.availability_label}
+                  </span>
+                </span>
+                <Latin>
+                  <span
+                    className="mono"
+                    style={{ fontSize: 10, letterSpacing: ".08em", color: "var(--fg-dim)" }}
+                  >
+                    {F.availability_window}
+                  </span>
+                </Latin>
+              </div>
+            </div>
+
+            <div style={{ height: 1, background: "var(--rule)" }} />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {F.monogram_rows.map(([k, v], i) => {
+                const vLatin = /^[\x00-\x7F+\-.,/@:·\s]+$/.test(v);
+                return (
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "92px 1fr", gap: 12 }}>
+                    <span
+                      className="mono"
+                      style={{
+                        fontSize: 10.5,
+                        letterSpacing: ".08em",
+                        textTransform: isAR ? "none" : "uppercase",
+                        color: "var(--fg-dim)",
+                      }}
+                    >
+                      {k}
+                    </span>
+                    <span className={vLatin ? "latin" : ""} style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+                      {v}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        <div className="border-t-8 border-dark-grey pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-lg md:text-xl font-black uppercase tracking-widest bg-white border-4 border-dark-grey px-6 py-3 text-center w-full md:w-auto">
-            &copy; {new Date().getFullYear()} Youseef Tareq. <br className="md:hidden" /> All Rights Reserved.
-          </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
+            gap: 32,
+            paddingTop: 32,
+            borderTop: "1px solid var(--rule)",
+          }}
+        >
+          <div>
+            <div
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: ".14em",
+                color: "var(--fg-dim)",
+                textTransform: isAR ? "none" : "uppercase",
+              }}
+            >
+              {F.colophon_label}
+            </div>
+            <p
+              style={{
+                margin: "10px 0 0",
+                fontSize: 13.5,
+                lineHeight: 1.6,
+                color: "var(--fg-dim)",
+                maxWidth: "44ch",
+              }}
+            >
+              {F.colophon_text}
+            </p>
+          </div>
+          <div>
+            <div
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: ".14em",
+                color: "var(--fg-dim)",
+                textTransform: isAR ? "none" : "uppercase",
+                marginBottom: 14,
+              }}
+            >
+              {F.index_label}
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+              {t.nav.items.map(([l, h], i) => (
+                <li key={i}>
+                  <a href={h} style={{ fontSize: 15, color: "var(--fg)" }}>
+                    {l}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <div
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: ".14em",
+                color: "var(--fg-dim)",
+                textTransform: isAR ? "none" : "uppercase",
+                marginBottom: 14,
+              }}
+            >
+              {F.elsewhere_label}
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                ["GitHub", "https://soking.tech"],
+                ["LinkedIn", "https://linkedin.com/in/youseef-tareq"],
+                ["Facebook", "https://www.facebook.com/SokingElectron"],
+                ["WhatsApp", "https://wa.me/201557337989"],
+              ].map(([label, href], i) => (
+                <li key={i}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener"
+                    className="latin"
+                    style={{
+                      fontSize: 15,
+                      color: "var(--fg)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    {label} <span style={{ color: "var(--fg-dim)" }}>↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <div
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: ".14em",
+                color: "var(--fg-dim)",
+                textTransform: isAR ? "none" : "uppercase",
+                marginBottom: 14,
+              }}
+            >
+              {F.direct_label}
+            </div>
+            <a
+              href="mailto:youseeftareq5176@gmail.com"
+              className="latin"
+              style={{
+                fontSize: 15,
+                color: "var(--fg)",
+                borderBottom: "1px solid var(--rule)",
+                paddingBottom: 2,
+              }}
+            >
+              youseeftareq5176@gmail.com
+            </a>
+            <p style={{ margin: "10px 0 0", fontSize: 12.5, color: "var(--fg-dim)" }}>{F.direct_note}</p>
+          </div>
+        </div>
 
+        <div
+          style={{
+            marginTop: 36,
+            paddingTop: 18,
+            borderTop: "1px solid var(--rule)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
+        >
+          <span className="mono" style={{ fontSize: 11, color: "var(--fg-dim)", letterSpacing: ".06em" }}>
+            {F.copyright}
+          </span>
+          <Latin>
+            <span className="mono" style={{ fontSize: 11, color: "var(--fg-dim)", letterSpacing: ".06em" }}>
+              {F.last_shipped} {today}
+            </span>
+          </Latin>
           <button
-            onClick={scrollToTop}
-            className="w-full md:w-auto p-4 md:px-8 font-black text-white bg-dark-grey border-4 border-white hover:bg-white hover:border-dark-grey hover:text-dark-grey box-shadow-solid transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-lg"
-            aria-label="Scroll to top"
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="mono"
+            style={{
+              padding: "8px 14px",
+              border: "1px solid var(--rule)",
+              borderRadius: 999,
+              fontSize: 11,
+              letterSpacing: ".08em",
+              textTransform: isAR ? "none" : "uppercase",
+            }}
           >
-            <ArrowUp size={24} strokeWidth={3} /> Back to Top
+            {F.to_top}
           </button>
         </div>
       </div>
     </footer>
-  )
+  );
 }

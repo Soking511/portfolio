@@ -1,49 +1,31 @@
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Projects } from "@/components/projects"
-import { TechStack } from "@/components/tech-stack"
-import { Experience } from "@/components/experience"
-import { Contact } from "@/components/contact"
-import type { Metadata } from "next"
+"use client";
 
-export const metadata: Metadata = {
-  title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
-  description:
-    "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
-  openGraph: {
-    title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
-    description:
-      "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
-    images: [
-      {
-        url: "/images/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Youseef Tareq - Full-Stack Developer",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Youseef Tareq | Full-Stack Developer | مطور ويب شامل",
-    description:
-      "Youseef Tareq: Full-Stack Developer specializing in Angular, Node.js, TypeScript, and MongoDB. مطور ويب شامل ومبرمج مواقع متخصص في بناء تطبيقات ويب عالية الأداء.",
-    images: ["/images/og-image.jpg"],
-  },
-}
+import { Header as Nav } from "@/components/header";
+import { Hero } from "@/components/hero";
+import { About } from "@/components/about";
+import { Projects as Works } from "@/components/projects";
+import { TechStack as Stack } from "@/components/tech-stack";
+import { Experience as CV } from "@/components/experience";
+import { Contact } from "@/components/contact";
+import { Footer } from "@/components/footer";
+import { TweaksPanel } from "@/components/theme/tweaks-panel";
+import { useReveal } from "@/components/theme/use-reveal";
 
 export default function Home() {
+  useReveal();
   return (
     <>
-      <main className="flex min-h-screen flex-col">
+      <Nav />
+      <main>
         <Hero />
         <About />
-        <Projects />
-        <TechStack />
-        <Experience />
+        <Works />
+        <Stack />
+        <CV />
         <Contact />
       </main>
+      <Footer />
+      <TweaksPanel />
     </>
-  )
+  );
 }
