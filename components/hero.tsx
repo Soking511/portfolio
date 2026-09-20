@@ -1,13 +1,16 @@
 "use client";
 
 import { useT } from "@/components/lang/provider";
+import { Latin } from "@/components/lang/latin";
 
 /**
- * The fold. Everything here must fit one viewport at 1440x900 and 375x812,
- * so it is deliberately four elements: status, headline, one sentence, CTAs.
+ * The fold. Five elements, in order of what a stranger needs: availability,
+ * what I build, who I am, one action, what I build it with.
  *
- * Nothing in this section carries data-reveal — first paint must not wait for
- * hydration.
+ * The name is deliberately absent — the header wordmark already carries it,
+ * and repeating it burned the most valuable line on the page.
+ *
+ * Nothing here carries data-reveal: first paint must not wait for hydration.
  */
 export function Hero() {
   const { t } = useT();
@@ -17,33 +20,47 @@ export function Hero() {
     <section
       id="index"
       style={{
-        minHeight: "min(100svh, 900px)",
+        minHeight: "min(94svh, 880px)",
         display: "flex",
-        alignItems: "center",
-        paddingTop: 96,
-        paddingBottom: 64,
+        flexDirection: "column",
+        justifyContent: "center",
+        paddingTop: 92,
+        paddingBottom: 28,
       }}
     >
       <div className="container-edge" style={{ width: "100%" }}>
         <p
           className="mono"
           style={{
-            margin: "0 0 28px",
-            fontSize: 12,
-            letterSpacing: "0.08em",
-            color: "var(--fg-dim)",
+            margin: "0 0 22px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 9,
+            fontSize: 11.5,
+            letterSpacing: "0.14em",
+            color: "var(--accent)",
           }}
         >
-          {H.name}
+          <span
+            aria-hidden="true"
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: 99,
+              background: "var(--accent)",
+              flex: "none",
+            }}
+          />
+          {H.status_line}
         </p>
 
-        <h1 className="d1" style={{ maxWidth: "17ch" }}>
+        <h1 className="d1" style={{ maxWidth: "15ch" }}>
           {H.headline_pre}
           <span className="em">{H.headline_em}</span>
           {H.headline_post}
         </h1>
 
-        <p className="lead dim" style={{ maxWidth: "52ch", marginTop: 28 }}>
+        <p className="lead dim" style={{ maxWidth: "40ch", marginTop: 22 }}>
           {H.sub}
         </p>
 
@@ -53,7 +70,7 @@ export function Hero() {
             flexWrap: "wrap",
             gap: 12,
             alignItems: "center",
-            marginTop: 36,
+            marginTop: 30,
           }}
         >
           <a href="#work" className="btn btn-primary">
@@ -63,70 +80,36 @@ export function Hero() {
           <a href="#contact" className="btn btn-ghost">
             {H.cta_contact}
           </a>
-          <a
-            href="/youseef-tareq-resume.pdf"
-            download
-            className="mono"
-            style={{
-              minHeight: 48,
-              display: "inline-flex",
-              alignItems: "center",
-              fontSize: 12,
-              letterSpacing: "0.06em",
-              color: "var(--fg-dim)",
-              paddingInline: 8,
-            }}
-          >
-            {H.resume}
-          </a>
         </div>
 
-        <ul
+        <div
           style={{
-            listStyle: "none",
-            margin: "48px 0 0",
-            padding: "20px 0 0",
+            marginTop: 40,
+            paddingTop: 18,
             borderTop: "1px solid var(--rule)",
             display: "flex",
             flexWrap: "wrap",
-            gap: "10px 28px",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "10px 20px",
           }}
         >
-          {H.status.map((s, i) => (
-            <li
-              key={s}
-              className="mono"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 9,
-                fontSize: 12,
-                letterSpacing: "0.04em",
-                color: "var(--fg-dim)",
-              }}
-            >
-              {i === 1 && <AvailableDot />}
-              <span className={i === 2 ? "latin" : undefined}>{s}</span>
-            </li>
-          ))}
-        </ul>
+          <Latin as="span" className="mono">
+            <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
+              {H.stack_line}
+            </span>
+          </Latin>
+          <a
+            href="/youseef-tareq-resume.pdf"
+            download
+            className="mono tap"
+            style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}
+          >
+            {H.resume} ↓
+          </a>
+        </div>
       </div>
     </section>
-  );
-}
-
-function AvailableDot() {
-  return (
-    <span
-      aria-hidden="true"
-      style={{
-        width: 7,
-        height: 7,
-        borderRadius: 99,
-        background: "var(--accent)",
-        flex: "none",
-      }}
-    />
   );
 }
 

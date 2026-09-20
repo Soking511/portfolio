@@ -34,14 +34,15 @@ export type Strings = {
     langLabel: string;
     themeLabel: string;
     menuLabel: string;
+    closeLabel: string;
   };
   hero: {
-    name: string;
+    status_line: string;
     headline_pre: string;
     headline_em: string;
     headline_post: string;
     sub: string;
-    status: string[];
+    stack_line: string;
     cta_works: string;
     cta_contact: string;
     resume: string;
@@ -151,17 +152,18 @@ const en: Strings = {
     langLabel: "العربية",
     themeLabel: "Toggle dark mode",
     menuLabel: "Menu",
+    closeLabel: "Close",
   },
   hero: {
-    name: "Youseef Tareq",
+    status_line: "Available for new work",
     headline_pre: "I build web products that ",
     headline_em: "hold up",
     headline_post: " in production.",
-    sub: "Full-stack engineer in Cairo. Currently at The POST, building live-data platforms, subscription products and internal dashboards.",
-    status: ["Cairo · GMT+2", "Available for new work", "Angular · Node · TypeScript"],
+    sub: "Full-stack engineer in Cairo, currently at The POST. Live-data platforms, subscription products, internal dashboards.",
+    stack_line: "Angular · Node · TypeScript · Django",
     cta_works: "See the work",
     cta_contact: "Get in touch",
-    resume: "Résumé (PDF)",
+    resume: "Résumé",
   },
   works: {
     eyebrow: "Featured work",
@@ -413,17 +415,18 @@ const ar: Strings = {
     langLabel: "English",
     themeLabel: "تبديل الوضع الداكن",
     menuLabel: "القائمة",
+    closeLabel: "إغلاق",
   },
   hero: {
-    name: "يوسف طارق",
+    status_line: "متاح لمشاريع جديدة",
     headline_pre: "أبني منتجات ويب ",
     headline_em: "تصمد",
     headline_post: " في التشغيل الفعلي.",
-    sub: "مهندس ويب شامل من القاهرة. أعمل حاليًا مع The POST على منصات البيانات الحية ومنتجات الاشتراك ولوحات التحكم الداخلية.",
-    status: ["القاهرة · GMT+2", "متاح لمشاريع جديدة", "Angular · Node · TypeScript"],
+    sub: "مهندس ويب شامل من القاهرة، أعمل حاليًا مع The POST. منصات بيانات حية، ومنتجات اشتراك، ولوحات تحكم داخلية.",
+    stack_line: "Angular · Node · TypeScript · Django",
     cta_works: "شاهد الأعمال",
     cta_contact: "تواصل معي",
-    resume: "السيرة الذاتية (PDF)",
+    resume: "السيرة الذاتية",
   },
   works: {
     eyebrow: "أعمال مختارة",

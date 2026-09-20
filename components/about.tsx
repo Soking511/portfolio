@@ -11,7 +11,7 @@ export function About() {
   const A = t.about;
 
   return (
-    <section id="about" className="band section-y">
+    <section id="about" className="section-open">
       <div className="container-edge">
         <header
           data-reveal

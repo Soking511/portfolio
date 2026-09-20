@@ -7,9 +7,13 @@ import { FEATURED } from "@/lib/projects";
 import type { FeaturedWork } from "@/components/lang/strings";
 
 /**
- * Three projects, three different layouts, so the section never reads as the
- * same card repeated. Each carries four short beats: problem, what I built,
- * the decision that mattered, and the role.
+ * Three case studies. One DOM order — metadata, title, media, beats, footer —
+ * recomposed per breakpoint in globals.css:
+ *
+ *   phones   one column, media edge-to-edge and portrait; the middle project
+ *            leads with its visual so the three do not share a silhouette.
+ *   desktop  grid areas put the media beside the text, alternating sides,
+ *            with the first project running full width.
  */
 export function WorkFeatured() {
   const { t } = useT();
@@ -27,7 +31,7 @@ export function WorkFeatured() {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 96, marginTop: 72 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 88, marginTop: 56 }}>
         {W.featured.map((p, i) => (
           <ProjectBlock key={p.title} project={p} index={i} labels={W} />
         ))}
@@ -35,6 +39,8 @@ export function WorkFeatured() {
     </section>
   );
 }
+
+const LAYOUTS = ["proj--wide", "proj--flip proj--media-first", ""] as const;
 
 function ProjectBlock({
   project,
@@ -47,109 +53,66 @@ function ProjectBlock({
 }) {
   const { t } = useT();
   const meta = FEATURED[index];
-  // 0 = full-bleed image above text, 1 = image right, 2 = image left.
-  const layout = index % 3;
-  const image = (
-    <ProjectImage
-      image={meta.image}
-      title={project.title}
-      swatch={meta.swatch}
-      alt={t.misc.screenshot_alt(project.title)}
-      priority={index === 0}
-      maxHeight={layout === 0 ? "min(62vh, 620px)" : undefined}
-    />
-  );
 
   return (
     <article data-reveal>
-      {layout === 0 ? (
-        <>
-          <div className="container-edge">{image}</div>
-          <div className="container-edge" style={{ marginTop: 32 }}>
-            <Head project={project} />
-            <Beats project={project} labels={labels} />
-            <Foot project={project} meta={meta} labels={labels} />
-          </div>
-        </>
-      ) : (
-        <div className="container-edge">
-          <div className="r-split">
-            <div style={{ order: layout === 1 ? 1 : 2 }}>
-              <Head project={project} />
-              <div style={{ marginTop: 24 }}>
-                <Beat label={labels.label_problem} text={project.problem} />
-                <Beat label={labels.label_built} text={project.built} />
-                <Beat label={labels.label_decision} text={project.decision} />
-              </div>
+      <div className="container-edge">
+        <div className={`proj ${LAYOUTS[index % LAYOUTS.length]}`.trim()}>
+          <header className="proj-head">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+              <Latin as="span" className="mono accent">
+                <span style={{ fontSize: 12, letterSpacing: "0.14em" }}>{project.n}</span>
+              </Latin>
+              <span className="rule" style={{ flex: 1 }} />
+              <Latin as="span" className="mono">
+                <span style={{ fontSize: 11.5, letterSpacing: "0.1em", color: "var(--fg-dim)" }}>
+                  {project.year}
+                </span>
+              </Latin>
             </div>
-            <div style={{ order: layout === 1 ? 2 : 1 }}>{image}</div>
+
+            <h3 className="d3 latin">{project.title}</h3>
+            <p className="lead" style={{ marginTop: 8, maxWidth: "30ch" }}>
+              {project.kicker}
+            </p>
+          </header>
+
+          <div className="proj-media">
+            <ProjectImage
+              image={meta.image}
+              title={project.title}
+              swatch={meta.swatch}
+              alt={t.misc.screenshot_alt(project.title)}
+              priority={index === 0}
+              variant="feature"
+            />
           </div>
+
+          <div className="proj-beats">
+            <Beat label={labels.label_problem} text={project.problem} />
+            <Beat label={labels.label_built} text={project.built} />
+            <Beat label={labels.label_decision} text={project.decision} isKey />
+          </div>
+
           <Foot project={project} meta={meta} labels={labels} />
         </div>
-      )}
+      </div>
     </article>
   );
 }
 
-function Head({ project }: { project: FeaturedWork }) {
+function Beat({ label, text, isKey }: { label: string; text: string; isKey?: boolean }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "baseline",
-        gap: "4px 16px",
-      }}
-    >
-      <Latin as="span" className="mono">
-        <span style={{ fontSize: 12, color: "var(--accent)", letterSpacing: "0.1em" }}>
-          {project.n}
-        </span>
-      </Latin>
-      <h3 className="d3 latin" style={{ marginInlineEnd: 4 }}>
-        {project.title}
-      </h3>
-      <p className="dim" style={{ margin: 0, fontSize: 16 }}>
-        {project.kicker}
+    <div className={`proj-beat${isKey ? " proj-beat--key" : ""}`}>
+      <div
+        className="eyebrow"
+        style={{ marginBottom: 8, color: isKey ? "var(--accent)" : undefined }}
+      >
+        {label}
+      </div>
+      <p className="body" style={{ color: isKey ? "var(--fg)" : "var(--fg-dim)" }}>
+        {text}
       </p>
-    </div>
-  );
-}
-
-function Beats({
-  project,
-  labels,
-}: {
-  project: FeaturedWork;
-  labels: ReturnType<typeof useT>["t"]["works"];
-}) {
-  return (
-    <div className="r-beats" style={{ marginTop: 28 }}>
-      <BeatCell label={labels.label_problem} text={project.problem} />
-      <BeatCell label={labels.label_built} text={project.built} />
-      <BeatCell label={labels.label_decision} text={project.decision} />
-    </div>
-  );
-}
-
-function BeatCell({ label, text }: { label: string; text: string }) {
-  return (
-    <div>
-      <div className="eyebrow" style={{ marginBottom: 10 }}>
-        {label}
-      </div>
-      <p className="body">{text}</p>
-    </div>
-  );
-}
-
-function Beat({ label, text }: { label: string; text: string }) {
-  return (
-    <div style={{ paddingBlock: 18, borderTop: "1px solid var(--rule)" }}>
-      <div className="eyebrow" style={{ marginBottom: 8 }}>
-        {label}
-      </div>
-      <p className="body">{text}</p>
     </div>
   );
 }
@@ -166,24 +129,20 @@ function Foot({
   const { t } = useT();
   return (
     <div
+      className="proj-foot"
       style={{
-        marginTop: 24,
+        marginTop: 6,
         paddingTop: 18,
         borderTop: "1px solid var(--rule)",
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
-        gap: "14px 28px",
+        gap: "12px 20px",
       }}
     >
-      <span className="eyebrow">
+      <span className="eyebrow" style={{ flexBasis: "100%" }}>
         {labels.label_role} — {project.role}
       </span>
-      <Latin as="span" className="mono">
-        <span style={{ fontSize: 11.5, color: "var(--fg-dim)", letterSpacing: "0.06em" }}>
-          {project.year}
-        </span>
-      </Latin>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         {project.stack.map((s) => (
           <span key={s} className="chip latin">
@@ -199,11 +158,11 @@ function Foot({
           className="mono tap"
           style={{
             marginInlineStart: "auto",
-            fontSize: 12,
+            fontSize: 12.5,
             letterSpacing: "0.06em",
-            borderBottom: "1px solid var(--accent)",
-            paddingBottom: 3,
             color: "var(--accent)",
+            textDecoration: "underline",
+            textUnderlineOffset: 4,
           }}
         >
           {t.misc.visit_project} ↗
@@ -219,33 +178,35 @@ export function SectionHead({
   em,
   post,
   intro,
+  invert = false,
 }: {
   eyebrow: string;
   pre: string;
   em: string;
   post: string;
   intro?: string;
+  invert?: boolean;
 }) {
   return (
     <header data-reveal>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          marginBottom: 28,
-        }}
-      >
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
         <span className="eyebrow">{eyebrow}</span>
         <span className="rule" style={{ flex: 1 }} />
       </div>
-      <h2 className="d2" style={{ maxWidth: "20ch" }}>
+      <h2 className="d2" style={{ maxWidth: "18ch" }}>
         {pre}
         <span className="em">{em}</span>
         {post}
       </h2>
       {intro && (
-        <p className="lead dim" style={{ maxWidth: "48ch", marginTop: 20 }}>
+        <p
+          className="lead"
+          style={{
+            maxWidth: "44ch",
+            marginTop: 18,
+            color: invert ? "var(--ink-dim)" : "var(--fg-dim)",
+          }}
+        >
           {intro}
         </p>
       )}

@@ -77,7 +77,7 @@ export function Footer() {
             <a
               href="mailto:youseeftareq5176@gmail.com"
               className="latin tap"
-              style={{ fontSize: 14, wordBreak: "break-all" }}
+              style={{ fontSize: 14, overflowWrap: "anywhere" }}
             >
               youseeftareq5176@gmail.com
             </a>

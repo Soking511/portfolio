@@ -62,7 +62,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="band section-y">
+    <section id="contact" className="band section-open">
       <div className="container-edge">
         <header
           data-reveal
@@ -88,15 +88,7 @@ export function Contact() {
               <div className="eyebrow" style={{ marginBottom: 16 }}>
                 {C.details_label}
               </div>
-              <dl
-                style={{
-                  margin: 0,
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr",
-                  gap: "12px 24px",
-                  alignItems: "baseline",
-                }}
-              >
+              <dl className="r-contact-rows">
                 {C.rows.map(([k, v, href]) => (
                   <Row key={k} label={k} value={v} href={href} />
                 ))}
@@ -223,8 +215,9 @@ function Row({ label, value, href }: { label: string; value: string; href: strin
             className={isLatin ? "latin tap" : "tap"}
             style={{
               fontSize: 16.5,
-              borderBottom: "1px solid var(--rule)",
-              paddingBottom: 2,
+              textDecoration: "underline",
+              textDecorationColor: "var(--rule)",
+              textUnderlineOffset: 4,
             }}
           >
             {value}
