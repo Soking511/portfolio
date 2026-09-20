@@ -1,12 +1,9 @@
 import type { Config } from "tailwindcss";
 
+// Tailwind is used for preflight and the occasional utility only; the design
+// system itself lives in CSS custom properties in app/globals.css.
 const config: Config = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -19,16 +16,11 @@ const config: Config = {
         "accent-ink": "var(--accent-ink)",
       },
       fontFamily: {
-        serif: "var(--serif)",
-        sans: "var(--sans)",
-        mono: "var(--mono)",
+        sans: ["var(--sans)"],
+        serif: ["var(--serif)"],
+        mono: ["var(--mono)"],
       },
-      maxWidth: {
-        edge: "var(--maxw)",
-      },
-      letterSpacing: {
-        display: "var(--display-tracking)",
-      },
+      maxWidth: { edge: "var(--maxw)" },
     },
   },
   plugins: [],

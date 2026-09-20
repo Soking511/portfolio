@@ -1,27 +1,31 @@
 /**
- * Stamps data-style, data-theme, lang, dir, and --accent onto <html> from
- * localStorage BEFORE React hydrates, so the initial paint matches the
- * persisted theme/lang and there's no FOUC.
+ * Runs before React hydrates. Three jobs:
+ *
+ *  1. Stamp data-theme, lang and dir from localStorage so the first paint
+ *     already matches the persisted preference (no FOUC).
+ *  2. Fall back to the OS colour scheme when nothing is stored.
+ *  3. Set data-reveal-ready, which is the ONLY thing that arms the
+ *     scroll-reveal hidden state in globals.css. Without JavaScript, or under
+ *     prefers-reduced-motion, the attribute is never set and every element
+ *     stays visible — content is never hidden behind an animation that may
+ *     not run.
  */
 const SCRIPT = `
 (function(){
+  var root=document.documentElement;
   try {
-    var TWEAK_KEY='portfolio:tweaks';
-    var LANG_KEY='portfolio:lang';
-    var raw=localStorage.getItem(TWEAK_KEY);
-    var t=raw?JSON.parse(raw):null;
-    var style=(t&&t.style)||'studio';
-    var theme=(t&&t.theme)||'light';
-    var accentStudio=(t&&t.accentStudio)||'#2D5BFF';
-    var accentEditorial=(t&&t.accentEditorial)||'#7C5CFF';
-    var lang=localStorage.getItem(LANG_KEY)||'en';
-    var dir=lang==='ar'?'rtl':'ltr';
-    var root=document.documentElement;
-    root.setAttribute('data-style',style);
+    var theme=localStorage.getItem('portfolio:theme');
+    if(theme!=='dark'&&theme!=='light'){
+      theme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    }
     root.setAttribute('data-theme',theme);
+    var lang=localStorage.getItem('portfolio:lang')==='ar'?'ar':'en';
     root.setAttribute('lang',lang);
-    root.setAttribute('dir',dir);
-    root.style.setProperty('--accent',style==='studio'?accentStudio:accentEditorial);
+    root.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  } catch (_) {}
+  try {
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!reduce) root.setAttribute('data-reveal-ready','');
   } catch (_) {}
 })();
 `.trim();

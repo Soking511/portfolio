@@ -4,126 +4,82 @@ import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 
 export function Experience() {
-  const { t, lang } = useT();
+  const { t } = useT();
   const E = t.cv;
-  const isAR = lang === "ar";
 
   return (
-    <section id="cv" style={{ padding: "140px 0 80px" }}>
+    <section id="cv" className="section-y">
       <div className="container-edge">
-        <div
+        <header
           data-reveal
-          style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 48 }}
+          style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}
         >
-          <span className="mono" style={{ fontSize: 11, color: "var(--accent)", letterSpacing: ".18em" }}>
-            ● {E.eyebrow}
-          </span>
-          <span
-            className="mono"
-            style={{
-              fontSize: 11,
-              color: "var(--fg-dim)",
-              letterSpacing: ".14em",
-              textTransform: isAR ? "none" : "uppercase",
-            }}
-          >
-            {E.sub}
-          </span>
+          <span className="eyebrow">{E.eyebrow}</span>
           <span className="rule" style={{ flex: 1 }} />
-        </div>
+        </header>
 
         <div
-          className="r-2col-12"
           data-reveal
-          data-reveal-delay="1"
-          style={{ marginBottom: 60 }}
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            gap: 20,
+            marginBottom: 44,
+          }}
         >
-          <h2
-            className="serif"
-            style={{
-              margin: 0,
-              fontSize: isAR ? "clamp(28px, 7.5vw, 96px)" : "clamp(34px, 9vw, 116px)",
-              lineHeight: 1,
-              fontWeight: 400,
-              letterSpacing: "-.02em",
-            }}
-          >
+          <h2 className="d2">
             {E.headline_pre}
-            <span className="italic" style={{ color: "var(--accent)" }}>
-              {E.headline_em}
-            </span>
+            <span className="em">{E.headline_em}</span>
             {E.headline_post}
           </h2>
-          <a
-            href="/youseef-tareq-resume.pdf"
-            download
-            className="mono"
-            style={{
-              justifySelf: "start",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "12px 18px",
-              border: "1px solid var(--rule)",
-              borderRadius: 999,
-              fontSize: 11.5,
-              letterSpacing: ".08em",
-              textTransform: isAR ? "none" : "uppercase",
-            }}
-          >
+          <a href="/youseef-tareq-resume.pdf" download className="btn btn-ghost">
             {E.download}
           </a>
         </div>
 
-        <ol style={{ listStyle: "none", margin: 0, padding: 0, borderTop: "1px solid var(--rule)" }}>
-          {E.rows.map((r, i) => (
+        <ol
+          style={{
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            borderTop: "1px solid var(--rule)",
+          }}
+        >
+          {E.rows.map((r) => (
             <li
-              key={i}
-              className="r-cv-row"
+              key={`${r.years}-${r.role}`}
               data-reveal
-              style={{
-                padding: "28px 0",
-                borderBottom: "1px solid var(--rule)",
-              }}
+              className="r-cv-row"
+              style={{ paddingBlock: 26, borderBottom: "1px solid var(--rule)" }}
             >
               <Latin as="div" className="mono">
-                <span style={{ fontSize: 12, color: "var(--fg-dim)", letterSpacing: ".04em" }}>
+                <span style={{ fontSize: 12, color: "var(--fg-dim)", letterSpacing: "0.06em" }}>
                   {r.years}
                 </span>
               </Latin>
+
               <div>
-                <div
-                  className="serif"
-                  style={{ fontSize: 32, lineHeight: 1.1, fontWeight: 400, letterSpacing: "-.01em" }}
-                >
+                <h3 className="d3" style={{ fontSize: "clamp(19px, 2vw, 24px)" }}>
                   {r.role}
-                </div>
-                <div
-                  className="serif italic"
-                  style={{ fontSize: 18, marginTop: 6, color: "var(--fg-dim)" }}
-                >
+                </h3>
+                <p className="dim" style={{ margin: "5px 0 0", fontSize: 14.5 }}>
                   {r.org} · {r.loc}
-                </div>
+                </p>
               </div>
-              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "var(--fg-dim)" }}>{r.blurb}</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {r.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="mono latin"
-                    style={{
-                      fontSize: 10.5,
-                      letterSpacing: ".08em",
-                      textTransform: "uppercase",
-                      padding: "4px 9px",
-                      border: "1px solid var(--rule)",
-                      borderRadius: 999,
-                      color: "var(--fg-dim)",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+
+              <div>
+                <p className="body dim" style={{ maxWidth: "62ch" }}>
+                  {r.blurb}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
+                  {r.tags.map((tag) => (
+                    <span key={tag} className="chip latin">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </li>
           ))}

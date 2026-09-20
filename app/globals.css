@@ -3,42 +3,12 @@
 @tailwind utilities;
 
 /* ────────────────────────────────────────────────────────────────────────────
-   Design tokens. Theme switching = stamp data-style + data-theme on <html>.
-   Latin font CSS variables (--font-newsreader, etc.) come from next/font in
+   Design tokens. One art direction, two themes: stamp data-theme on <html>.
+   Latin font variables (--font-geist, etc.) come from next/font in
    app/layout.tsx. Arabic fonts are lazy-injected via <link> by LangProvider.
    ──────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* Editorial Dark — fallback when no [data-style] is set */
-  --bg: #0b0b0c;
-  --fg: #f3f0e8;
-  --fg-dim: #a5a29a;
-  --rule: #252422;
-  --card: #131312;
-  --accent: #7C5CFF;
-  --accent-ink: #ffffff;
-
-  --serif: var(--font-instrument-serif), "Times New Roman", serif;
-  --sans: var(--font-space-grotesk), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  --display-tracking: -0.02em;
-  --display-weight: 400;
-  --italic-style: italic;
-  --maxw: 1440px;
-  --pad: 48px;
-}
-
-[data-theme="light"] {
-  --bg: #f1ece1;
-  --fg: #0d0d0d;
-  --fg-dim: #5a554c;
-  --rule: #d8d2c4;
-  --card: #e6e0d1;
-  --accent-ink: #ffffff;
-}
-
-[data-style="studio"] {
   --bg: #F4F0E6;
   --fg: #0E1116;
   --fg-dim: #5A6068;
@@ -51,40 +21,30 @@
   --sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --display-tracking: -0.035em;
-  --display-weight: 500;
-  --italic-style: normal;
+  --italic-style: italic;
+  --maxw: 1320px;
+  --pad: 48px;
+
+  /* vertical rhythm — one knob per breakpoint */
+  --section-y: 128px;
 }
 
-[data-style="studio"][data-theme="dark"] {
+[data-theme="dark"] {
   --bg: #0E1116;
   --fg: #ECE6D6;
   --fg-dim: #8A8F97;
-  --rule: #222731;
+  --rule: #242A34;
   --card: #161B23;
-  --accent: #5B8DEF;
+  --accent: #7CA0FF;
+  --accent-ink: #0E1116;
 }
 
-/* In Studio mode, .serif globally swaps to Geist sans; italics stay editorial via Newsreader. */
-[data-style="studio"] .serif {
-  font-family: var(--sans) !important;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-}
-[data-style="studio"] .serif.italic,
-[data-style="studio"] .serif .italic {
-  font-family: var(--font-newsreader), serif !important;
-  font-style: italic !important;
-  font-weight: 400 !important;
-  letter-spacing: -0.01em !important;
-}
-
-/* RTL: swap to Arabic fonts when html dir="rtl". The Arabic font CSS variables
-   are populated by the <link> tag that LangProvider appends on language switch. */
+/* RTL: swap to Arabic fonts. The font-family values are populated by the
+   <link> tag LangProvider appends on first switch to Arabic. */
 [dir="rtl"] {
   --sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
   --serif: "Amiri", "Times New Roman", serif;
-  --italic-style: normal; /* Amiri has no true italic — color/weight is enough */
+  --italic-style: normal; /* Amiri has no true italic — colour carries the emphasis */
 }
 [dir="rtl"] .mono { letter-spacing: 0.04em; }
 [dir="rtl"] .arrow-x { transform: scaleX(-1); }
@@ -92,9 +52,7 @@
 
 * { box-sizing: border-box; }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 html, body {
   margin: 0;
@@ -104,22 +62,54 @@ html, body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition: background .35s ease, color .35s ease;
   max-width: 100%;
   overflow-x: hidden;
 }
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+img { max-width: 100%; height: auto; display: block; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
+/* Visible keyboard focus everywhere, without a permanent outline on mouse use. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  /* Hidden without an off-canvas box that would widen the page. */
+  transform: translateY(-200%);
+  transition: transform .15s ease;
+}
+.skip-link:focus { transform: none; }
+
 /* ── shared utilities ── */
-.mono { font-family: var(--mono); font-feature-settings: "ss01" on; letter-spacing: 0.02em; }
+.mono { font-family: var(--mono); letter-spacing: 0.02em; }
 .serif { font-family: var(--serif); }
 .italic { font-style: var(--italic-style); }
 .latin { direction: ltr; unicode-bidi: isolate; }
-.tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-dim); }
 .rule { height: 1px; background: var(--rule); width: 100%; }
+.dim { color: var(--fg-dim); }
+
+/* Small uppercase label. Arabic has no case, so the transform is LTR-only. */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+[dir="rtl"] .eyebrow { text-transform: none; letter-spacing: 0; }
+
 .container-edge {
   max-width: var(--maxw);
   margin: 0 auto;
@@ -128,175 +118,254 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     max(var(--pad), env(safe-area-inset-right));
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   RESPONSIVE CASCADE
-   --pad shrinks per breakpoint; .section-y handles section vertical rhythm
-   ─────────────────────────────────────────────────────────────────── */
+.section-y { padding-block: var(--section-y); }
 
-@media (max-width: 1024px) { :root { --pad: 32px; } }
-@media (max-width: 780px)  { :root { --pad: 22px; } }
-@media (max-width: 640px)  { :root { --pad: 16px; } }
-
-.section-y { padding: 140px 0 80px; }
-@media (max-width: 1024px) { .section-y { padding: 110px 0 70px; } }
-@media (max-width: 780px)  { .section-y { padding: 80px 0 56px; } }
-@media (max-width: 640px)  { .section-y { padding: 64px 0 44px; } }
-
-/* ── grid patterns ── */
-.r-meta-row    { display: grid; grid-template-columns: 160px 1fr; gap: 28px; align-items: center; }
-.r-2col-eq     { display: grid; grid-template-columns: 1.05fr .95fr; gap: 80px; }
-.r-2col-14     { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; }
-.r-2col-12     { display: grid; grid-template-columns: 1.2fr .9fr; gap: 60px; align-items: end; }
-.r-2col-15     { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: end; }
-.r-2col-11     { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-.r-2col-1408   { display: grid; grid-template-columns: 1.4fr .8fr; gap: 48px; align-items: stretch; }
-
-.r-stats-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+/* Tinted band, used to alternate rhythm between sections. */
+.band {
+  background: var(--card);
+  border-block: 1px solid var(--rule);
 }
-.r-stats-4 > * + * { border-inline-start: 1px solid var(--rule); }
 
-.r-grid-4 {
+/* ── display type scale ────────────────────────────────────────────────────
+   Three sizes, used everywhere. Arabic runs a touch smaller because the
+   script carries more ink per glyph at the same nominal size.              */
+
+.d1 {
+  font-size: clamp(38px, 6.4vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  margin: 0;
+}
+.d2 {
+  font-size: clamp(28px, 4.4vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0;
+}
+.d3 {
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  margin: 0;
+}
+[dir="rtl"] .d1 { font-size: clamp(32px, 5.4vw, 74px); letter-spacing: -0.01em; line-height: 1.18; }
+[dir="rtl"] .d2 { font-size: clamp(25px, 3.8vw, 48px); letter-spacing: -0.005em; line-height: 1.22; }
+[dir="rtl"] .d3 { font-size: clamp(21px, 2.6vw, 33px); letter-spacing: 0; line-height: 1.28; }
+
+/* The one flourish: the emphasised phrase in every display heading. */
+.em {
+  font-family: var(--serif);
+  font-style: var(--italic-style);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+}
+[dir="rtl"] .em { font-family: var(--sans); font-weight: 600; }
+
+.lead {
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.55;
+  margin: 0;
+}
+.body { font-size: 15.5px; line-height: 1.7; margin: 0; }
+
+/* ── pills & buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { border: 1px solid var(--rule); color: var(--fg); }
+.btn-ghost:hover { border-color: var(--fg); }
+@media (hover: hover) {
+  .btn:hover { transform: translateY(-1px); }
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 5px 11px;
+  white-space: nowrap;
+}
+
+/* ── layout patterns ─────────────────────────────────────────────────────── */
+
+.r-split {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.r-text-aside {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 56px;
+}
+.r-beats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: var(--rule);
-  border: 1px solid var(--rule);
+  border-block: 1px solid var(--rule);
 }
+.r-beats > * { background: var(--bg); padding: 26px 24px; }
+.band .r-beats > * { background: var(--card); }
 
+.r-principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.r-tools {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
 .r-cv-row {
   display: grid;
-  grid-template-columns: 180px 1.2fr 1fr 1fr;
+  grid-template-columns: 160px 1.1fr 1.4fr;
   gap: 32px;
   align-items: baseline;
 }
-
+.r-contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
 .r-footer-cols {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
   gap: 32px;
-  padding-top: 32px;
-  border-top: 1px solid var(--rule);
 }
-
-.r-work-card { width: min(78vw, 720px); }
-
-/* hero CTA row: row → column on small phones */
-.hero-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
+.r-selected-row {
+  display: grid;
+  grid-template-columns: 132px 1.1fr 1.5fr auto;
+  gap: 28px;
   align-items: center;
-  margin-top: 8px;
 }
-.hero-cta-row .cta-resume { margin-inline-start: auto; }
+.r-selected-thumb { width: 132px; }
 
-/* 1024px — tablets: collapse 4-col toward 2-col, 2-col toward 1-col */
-@media (max-width: 1024px) {
-  .r-2col-eq, .r-2col-14, .r-2col-12, .r-2col-15, .r-2col-11, .r-2col-1408 {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .r-grid-4      { grid-template-columns: repeat(2, 1fr); }
-  .r-cv-row      { grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+/* ── responsive cascade ──────────────────────────────────────────────────── */
+
+@media (max-width: 1080px) {
+  :root { --pad: 32px; --section-y: 96px; }
+  .r-split, .r-text-aside, .r-contact { grid-template-columns: 1fr; gap: 32px; }
+  .r-principles { grid-template-columns: 1fr; gap: 28px; }
+  .r-tools { grid-template-columns: repeat(2, 1fr); }
   .r-footer-cols { grid-template-columns: 1fr 1fr; }
-  .r-work-card   { width: min(85vw, 560px); }
+  .r-cv-row { grid-template-columns: 140px 1fr; gap: 8px 24px; }
+  .r-selected-row { grid-template-columns: 104px 1fr; gap: 10px 20px; }
+  .r-selected-thumb { width: 104px; }
 }
 
-/* 780px — large phones / landscape: nav→hamburger, stats 2×2, CV stacks */
-@media (max-width: 780px) {
-  .r-meta-row { grid-template-columns: 1fr; gap: 8px; }
-
-  .r-stats-4 { grid-template-columns: repeat(2, 1fr); }
-  .r-stats-4 > * + * { border-inline-start: 0; }
-  .r-stats-4 > :nth-child(odd) + * { border-inline-start: 1px solid var(--rule); }
-  .r-stats-4 > :nth-child(n+3) { border-top: 1px solid var(--rule); }
-
-  .r-cv-row { grid-template-columns: 1fr; gap: 6px; }
-
-  .hero-cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
-  .hero-cta-row .cta-resume { margin-inline-start: 0; align-self: flex-start; }
+@media (max-width: 720px) {
+  :root { --pad: 20px; --section-y: 72px; }
+  .r-beats { grid-template-columns: 1fr; }
+  .r-tools { grid-template-columns: 1fr; gap: 18px; }
+  .r-selected-row { grid-template-columns: 1fr; }
+  .r-selected-thumb { width: 160px; }
+  .r-footer-cols { grid-template-columns: 1fr; gap: 28px; }
+  .d1 { letter-spacing: -0.025em; }
 }
 
-/* 640px — small phones */
-@media (max-width: 640px) {
-  .r-grid-4      { grid-template-columns: 1fr; }
-  .r-footer-cols { grid-template-columns: 1fr; }
-  .r-work-card   { width: min(88vw, 380px); }
-}
+/* ── navigation ── */
+.nav-items { display: flex; align-items: center; gap: 2px; }
+.nav-burger { display: none; }
+.nav-panel { display: none; }
 
-/* ── mobile nav ── */
-.nav-items   { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
-.nav-burger  { display: none; }
-.nav-panel   { display: none; }
-
-@media (max-width: 780px) {
-  .nav-items  { display: none; }
+@media (max-width: 860px) {
+  .nav-items { display: none; }
   .nav-burger {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border: 1px solid var(--rule);
     border-radius: 999px;
-    background: transparent;
     color: var(--fg);
   }
   .nav-panel.open {
     display: flex;
     flex-direction: column;
-    gap: 4px;
     position: fixed;
     top: 64px;
     inset-inline: 0;
-    background: color-mix(in oklab, var(--bg) 96%, transparent);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: var(--bg);
     border-bottom: 1px solid var(--rule);
-    padding: 16px var(--pad) 24px;
+    padding: 8px var(--pad) 24px;
     z-index: 49;
-    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
     overflow-y: auto;
   }
   .nav-panel a {
     display: block;
-    padding: 14px 8px;
-    font-size: 18px;
-    border-bottom: 1px dashed var(--rule);
+    padding: 16px 4px;
+    font-size: 19px;
+    border-bottom: 1px solid var(--rule);
   }
   .nav-panel a:last-child { border-bottom: 0; }
 }
 
-/* ── reveal-on-scroll ── */
-[data-reveal] {
+/* ── reveal on scroll ────────────────────────────────────────────────────────
+   Opt-in only. Content is visible by default, so it paints with the HTML and
+   stays readable without JavaScript. The pre-hydration script adds
+   data-reveal-ready to <html> — and omits it under prefers-reduced-motion —
+   which is the only thing that arms the hidden state. Nothing above the fold
+   carries data-reveal, so first paint is never gated on hydration.          */
+
+html[data-reveal-ready] [data-reveal] {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+  transform: translateY(16px);
+  transition: opacity .45s cubic-bezier(.2,.7,.2,1), transform .45s cubic-bezier(.2,.7,.2,1);
 }
-[data-reveal][data-in="true"] {
+html[data-reveal-ready] [data-reveal][data-in="true"] {
   opacity: 1;
   transform: none;
 }
-[data-reveal-delay="1"] { transition-delay: .08s; }
-[data-reveal-delay="2"] { transition-delay: .16s; }
-[data-reveal-delay="3"] { transition-delay: .24s; }
+[data-reveal-delay="1"] { transition-delay: .06s; }
+[data-reveal-delay="2"] { transition-delay: .12s; }
 
-/* ── marquee for hero ticker ── */
-@keyframes marq {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  html[data-reveal-ready] [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ── touch targets ────────────────────────────────────────────────────────
+   Standalone links are visually small by design; on touch devices they get a
+   44px hit area without changing how they look.                            */
+.tap {
+  display: inline-flex;
+  align-items: center;
+}
+@media (pointer: coarse) {
+  .tap { min-height: 44px; }
+  .nav-panel a { min-height: 48px; }
 }
 
 /* ── scrollbar ── */
-::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
-
-/* Hide scrollbar on works horizontal track */
-.works-track::-webkit-scrollbar { display: none; }
-.works-track { scrollbar-width: none; }

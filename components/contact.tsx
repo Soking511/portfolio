@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useT } from "@/components/lang/provider";
 
 type FormState = { name: string; email: string; msg: string };
@@ -62,224 +62,145 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" style={{ padding: "160px 0 100px", position: "relative" }}>
+    <section id="contact" className="band section-y">
       <div className="container-edge">
-        <div
+        <header
           data-reveal
-          style={{ display: "flex", gap: 16, alignItems: "baseline", marginBottom: 32 }}
+          style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}
         >
-          <span className="mono" style={{ fontSize: 11, color: "var(--accent)", letterSpacing: ".18em" }}>
-            ● {C.eyebrow}
-          </span>
-          <span
-            className="mono"
-            style={{
-              fontSize: 11,
-              color: "var(--fg-dim)",
-              letterSpacing: ".14em",
-              textTransform: isAR ? "none" : "uppercase",
-            }}
-          >
-            {C.sub}
-          </span>
+          <span className="eyebrow">{C.eyebrow}</span>
           <span className="rule" style={{ flex: 1 }} />
-        </div>
+        </header>
 
-        <h2
-          className="serif"
-          data-reveal
-          data-reveal-delay="1"
-          style={{
-            margin: "0 0 60px",
-            fontSize: isAR ? "clamp(40px, 12vw, 168px)" : "clamp(44px, 14vw, 188px)",
-            lineHeight: 0.95,
-            fontWeight: 400,
-            letterSpacing: "-.02em",
-          }}
-        >
+        <h2 className="d2" data-reveal style={{ maxWidth: "16ch", marginBottom: 48 }}>
           {C.headline_a}
-          <span className="italic" style={{ color: "var(--accent)" }}>
-            {C.headline_em}
-          </span>
+          <span className="em">{C.headline_em}</span>
           {C.headline_b}
         </h2>
 
-        <div className="r-2col-11">
-          <div
-            data-reveal
-            data-reveal-delay="1"
-            style={{ display: "flex", flexDirection: "column", gap: 32 }}
-          >
-            <p style={{ margin: 0, fontSize: 20, lineHeight: 1.55 }}>{C.lead}</p>
+        <div className="r-contact">
+          <div data-reveal style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+            <p className="lead" style={{ maxWidth: "46ch" }}>
+              {C.lead}
+            </p>
 
             <div>
-              <div
-                className="mono"
-                style={{
-                  fontSize: 11,
-                  letterSpacing: ".14em",
-                  textTransform: isAR ? "none" : "uppercase",
-                  color: "var(--fg-dim)",
-                  marginBottom: 18,
-                }}
-              >
+              <div className="eyebrow" style={{ marginBottom: 16 }}>
                 {C.details_label}
               </div>
-              <div
+              <dl
                 style={{
+                  margin: 0,
                   display: "grid",
                   gridTemplateColumns: "auto 1fr",
-                  gap: "14px 28px",
+                  gap: "12px 24px",
                   alignItems: "baseline",
                 }}
               >
-                {C.rows.map(([k, v, href], i) => (
-                  <RowFragment key={i} label={k} value={v} href={href} isAR={isAR} />
+                {C.rows.map(([k, v, href]) => (
+                  <Row key={k} label={k} value={v} href={href} />
                 ))}
-              </div>
+              </dl>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <p
+              className="mono"
+              style={{
+                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                fontSize: 12,
+                color: "var(--fg-dim)",
+              }}
+            >
               <span
+                aria-hidden="true"
                 style={{
-                  width: 9,
-                  height: 9,
+                  width: 8,
+                  height: 8,
                   borderRadius: 99,
-                  background: "#00E08A",
-                  boxShadow: "0 0 10px #00E08A",
+                  background: "var(--accent)",
+                  flex: "none",
                 }}
               />
-              <span className="mono" style={{ fontSize: 11.5, letterSpacing: ".06em", color: "var(--fg-dim)" }}>
-                {C.availability}
-              </span>
-            </div>
+              {C.availability}
+            </p>
           </div>
 
           <form
             onSubmit={submit}
             data-reveal
-            data-reveal-delay="2"
+            data-reveal-delay="1"
             style={{
-              padding: "28px 28px 26px",
-              background: "var(--card)",
+              padding: 28,
+              background: "var(--bg)",
               border: "1px solid var(--rule)",
-              borderRadius: 18,
               display: "flex",
               flexDirection: "column",
               gap: 20,
             }}
           >
             {send === "sent" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "30px 0" }}>
-                <span className="mono" style={{ fontSize: 11, letterSpacing: ".14em", color: "var(--accent)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "24px 0" }}>
+                <span className="eyebrow" style={{ color: "var(--accent)" }}>
                   {C.sent_label}
                 </span>
-                <h3
-                  className="serif"
-                  style={{ margin: 0, fontSize: 32, fontWeight: 400, letterSpacing: "-.01em" }}
-                >
-                  {C.sent_title(sentName)}
-                </h3>
-                <p style={{ margin: 0, fontSize: 15, color: "var(--fg-dim)", lineHeight: 1.6 }}>{C.sent_body}</p>
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="mono"
-                  style={{
-                    marginTop: 8,
-                    alignSelf: "flex-start",
-                    padding: "10px 16px",
-                    border: "1px solid var(--rule)",
-                    borderRadius: 999,
-                    fontSize: 11.5,
-                    letterSpacing: ".08em",
-                  }}
-                >
+                <h3 className="d3">{C.sent_title(sentName)}</h3>
+                <p className="body dim">{C.sent_body}</p>
+                <button type="button" onClick={reset} className="btn btn-ghost" style={{ alignSelf: "flex-start", marginTop: 8 }}>
                   {C.sent_again}
                 </button>
               </div>
             ) : (
               <>
-                <div
-                  className="mono"
-                  style={{
-                    fontSize: 11,
-                    letterSpacing: ".14em",
-                    textTransform: isAR ? "none" : "uppercase",
-                    color: "var(--fg-dim)",
-                  }}
-                >
-                  / {C.form_label}
-                </div>
+                <div className="eyebrow">{C.form_label}</div>
 
                 <Field
-                  name="name"
-                  type="input"
+                  kind="text"
                   label={C.f_name}
                   placeholder={C.f_name_p}
                   value={form.name}
                   error={errors.name}
-                  isAR={isAR}
+                  autoComplete="name"
                   onChange={(v) => setForm((f) => ({ ...f, name: v }))}
                 />
                 <Field
-                  name="email"
-                  type="email"
+                  kind="email"
                   label={C.f_email}
                   placeholder={C.f_email_p}
                   value={form.email}
                   error={errors.email}
-                  isAR={isAR}
+                  autoComplete="email"
                   onChange={(v) => setForm((f) => ({ ...f, email: v }))}
                 />
                 <Field
-                  name="msg"
-                  type="textarea"
+                  kind="textarea"
                   label={C.f_msg}
                   placeholder={C.f_msg_p}
                   value={form.msg}
                   error={errors.msg}
-                  isAR={isAR}
                   onChange={(v) => setForm((f) => ({ ...f, msg: v }))}
                 />
 
                 {send === "error" && (
-                  <div className="mono" style={{ fontSize: 12, color: "#ff5b6b" }}>
+                  <p className="mono" role="alert" style={{ margin: 0, fontSize: 12.5, color: "#d93a4a" }}>
                     {C.e_submit}
-                  </div>
+                  </p>
                 )}
 
                 <button
                   type="submit"
                   disabled={send === "sending"}
+                  className="btn btn-primary"
                   style={{
-                    marginTop: 6,
                     alignSelf: "flex-start",
-                    padding: "14px 24px",
-                    borderRadius: 999,
-                    background: "var(--accent)",
-                    color: "var(--accent-ink)",
-                    fontWeight: 600,
-                    letterSpacing: ".02em",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 10,
+                    marginTop: 4,
                     opacity: send === "sending" ? 0.7 : 1,
                     cursor: send === "sending" ? "not-allowed" : "pointer",
                   }}
                 >
                   {send === "sending" ? C.sending : C.f_send}
-                  {send !== "sending" && (
-                    <svg className="arrow-x" width="14" height="14" viewBox="0 0 14 14">
-                      <path
-                        d="M2 7h10M8 3l4 4-4 4"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        fill="none"
-                        strokeLinecap="square"
-                      />
-                    </svg>
-                  )}
                 </button>
               </>
             )}
@@ -290,126 +211,94 @@ export function Contact() {
   );
 }
 
-function RowFragment({
-  label,
-  value,
-  href,
-  isAR,
-}: {
-  label: string;
-  value: string;
-  href: string | null;
-  isAR: boolean;
-}) {
-  const valIsLatin = /^[\x00-\x7F+\-.,/@]+$/.test(value);
+function Row({ label, value, href }: { label: string; value: string; href: string | null }) {
+  const isLatin = /^[\x00-\x7F+\-.,/@\s]+$/.test(value);
   return (
     <>
-      <span
-        className="mono"
-        style={{
-          fontSize: 11,
-          letterSpacing: ".1em",
-          textTransform: isAR ? "none" : "uppercase",
-          color: "var(--fg-dim)",
-        }}
-      >
-        {label}
-      </span>
-      {href ? (
-        <a
-          href={href}
-          className={valIsLatin ? "serif latin" : "serif"}
-          style={{
-            fontSize: 20,
-            borderBottom: "1px solid var(--rule)",
-            paddingBottom: 2,
-            width: "fit-content",
-          }}
-        >
-          {value}
-        </a>
-      ) : (
-        <span className={valIsLatin ? "serif latin" : "serif"} style={{ fontSize: 20 }}>
-          {value}
-        </span>
-      )}
+      <dt className="eyebrow">{label}</dt>
+      <dd style={{ margin: 0 }}>
+        {href ? (
+          <a
+            href={href}
+            className={isLatin ? "latin tap" : "tap"}
+            style={{
+              fontSize: 16.5,
+              borderBottom: "1px solid var(--rule)",
+              paddingBottom: 2,
+            }}
+          >
+            {value}
+          </a>
+        ) : (
+          <span className={isLatin ? "latin" : undefined} style={{ fontSize: 16.5 }}>
+            {value}
+          </span>
+        )}
+      </dd>
     </>
   );
 }
 
 function Field({
-  name,
-  type,
+  kind,
   label,
   placeholder,
   value,
   error,
-  isAR,
+  autoComplete,
   onChange,
 }: {
-  name: string;
-  type: "input" | "email" | "textarea";
+  kind: "text" | "email" | "textarea";
   label: string;
   placeholder: string;
   value: string;
   error?: string;
-  isAR: boolean;
+  autoComplete?: string;
   onChange: (v: string) => void;
 }) {
-  const sharedStyle: React.CSSProperties = {
-    width: "100%",
-    background: "transparent",
-    border: 0,
-    outline: "none",
-    color: "var(--fg)",
-    font: "inherit",
-    fontSize: type === "textarea" ? 17 : 20,
-    padding: "12px 0",
-    borderBottom: `1px solid ${error ? "#ff5b6b" : "var(--rule)"}`,
-    resize: type === "textarea" ? "vertical" : "none",
-    direction: "inherit",
-    textAlign: isAR ? "right" : "left",
+  const id = useId();
+  const errorId = `${id}-error`;
+
+  const shared = {
+    id,
+    value,
+    placeholder,
+    autoComplete,
+    "aria-invalid": error ? (true as const) : undefined,
+    "aria-describedby": error ? errorId : undefined,
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      onChange(e.target.value),
+    style: {
+      width: "100%",
+      background: "transparent",
+      border: 0,
+      outline: "none",
+      color: "var(--fg)",
+      font: "inherit",
+      fontSize: 16.5,
+      padding: "10px 0",
+      borderBottom: `1px solid ${error ? "#d93a4a" : "var(--rule)"}`,
+      direction: "inherit" as const,
+    },
   };
 
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <span
-          className="mono"
-          style={{
-            fontSize: 11,
-            letterSpacing: ".1em",
-            textTransform: isAR ? "none" : "uppercase",
-            color: "var(--fg-dim)",
-          }}
-        >
+    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+        <label htmlFor={id} className="eyebrow">
           {label}
-        </span>
+        </label>
         {error && (
-          <span className="mono" style={{ fontSize: 11, color: "#ff5b6b", letterSpacing: ".04em" }}>
+          <span id={errorId} role="alert" className="mono" style={{ fontSize: 11, color: "#d93a4a" }}>
             {error}
           </span>
         )}
       </div>
-      {type === "textarea" ? (
-        <textarea
-          name={name}
-          rows={4}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          style={sharedStyle}
-        />
+      {kind === "textarea" ? (
+        <textarea {...shared} rows={4} style={{ ...shared.style, resize: "vertical" }} />
       ) : (
-        <input
-          name={name}
-          type={type === "email" ? "email" : "text"}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          style={sharedStyle}
-        />
+        <input {...shared} type={kind} />
       )}
-    </label>
+    </div>
   );
 }

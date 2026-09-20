@@ -25,3 +25,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# firebase deploy cache
+/.firebase/
+
+# local capture + verification scratch (screenshot capture, static server, perf)
+/.cap/
+
+# local preview config (references gitignored .cap/ scratch)
+/.claude/launch.json

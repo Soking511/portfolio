@@ -12,29 +12,50 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+/** Escapes values before they are interpolated into the notification HTML. */
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export const onContactFormSubmission = functions.firestore
   .document("messages/{messageId}")
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot) => {
     const data = snap.data();
+
+    // The form writes name/email/message/lang — there is no `subject` field,
+    // and the flag it sets is `emailNotified`, so both are matched here.
+    const name = escapeHtml(data.name);
+    const email = escapeHtml(data.email);
+    const message = escapeHtml(data.message);
+    const lang = escapeHtml(data.lang);
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Your email where you want to receive messages
-      subject: `New Contact Form Message: ${data.subject}`,
+      to: process.env.EMAIL_USER,
+      replyTo: typeof data.email === "string" ? data.email : undefined,
+      subject: `Portfolio enquiry from ${name}`,
       html: `
-        <h2>New Message from Portfolio Contact Form</h2>
-        <p><strong>From:</strong> ${data.name} (${data.email})</p>
-        <p><strong>Subject:</strong> ${data.subject}</p>
+        <h2>New message from the portfolio contact form</h2>
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Language:</strong> ${lang}</p>
         <p><strong>Message:</strong></p>
-        <p>${data.message}</p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
       `,
     };
 
     try {
       await transporter.sendMail(mailOptions);
-      await snap.ref.update({ emailSent: true });
+      await snap.ref.update({ emailNotified: true });
     } catch (error) {
       console.error("Error sending email:", error);
-      await snap.ref.update({ emailSent: false, error: error.message });
+      await snap.ref.update({
+        emailNotified: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   });

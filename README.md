@@ -1,161 +1,99 @@
-# Youseef Tareq | Full-Stack Developer Portfolio
+# soking.digital
 
-## 1. Project Overview and Key Features
+Personal site for Youseef Tareq — full-stack engineer, Cairo.
 
-This project is a modern, responsive personal portfolio website for **Youseef Tareq**, a Full-Stack Developer specializing in Angular, Node.js, and Django. Built with Next.js 15, the application is designed to showcase projects, professional experience, technical skills, and recommendations with a focus on high-performance and accessible web design.
+Next.js 15 (App Router) exported as a fully static site and deployed to
+Firebase Hosting by GitHub Actions on push to `main`.
 
-### Key Features
-- **Modern UI/UX**: Features smooth scroll progress, dynamic animations using Framer Motion, and aesthetic components powered by Tailwind CSS and Shadcn UI.
-- **Responsive Layout**: Adapts seamlessly to various devices and screen sizes.
-- **Dynamic Sections**: Dedicated sections for Hero, About, Projects, Tech Stack, Experience, and Contact logic.
-- **Theming**: Integrated Dark/Light mode toggle (`next-themes`) that honors system preferences.
-- **SEO Optimized**: Includes comprehensive OpenGraph tags, dynamic meta descriptions, and Structured Data (JSON-LD) for enhanced search engine visibility.
+## Stack
 
-## 2. Project Architecture and Folder Structure
+| Concern | Choice |
+|---|---|
+| Framework | Next.js 15, React 19, TypeScript, `output: "export"` |
+| Styling | CSS custom properties in `app/globals.css` + inline styles. Tailwind is present for preflight and the odd utility only. |
+| Content | One typed bilingual file: `components/lang/strings.ts` |
+| Contact form | Firestore write → Cloud Function → email |
+| Hosting | Firebase Hosting (`out/`) |
 
-The project follows the standard Next.js App Router structure with customized modular directories for a clean and scalable architecture.
+There is no animation library, no component library and no CSS framework doing
+the layout. That is deliberate: the whole design system is about 300 lines of
+CSS.
 
-```text
-portfolio/
-├── .firebase/                 # Local Firebase emulator and configuration files
-├── app/                       # Next.js App Router (Pages, Layouts, CSS)
-│   ├── globals.css            # Global CSS styles and Tailwind imports
-│   ├── layout.tsx             # Root layout wrapping the application
-│   └── page.tsx               # Main landing page assembling application components
-├── components/                # Reusable React components
-│   ├── ui/                    # Base UI components (shadcn/radix primitives)
-│   ├── hero.tsx               # Hero introduction section
-│   ├── about.tsx              # About me section
-│   ├── experience.tsx         # Work and education experience
-│   ├── projects.tsx           # Showcased portfolio projects
-│   ├── tech-stack.tsx         # Technologies and tools skills presentation
-│   ├── contact.tsx            # Contact form and details
-│   ├── header.tsx / footer.tsx
-│   └── theme-provider.tsx     # Handles Dark/Light mode logic
-├── functions/                 # Firebase Cloud Functions (backend logic)
-├── hooks/                     # Custom React hooks
-├── lib/                       # Utility functions and shared logic
-├── public/                    # Static assets like images (e.g., og-image.jpg), fonts
-├── styles/                    # Additional module-specific CSS files
-├── apphosting.yaml            # Firebase App Hosting configuration (Cloud Run backend config)
-├── firebase.json              # Primary Firebase deployment routing and rules config
-├── firestore.rules            # Firestore security rules
-├── next.config.mjs            # Next.js framework configuration
-├── package.json               # Project dependencies and workspace scripts
-└── tailwind.config.ts         # Tailwind CSS framework configuration
+## Layout
+
+```
+app/
+  layout.tsx      fonts, metadata, OG, JSON-LD
+  page.tsx        section order
+  globals.css     the design system
+  robots.ts       generated at build
+  sitemap.ts      generated at build
+components/
+  hero.tsx            the fold — no reveal animation, must fit one screen
+  work-featured.tsx   3 case studies, 3 different layouts
+  work-selected.tsx   remaining projects as a list
+  principles.tsx      "how I work" + tools
+  about.tsx  experience.tsx  contact.tsx  footer.tsx  header.tsx
+  project-image.tsx   screenshot, or a wordmark panel when there is none
+  lang/               strings.ts (en + ar), provider, RTL helper
+  theme/              light/dark, no-FOUC script, reveal hook
+lib/
+  projects.ts     project URLs, images and brand colours
+  site.ts         canonical origin
+  firebase.ts     client init
 ```
 
-## 3. Tech Stack
+## Conventions worth knowing
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) & [shadcn/ui](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/) & `tailwindcss-animate`
-- **Forms & Validation**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Backend/Hosting**: [Firebase](https://firebase.google.com/) (Hosting, Cloud Functions, Firestore)
-- **Package Manager**: [npm](https://www.npmjs.com/) (or `pnpm`/`yarn`)
+**Content lives in `components/lang/strings.ts`.** The `Strings` type is shared
+by both locales, so adding an English string without its Arabic counterpart is a
+compile error. That is the point — it keeps the two languages from drifting.
 
-## 4. Local Setup and Installation
+**Content is visible by default.** `[data-reveal]` elements are only hidden once
+the pre-hydration script sets `data-reveal-ready` on `<html>`, and it omits that
+under `prefers-reduced-motion`. Without JavaScript, or with reduced motion, the
+page renders fully. Nothing above the fold animates, so first paint never waits
+for hydration.
 
-Follow these instructions to set up the project locally.
+**Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
+Earlier versions embedded each project as a live `<iframe>`; that was removed
+because most of them could not render (`X-Frame-Options: DENY`, auth walls,
+maintenance pages) and it meant loading seven third-party sites.
 
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- Firebase CLI (`npm install -g firebase-tools`)
+**A project without an honest screenshot gets a wordmark panel**, not a
+placeholder — set `image: null` in `lib/projects.ts`. Set `url: null` when a
+domain no longer resolves and no link is rendered.
 
-### Installation Steps
-
-1. **Clone the repository:**
-   ```bash
-   git clone <your-repo-url>
-   cd portfolio
-   ```
-
-2. **Install dependencies:**
-   Using npm (the default defined in the project):
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-4. **(Optional) Run Firebase Emulators locally:**
-   To test Firebase features like Firestore offline:
-   ```bash
-   firebase emulators:start
-   ```
-
-## 5. Step-by-step Deployment Guide (Firebase)
-
-The project leverages Firebase for both static asset hosting and backend functionality via Cloud Run using Firebase App Hosting.
-
-### Option A: Deploying via Firebase App Hosting (Recommended)
-This approach automatically manages the Next.js server-side rendering (SSR) lifecycle using an integrated CI/CD pipeline.
-
-1. Navigate to the [Firebase Console](https://console.firebase.google.com/).
-2. Select your project and navigate to **App Hosting** from the side menu.
-3. Click **Get Started** and connect the application's GitHub repository.
-4. Select the deployment branch (e.g., `main`).
-5. Configure the root directory if it differs from the default (`/`).
-6. Firebase will automatically detect the Next.js framework configuration and the `apphosting.yaml` file to provision the necessary Cloud Run resources and CI/CD pipelines.
-7. Any future push to the target branch will automatically trigger a new deployment.
-
-### Option B: Deploying via Firebase CLI (Traditional Hosting)
-
-1. **Login to Firebase CLI:**
-   ```bash
-   firebase login
-   ```
-
-2. **Initialize Firebase in the project directory (if needed):**
-   ```bash
-   firebase init hosting
-   ```
-   *Select your existing Firebase project or create a new one.*
-
-3. **Build the Next.js application for production:**
-   ```bash
-   npm run build
-   ```
-
-4. **Deploy to Firebase:**
-   ```bash
-   firebase deploy --only hosting
-   ```
-
-## 6. Environment Variables and Available Scripts
-
-### Environment Variables
-
-Typically, sensitive configuration is kept out of source control. Create a `.env.local` file at the root of the project to add your keys. It would look something like this:
+## Scripts
 
 ```bash
-# .env.local
-
-# Define your custom public environment variables below:
-# NEXT_PUBLIC_API_URL=https://api.example.com
+npm run dev        # dev server
+npm run build      # static export to out/
+npm run typecheck  # tsc --noEmit
+npm run lint       # next lint
 ```
 
-*Note: For Firebase App Hosting, navigate to App Hosting -> Select the App -> Settings -> "Environment Variables" to inject them securely at Build/Runtime without exposing them in codebase files.*
+Lint and type errors fail the build; they are not ignored.
 
-### Available Scripts
+## Regenerating project screenshots
 
-These scripts are defined in `package.json` to facilitate the standard development lifecycle:
+Captured with headless Chrome and converted with `sharp` (already present as a
+transitive dependency). There is no committed script — screenshots are taken
+rarely and by hand:
 
-- `npm run dev`
-  Starts the Next.js development server with Fast Refresh.
+```bash
+chrome --headless=new --disable-gpu --hide-scrollbars \
+  --window-size=1440,900 --virtual-time-budget=12000 \
+  --screenshot=shot.png https://example.com/
+```
 
-- `npm run build`
-  Compiles the application for production, optimizing assets and statically generating pages where possible.
+Then crop any promo or consent bar, resize to 1440w and 720w, and write WebP at
+quality 82 into `public/work/<slug>-{1440,720}.webp`.
 
-- `npm run start`
-  Starts the production server explicitly (should be run only after `npm run build`).
+## Deploying
 
-- `npm run lint`
-  Runs the configured ESLint rules to enforce code styling and structural rules dynamically.
+Push to `main`. `.github/workflows/firebase-hosting-merge.yml` builds and deploys
+to the live channel; pull requests get a preview channel.
+
+Firestore rules restrict the `messages` collection to create-only writes that
+match the contact form's exact shape, with length caps. Reads are closed.

@@ -1,31 +1,34 @@
 "use client";
 
-import { Header as Nav } from "@/components/header";
+import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
+import { WorkFeatured } from "@/components/work-featured";
+import { Principles } from "@/components/principles";
+import { WorkSelected } from "@/components/work-selected";
 import { About } from "@/components/about";
-import { Projects as Works } from "@/components/projects";
-import { TechStack as Stack } from "@/components/tech-stack";
-import { Experience as CV } from "@/components/experience";
+import { Experience } from "@/components/experience";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
-import { TweaksPanel } from "@/components/theme/tweaks-panel";
 import { useReveal } from "@/components/theme/use-reveal";
 
 export default function Home() {
   useReveal();
   return (
     <>
-      <Nav />
-      <main>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main">
         <Hero />
+        <WorkFeatured />
+        <Principles />
+        <WorkSelected />
         <About />
-        <Works />
-        <Stack />
-        <CV />
+        <Experience />
         <Contact />
       </main>
       <Footer />
-      <TweaksPanel />
     </>
   );
 }
