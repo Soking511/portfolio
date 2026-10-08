@@ -1,0 +1,5 @@
+# Never convert line endings in binary assets. Without this, a PDF made of
+# plain-text objects is treated as text on Windows checkouts and corrupted.
+*.pdf  binary
+*.png  binary
+*.webp binary
