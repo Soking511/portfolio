@@ -1,6 +1,10 @@
+import { FlowDiagram } from "@/components/flow-diagram";
+import type { Diagram } from "@/components/lang/strings";
+
 /**
- * Project imagery, or a designed typographic panel when there is no honest
- * image to show (site in maintenance, or domain no longer resolving).
+ * Project imagery, or — when there is no honest image to show (site in
+ * maintenance, or domain no longer resolving) — an architecture diagram if
+ * there is one, else a designed typographic panel.
  *
  * Phones get a genuinely different asset, not a scaled-down desktop one:
  * `<slug>-m390/780.webp` are 3:4 portrait captures taken with real mobile
@@ -18,6 +22,7 @@ export function ProjectImage({
   alt,
   priority = false,
   variant = "landscape",
+  diagram,
 }: {
   image: string | null;
   title: string;
@@ -26,8 +31,10 @@ export function ProjectImage({
   priority?: boolean;
   /** "feature" = full-bleed portrait on phones; "landscape" = desktop crop only. */
   variant?: "feature" | "landscape";
+  diagram?: Diagram;
 }) {
   if (!image) {
+    if (diagram && variant === "feature") return <FlowDiagram diagram={diagram} />;
     return <FallbackPanel title={title} swatch={swatch} variant={variant} />;
   }
 

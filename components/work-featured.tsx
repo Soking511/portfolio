@@ -3,6 +3,7 @@
 import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 import { ProjectImage } from "@/components/project-image";
+import { ProjectLink } from "@/components/project-link";
 import { FEATURED } from "@/lib/projects";
 import type { FeaturedWork } from "@/components/lang/strings";
 
@@ -20,7 +21,7 @@ export function WorkFeatured() {
   const W = t.works;
 
   return (
-    <section id="work" className="section-y">
+    <section id="work" className="section-y section-follow">
       <div className="container-edge">
         <SectionHead
           eyebrow={W.eyebrow}
@@ -55,7 +56,7 @@ function ProjectBlock({
   const meta = FEATURED[index];
 
   return (
-    <article data-reveal>
+    <article id={meta.slug} data-reveal>
       <div className="container-edge">
         <div className={`proj ${LAYOUTS[index % LAYOUTS.length]}`.trim()}>
           <header className="proj-head">
@@ -85,10 +86,12 @@ function ProjectBlock({
               alt={t.misc.screenshot_alt(project.title)}
               priority={index === 0}
               variant="feature"
+              diagram={meta.diagram ? t.misc.diagrams[meta.diagram] : undefined}
             />
           </div>
 
           <div className="proj-beats">
+            {project.outcome && <Outcome label={labels.outcome_label} text={project.outcome} />}
             <Beat label={labels.label_problem} text={project.problem} />
             <Beat label={labels.label_built} text={project.built} />
             <Beat label={labels.label_decision} text={project.decision} isKey />
@@ -117,6 +120,20 @@ function Beat({ label, text, isKey }: { label: string; text: string; isKey?: boo
   );
 }
 
+/** A verified result. Only rendered once there is an honest number to put here. */
+function Outcome({ label, text }: { label: string; text: string }) {
+  return (
+    <div className="proj-outcome">
+      <div className="eyebrow" style={{ marginBottom: 6, color: "var(--accent)" }}>
+        {label}
+      </div>
+      <p className="lead" style={{ color: "var(--fg)" }}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
 function Foot({
   project,
   meta,
@@ -126,7 +143,6 @@ function Foot({
   meta: (typeof FEATURED)[number];
   labels: ReturnType<typeof useT>["t"]["works"];
 }) {
-  const { t } = useT();
   return (
     <div
       className="proj-foot"
@@ -150,24 +166,9 @@ function Foot({
           </span>
         ))}
       </div>
-      {meta.url && (
-        <a
-          href={meta.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mono tap"
-          style={{
-            marginInlineStart: "auto",
-            fontSize: 12.5,
-            letterSpacing: "0.06em",
-            color: "var(--accent)",
-            textDecoration: "underline",
-            textUnderlineOffset: 4,
-          }}
-        >
-          {t.misc.visit_project} ↗
-        </a>
-      )}
+      <span style={{ marginInlineStart: "auto" }}>
+        <ProjectLink meta={meta} />
+      </span>
     </div>
   );
 }

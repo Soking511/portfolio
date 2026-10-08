@@ -3,6 +3,7 @@
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { WorkFeatured } from "@/components/work-featured";
+import { Testimonials } from "@/components/testimonials";
 import { Principles } from "@/components/principles";
 import { About } from "@/components/about";
 import { WorkSelected } from "@/components/work-selected";
@@ -10,6 +11,7 @@ import { Experience } from "@/components/experience";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { useReveal } from "@/components/theme/use-reveal";
+import { ContactIntentProvider } from "@/components/contact-intent";
 
 /**
  * Section order is chosen for rhythm as much as for narrative. Reading down,
@@ -20,7 +22,7 @@ import { useReveal } from "@/components/theme/use-reveal";
 export default function Home() {
   useReveal();
   return (
-    <>
+    <ContactIntentProvider>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -28,6 +30,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <WorkFeatured />
+        <Testimonials />
         <Principles />
         <About />
         <WorkSelected />
@@ -35,6 +38,6 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
-    </>
+    </ContactIntentProvider>
   );
 }

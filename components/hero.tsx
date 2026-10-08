@@ -2,25 +2,33 @@
 
 import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
+import { useContactIntent } from "@/components/contact-intent";
+import { Arrow } from "@/components/arrow";
+import { RESUME_PATH } from "@/lib/site";
 
 /**
- * The fold. Five elements, in order of what a stranger needs: availability,
- * what I build, who I am, one action, what I build it with.
+ * The fold. In order of what a stranger needs: availability, what I build,
+ * who I am, one action per audience (a client, a recruiter), then proof —
+ * the names of real shipped work — and what I build it with.
  *
  * The name is deliberately absent — the header wordmark already carries it,
  * and repeating it burned the most valuable line on the page.
+ *
+ * Kept short of a full screen so the next section's heading shows at the
+ * bottom edge: a fold that fills the viewport exactly reads as the whole page.
  *
  * Nothing here carries data-reveal: first paint must not wait for hydration.
  */
 export function Hero() {
   const { t } = useT();
+  const { setIntent } = useContactIntent();
   const H = t.hero;
 
   return (
     <section
       id="index"
       style={{
-        minHeight: "min(94svh, 880px)",
+        minHeight: "min(84svh, 780px)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -73,56 +81,51 @@ export function Hero() {
             marginTop: 30,
           }}
         >
-          <a href="#work" className="btn btn-primary">
-            {H.cta_works}
+          <a href="#contact" className="btn btn-primary" onClick={() => setIntent("project")}>
+            {H.cta_project}
             <Arrow />
           </a>
-          <a href="#contact" className="btn btn-ghost">
-            {H.cta_contact}
+          <a href="#cv" className="btn btn-ghost">
+            {H.cta_hiring}
           </a>
         </div>
 
-        <div
-          style={{
-            marginTop: 40,
-            paddingTop: 18,
-            borderTop: "1px solid var(--rule)",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "10px 20px",
-          }}
-        >
-          <Latin as="span" className="mono">
-            <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
-              {H.stack_line}
-            </span>
-          </Latin>
-          <a
-            href="/youseef-tareq-resume.pdf"
-            download
-            className="mono tap"
-            style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}
+        <div style={{ marginTop: 40, paddingTop: 18, borderTop: "1px solid var(--rule)" }}>
+          <p className="hero-recent">
+            <span className="eyebrow">{H.recent_label}</span>
+            {H.recent.map(([label, anchor]) => (
+              <a key={anchor} href={`#${anchor}`} className="tap">
+                {label}
+              </a>
+            ))}
+          </p>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "10px 20px",
+            }}
           >
-            {H.resume} ↓
-          </a>
+            <Latin as="span" className="mono">
+              <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
+                {H.stack_line}
+              </span>
+            </Latin>
+            <a
+              href={RESUME_PATH}
+              download
+              className="mono tap"
+              style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}
+            >
+              {H.resume} ↓
+            </a>
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function Arrow() {
-  return (
-    <svg className="arrow-x" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-      <path
-        d="M2 7h10M8 3l4 4-4 4"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        fill="none"
-        strokeLinecap="square"
-      />
-    </svg>
   );
 }

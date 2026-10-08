@@ -7,7 +7,7 @@ import { Newsreader, Geist, Geist_Mono } from "next/font/google";
 import { LangProvider } from "@/components/lang/provider";
 import { ThemeProvider } from "@/components/theme/provider";
 import { PreHydrationScript } from "@/components/theme/pre-hydration-script";
-import { SITE_URL } from "@/lib/site";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL } from "@/lib/site";
 
 
 
@@ -113,8 +113,8 @@ const JSON_LD = {
   ],
   worksFor: { "@type": "Organization", name: "The POST" },
   address: { "@type": "PostalAddress", addressLocality: "Cairo", addressCountry: "EG" },
-  email: "youseeftareq5176@gmail.com",
-  sameAs: ["https://github.com/Soking511", "https://linkedin.com/in/youseef-tareq", SITE_URL],
+  email: EMAIL,
+  sameAs: [GITHUB_URL, LINKEDIN_URL, SITE_URL],
 };
 
 export default function RootLayout({

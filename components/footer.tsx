@@ -1,14 +1,15 @@
 "use client";
 
 import { useT } from "@/components/lang/provider";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, whatsappLink } from "@/lib/site";
 
 // Kept here rather than in strings.ts: these are URLs, not copy, and they are
-// identical in both languages.
+// identical in both languages. Professional profiles only — a personal
+// social account is noise to someone deciding whether to hire.
 const ELSEWHERE: Array<[string, string]> = [
-  ["GitHub", "https://github.com/Soking511"],
-  ["LinkedIn", "https://linkedin.com/in/youseef-tareq"],
-  ["Facebook", "https://www.facebook.com/SokingElectron"],
-  ["WhatsApp", "https://wa.me/201557337989"],
+  ["GitHub", GITHUB_URL],
+  ["LinkedIn", LINKEDIN_URL],
+  ["WhatsApp", whatsappLink()],
 ];
 
 export function Footer() {
@@ -39,7 +40,7 @@ export function Footer() {
               {F.index_label}
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-              {t.nav.items.map(([label, href]) => (
+              {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, href]) => (
                 <li key={href}>
                   <a href={href} className="tap" style={{ fontSize: 14 }}>
                     {label}
@@ -75,11 +76,11 @@ export function Footer() {
               {F.direct_label}
             </div>
             <a
-              href="mailto:youseeftareq5176@gmail.com"
+              href={`mailto:${EMAIL}`}
               className="latin tap"
               style={{ fontSize: 14, overflowWrap: "anywhere" }}
             >
-              youseeftareq5176@gmail.com
+              {EMAIL}
             </a>
           </div>
         </div>

@@ -1,4 +1,32 @@
+import {
+  EMAIL,
+  GITHUB_DISPLAY,
+  GITHUB_URL,
+  LINKEDIN_DISPLAY,
+  LINKEDIN_URL,
+  WHATSAPP_DISPLAY,
+  whatsappLink,
+} from "@/lib/site";
+import type { Budget, Intent, Timeline } from "@/lib/contact";
+import type { ProjectStatus } from "@/lib/projects";
+
 export type Lang = "en" | "ar";
+
+/** A real quote from a real person. The section is not rendered while empty. */
+export type Testimonial = {
+  quote: string;
+  name: string;
+  role: string;
+  /** Project slug from lib/projects.ts, so a case study can show its own quote. */
+  project?: string;
+};
+
+/** An architecture diagram, drawn as a list of stages. */
+export type Diagram = {
+  caption: string;
+  /** `bought` marks a third-party service rather than something I built. */
+  nodes: Array<{ name: string; note: string; bought?: boolean }>;
+};
 
 /** A featured project gets the full four-beat story treatment. */
 export type FeaturedWork = {
@@ -30,7 +58,10 @@ export type Strings = {
   dir: "ltr" | "rtl";
   nav: {
     items: Array<[string, string]>;
-    available: string;
+    /** Contact as a plain link (footer, mobile panel). */
+    contact: string;
+    /** Contact as the header's call to action. */
+    cta: string;
     langLabel: string;
     themeLabel: string;
     menuLabel: string;
@@ -43,9 +74,12 @@ export type Strings = {
     headline_post: string;
     sub: string;
     stack_line: string;
-    cta_works: string;
-    cta_contact: string;
+    cta_project: string;
+    cta_hiring: string;
     resume: string;
+    recent_label: string;
+    /** [label, anchor id] — anchor ids are the slugs in lib/projects.ts. */
+    recent: Array<[string, string]>;
   };
   works: {
     eyebrow: string;
@@ -57,12 +91,18 @@ export type Strings = {
     label_built: string;
     label_decision: string;
     label_role: string;
+    outcome_label: string;
     featured: FeaturedWork[];
     selected_eyebrow: string;
     selected_headline: string;
     selected_note: string;
     selected: SelectedWork[];
-    offline_note: string;
+    /** Shown instead of a link for anything that is not live. */
+    status: Record<Exclude<ProjectStatus, "live">, string>;
+  };
+  testimonials: {
+    eyebrow: string;
+    items: Testimonial[];
   };
   principles: {
     eyebrow: string;
@@ -81,6 +121,7 @@ export type Strings = {
     p1: string;
     p2: string;
     p3: string;
+    portrait_alt: string;
   };
   cv: {
     eyebrow: string;
@@ -88,6 +129,8 @@ export type Strings = {
     headline_em: string;
     headline_post: string;
     download: string;
+    recruiter_line: string;
+    role_cta: string;
     rows: Array<{
       years: string;
       role: string;
@@ -106,13 +149,25 @@ export type Strings = {
     details_label: string;
     rows: Array<[string, string, string | null]>;
     availability: string;
+    whatsapp_cta: string;
+    whatsapp_href: string;
+    booking_cta: string;
     form_label: string;
+    intent_label: string;
+    intents: Record<Intent, string>;
+    budget_label: string;
+    budgets: Record<Budget, string>;
+    timeline_label: string;
+    timelines: Record<Timeline, string>;
+    optional: string;
     f_name: string;
     f_name_p: string;
     f_email: string;
     f_email_p: string;
-    f_msg: string;
-    f_msg_p: string;
+    f_company: string;
+    f_company_p: string;
+    /** [label, placeholder] for the message field, per intent. */
+    f_msg: Record<Intent, [string, string]>;
     f_send: string;
     sending: string;
     e_required: string;
@@ -136,6 +191,7 @@ export type Strings = {
   misc: {
     visit_project: string;
     screenshot_alt: (title: string) => string;
+    diagrams: Record<"xtranslator", Diagram>;
   };
 };
 
@@ -146,24 +202,32 @@ const en: Strings = {
       ["Work", "#work"],
       ["About", "#about"],
       ["Résumé", "#cv"],
-      ["Contact", "#contact"],
     ],
-    available: "Available",
+    contact: "Contact",
+    cta: "Let’s talk",
     langLabel: "العربية",
     themeLabel: "Toggle dark mode",
     menuLabel: "Menu",
     closeLabel: "Close",
   },
   hero: {
-    status_line: "Available for new work",
+    status_line: "Open to projects and full-time roles",
     headline_pre: "I build web products that ",
     headline_em: "hold up",
     headline_post: " in production.",
-    sub: "Full-stack engineer in Cairo, currently at The POST. Live-data platforms, subscription products, internal dashboards.",
+    sub: "Full-stack engineer in Cairo, currently at The POST. I build web products in Arabic and English — live-data platforms, subscription apps, internal dashboards.",
     stack_line: "Angular · Node · TypeScript · Django",
-    cta_works: "See the work",
-    cta_contact: "Get in touch",
+    cta_project: "Start a project",
+    cta_hiring: "Hiring? See my résumé",
     resume: "Résumé",
+    recent_label: "Recent work",
+    recent: [
+      ["EG-Pricey", "eg-pricey"],
+      ["XTranslator", "xtranslator"],
+      ["TileGreen", "tilegreen"],
+      ["Jafy", "jafy"],
+      ["Damanhour University", "nursing"],
+    ],
   },
   works: {
     eyebrow: "Featured work",
@@ -175,6 +239,7 @@ const en: Strings = {
     label_built: "What I built",
     label_decision: "Key decision",
     label_role: "Role",
+    outcome_label: "Outcome",
     featured: [
       {
         n: "01",
@@ -264,7 +329,15 @@ const en: Strings = {
         stack: ["Angular", "SCSS"],
       },
     ],
-    offline_note: "Site offline",
+    status: {
+      private: "Private tool · login required",
+      maintenance: "Site in maintenance",
+      offline: "Site offline",
+    },
+  },
+  testimonials: {
+    eyebrow: "In their words",
+    items: [],
   },
   principles: {
     eyebrow: "How I work",
@@ -301,12 +374,13 @@ const en: Strings = {
   },
   about: {
     eyebrow: "About",
-    headline_pre: "Cairo. ",
-    headline_em: "Building",
-    headline_post: " since 2023.",
+    headline_pre: "Seven products ",
+    headline_em: "shipped",
+    headline_post: " from Cairo.",
     p1: "I’m Youseef. I build web products end to end — currently with The POST, and independently for clients who need something shipped properly rather than quickly.",
     p2: "Most of the work is live-data platforms, subscription products and internal dashboards. Angular and Node by default; Django and Postgres when the data model earns it.",
     p3: "I care about the parts people actually feel: first load, forms that don’t lose your work, and Arabic that behaves like a first language instead of a mirrored afterthought.",
+    portrait_alt: "Portrait of Youseef Tareq",
   },
   cv: {
     eyebrow: "Résumé",
@@ -314,6 +388,8 @@ const en: Strings = {
     headline_em: "paper",
     headline_post: ".",
     download: "Download full résumé (PDF)",
+    recruiter_line: "Open to full-time roles — remote, or on-site in Cairo.",
+    role_cta: "Talk about a role",
     rows: [
       {
         years: "2025 — Now",
@@ -357,23 +433,50 @@ const en: Strings = {
     headline_a: "Let’s build something ",
     headline_em: "good",
     headline_b: ".",
-    lead: "Tell me roughly what you’re building, when you need it, and the budget range. I read every message myself and reply within a day.",
+    lead: "A project or a role — either way, a few lines is enough to start. I read every message myself and reply within a day.",
     details_label: "Direct",
     rows: [
-      ["Email", "youseeftareq5176@gmail.com", "mailto:youseeftareq5176@gmail.com"],
-      ["WhatsApp", "+20 155 733 7989", "https://wa.me/201557337989"],
-      ["LinkedIn", "/in/youseef-tareq", "https://linkedin.com/in/youseef-tareq"],
-      ["Discord", "soking_", null],
+      ["Email", EMAIL, `mailto:${EMAIL}`],
+      ["WhatsApp", WHATSAPP_DISPLAY, whatsappLink()],
+      ["LinkedIn", LINKEDIN_DISPLAY, LINKEDIN_URL],
+      ["GitHub", GITHUB_DISPLAY, GITHUB_URL],
       ["Based", "Cairo · Remote worldwide", null],
     ],
-    availability: "Available for new work · replies within 24 hours",
-    form_label: "Project enquiry",
+    availability: "Open to projects and roles · replies within 24 hours",
+    whatsapp_cta: "Message on WhatsApp",
+    whatsapp_href: whatsappLink("Hi Youseef — I found you through soking.digital."),
+    booking_cta: "Book a 20-minute call",
+    form_label: "Send a message",
+    intent_label: "I’m getting in touch about",
+    intents: { project: "A project", role: "A full-time role", other: "Something else" },
+    budget_label: "Budget (USD)",
+    budgets: {
+      lt1k: "Under $1k",
+      "1-3k": "$1k – 3k",
+      "3-8k": "$3k – 8k",
+      "8k+": "$8k +",
+      unsure: "Not sure yet",
+    },
+    timeline_label: "Timeline",
+    timelines: { asap: "As soon as possible", "1-3m": "1 – 3 months", flexible: "Flexible" },
+    optional: "optional",
     f_name: "Your name",
     f_name_p: "e.g. Sarah Chen",
     f_email: "Email",
     f_email_p: "sarah@company.com",
-    f_msg: "What are you building?",
-    f_msg_p: "A few lines is plenty — what, when, and roughly how big.",
+    f_company: "Company",
+    f_company_p: "Where is the role?",
+    f_msg: {
+      project: [
+        "What are you building?",
+        "A few lines is plenty — what it is, who it’s for, and anything already built.",
+      ],
+      role: [
+        "Tell me about the role",
+        "Team, stack, remote or on-site — and a link to the posting if there is one.",
+      ],
+      other: ["Your message", "What’s on your mind?"],
+    },
     f_send: "Send message",
     sending: "Sending…",
     e_required: "Required",
@@ -382,8 +485,7 @@ const en: Strings = {
     e_submit: "Could not send. Try again, or email me directly.",
     sent_label: "Message sent",
     sent_title: (name: string) => `Thanks, ${name}.`,
-    sent_body:
-      "I’ll reply from youseeftareq5176@gmail.com within a day. For anything urgent, WhatsApp is fastest.",
+    sent_body: `I’ll reply from ${EMAIL} within a day. For anything urgent, WhatsApp is fastest.`,
     sent_again: "Send another",
   },
   footer: {
@@ -399,6 +501,21 @@ const en: Strings = {
   misc: {
     visit_project: "Visit live site",
     screenshot_alt: (title: string) => `Screenshot of the ${title} website`,
+    diagrams: {
+      xtranslator: {
+        caption: "How a request travels. The highlighted stages are bought, not rebuilt.",
+        nodes: [
+          { name: "Angular app", note: "Accounts and the translation interface" },
+          { name: "Cloudflare", note: "Rate limiting and bot filtering at the edge", bought: true },
+          { name: "Node.js API", note: "The translation service — a small origin behind the edge" },
+          {
+            name: "Lemon Squeezy",
+            note: "Merchant of record: subscriptions, VAT, cross-border compliance",
+            bought: true,
+          },
+        ],
+      },
+    },
   },
 };
 
@@ -409,24 +526,32 @@ const ar: Strings = {
       ["الأعمال", "#work"],
       ["نبذة", "#about"],
       ["السيرة الذاتية", "#cv"],
-      ["تواصل", "#contact"],
     ],
-    available: "متاح",
+    contact: "تواصل",
+    cta: "لنتحدث",
     langLabel: "English",
     themeLabel: "تبديل الوضع الداكن",
     menuLabel: "القائمة",
     closeLabel: "إغلاق",
   },
   hero: {
-    status_line: "متاح لمشاريع جديدة",
+    status_line: "متاح للمشاريع وللوظائف بدوام كامل",
     headline_pre: "أبني منتجات ويب ",
     headline_em: "تصمد",
     headline_post: " في التشغيل الفعلي.",
-    sub: "مهندس ويب شامل من القاهرة، أعمل حاليًا مع The POST. منصات بيانات حية، ومنتجات اشتراك، ولوحات تحكم داخلية.",
+    sub: "مهندس ويب شامل من القاهرة، أعمل حاليًا مع The POST. أبني منتجات ويب بالعربية والإنجليزية — منصات بيانات حية، وتطبيقات اشتراك، ولوحات تحكم داخلية.",
     stack_line: "Angular · Node · TypeScript · Django",
-    cta_works: "شاهد الأعمال",
-    cta_contact: "تواصل معي",
+    cta_project: "ابدأ مشروعًا",
+    cta_hiring: "تبحث عن مطوّر؟ سيرتي الذاتية",
     resume: "السيرة الذاتية",
+    recent_label: "أعمال حديثة",
+    recent: [
+      ["EG-Pricey", "eg-pricey"],
+      ["XTranslator", "xtranslator"],
+      ["TileGreen", "tilegreen"],
+      ["Jafy", "jafy"],
+      ["جامعة دمنهور", "nursing"],
+    ],
   },
   works: {
     eyebrow: "أعمال مختارة",
@@ -438,6 +563,7 @@ const ar: Strings = {
     label_built: "ما بنيته",
     label_decision: "القرار الأهم",
     label_role: "دوري",
+    outcome_label: "النتيجة",
     featured: [
       {
         n: "٠١",
@@ -527,7 +653,15 @@ const ar: Strings = {
         stack: ["Angular", "SCSS"],
       },
     ],
-    offline_note: "الموقع غير متاح",
+    status: {
+      private: "أداة خاصة · تتطلب تسجيل الدخول",
+      maintenance: "الموقع قيد الصيانة",
+      offline: "الموقع غير متاح",
+    },
+  },
+  testimonials: {
+    eyebrow: "بكلماتهم",
+    items: [],
   },
   principles: {
     eyebrow: "طريقتي في العمل",
@@ -564,12 +698,13 @@ const ar: Strings = {
   },
   about: {
     eyebrow: "نبذة",
-    headline_pre: "القاهرة. ",
-    headline_em: "أبني",
-    headline_post: " منذ ٢٠٢٣.",
+    headline_pre: "سبعة منتجات ",
+    headline_em: "أطلقتها",
+    headline_post: " من القاهرة.",
     p1: "أنا يوسف. أبني منتجات ويب من أولها إلى آخرها — حاليًا مع The POST، وبشكل مستقل لعملاء يريدون عملًا مُتقنًا لا سريعًا.",
     p2: "معظم عملي منصات بيانات حية ومنتجات اشتراك ولوحات تحكم داخلية. Angular وNode افتراضيًا، وDjango وPostgres حين يستحق نموذج البيانات ذلك.",
     p3: "يهمني ما يشعر به الناس فعلًا: زمن التحميل الأول، ونماذج لا تضيّع ما كتبته، وعربية تتصرف كلغة أصلية لا كانعكاس لاحق.",
+    portrait_alt: "صورة يوسف طارق",
   },
   cv: {
     eyebrow: "السيرة الذاتية",
@@ -577,6 +712,8 @@ const ar: Strings = {
     headline_em: "الورق",
     headline_post: ".",
     download: "تحميل السيرة الذاتية كاملة (PDF)",
+    recruiter_line: "متاح لوظائف بدوام كامل — عن بُعد، أو من المقر في القاهرة.",
+    role_cta: "تحدّث معي عن وظيفة",
     rows: [
       {
         years: "٢٠٢٥ — الآن",
@@ -620,23 +757,50 @@ const ar: Strings = {
     headline_a: "لنبنِ شيئًا ",
     headline_em: "جيدًا",
     headline_b: ".",
-    lead: "أخبرني باختصار بما تبنيه، وموعدك، والنطاق التقريبي للميزانية. أقرأ كل رسالة بنفسي وأرد خلال يوم.",
+    lead: "مشروع أو وظيفة — في الحالتين تكفي بضعة أسطر للبداية. أقرأ كل رسالة بنفسي وأرد خلال يوم.",
     details_label: "مباشر",
     rows: [
-      ["البريد", "youseeftareq5176@gmail.com", "mailto:youseeftareq5176@gmail.com"],
-      ["واتساب", "+20 155 733 7989", "https://wa.me/201557337989"],
-      ["لينكدإن", "/in/youseef-tareq", "https://linkedin.com/in/youseef-tareq"],
-      ["ديسكورد", "soking_", null],
+      ["البريد", EMAIL, `mailto:${EMAIL}`],
+      ["واتساب", WHATSAPP_DISPLAY, whatsappLink()],
+      ["لينكدإن", LINKEDIN_DISPLAY, LINKEDIN_URL],
+      ["جيت هب", GITHUB_DISPLAY, GITHUB_URL],
       ["المقر", "القاهرة · عن بُعد حول العالم", null],
     ],
-    availability: "متاح لمشاريع جديدة · أرد خلال ٢٤ ساعة",
-    form_label: "استفسار عن مشروع",
+    availability: "متاح للمشاريع والوظائف · أرد خلال ٢٤ ساعة",
+    whatsapp_cta: "راسلني على واتساب",
+    whatsapp_href: whatsappLink("مرحبًا يوسف — وصلت إليك عبر soking.digital."),
+    booking_cta: "احجز مكالمة لمدة ٢٠ دقيقة",
+    form_label: "أرسل رسالة",
+    intent_label: "أتواصل بخصوص",
+    intents: { project: "مشروع", role: "وظيفة بدوام كامل", other: "أمر آخر" },
+    budget_label: "الميزانية (بالدولار)",
+    budgets: {
+      lt1k: "أقل من ١٬٠٠٠ $",
+      "1-3k": "١٬٠٠٠ – ٣٬٠٠٠ $",
+      "3-8k": "٣٬٠٠٠ – ٨٬٠٠٠ $",
+      "8k+": "أكثر من ٨٬٠٠٠ $",
+      unsure: "لم أحدد بعد",
+    },
+    timeline_label: "الإطار الزمني",
+    timelines: { asap: "في أقرب وقت", "1-3m": "من شهر إلى ثلاثة", flexible: "مرن" },
+    optional: "اختياري",
     f_name: "اسمك",
     f_name_p: "مثال: سارة أحمد",
     f_email: "البريد الإلكتروني",
     f_email_p: "sarah@company.com",
-    f_msg: "ما الذي تبنيه؟",
-    f_msg_p: "بضعة أسطر تكفي — ماذا، ومتى، وما حجمه تقريبًا.",
+    f_company: "الشركة",
+    f_company_p: "أين هذه الوظيفة؟",
+    f_msg: {
+      project: [
+        "ما الذي تبنيه؟",
+        "بضعة أسطر تكفي — ما هو، ولمن، وما الذي بُني منه بالفعل.",
+      ],
+      role: [
+        "حدّثني عن الوظيفة",
+        "الفريق، والتقنيات، عن بُعد أم من المقر — ورابط الإعلان إن وُجد.",
+      ],
+      other: ["رسالتك", "بماذا تفكر؟"],
+    },
     f_send: "إرسال الرسالة",
     sending: "جارٍ الإرسال…",
     e_required: "مطلوب",
@@ -645,8 +809,7 @@ const ar: Strings = {
     e_submit: "تعذّر الإرسال. حاول مجددًا أو راسلني مباشرة.",
     sent_label: "تم إرسال الرسالة",
     sent_title: (name: string) => `شكرًا لك، ${name}.`,
-    sent_body:
-      "سأرد من youseeftareq5176@gmail.com خلال يوم. وللأمور العاجلة، واتساب أسرع.",
+    sent_body: `سأرد من ${EMAIL} خلال يوم. وللأمور العاجلة، واتساب أسرع.`,
     sent_again: "إرسال رسالة أخرى",
   },
   footer: {
@@ -662,6 +825,21 @@ const ar: Strings = {
   misc: {
     visit_project: "زيارة الموقع",
     screenshot_alt: (title: string) => `لقطة شاشة من موقع ${title}`,
+    diagrams: {
+      xtranslator: {
+        caption: "مسار الطلب. المراحل المميّزة تُشترى ولا يُعاد بناؤها.",
+        nodes: [
+          { name: "Angular app", note: "الحسابات وواجهة الترجمة" },
+          { name: "Cloudflare", note: "الحد من الطلبات وتصفية الروبوتات على الحافة", bought: true },
+          { name: "Node.js API", note: "خدمة الترجمة — خادم أصلي صغير خلف الحافة" },
+          {
+            name: "Lemon Squeezy",
+            note: "بائع مسجَّل: الاشتراكات والضريبة والامتثال الدولي",
+            bought: true,
+          },
+        ],
+      },
+    },
   },
 };
 

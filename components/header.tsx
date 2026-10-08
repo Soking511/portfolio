@@ -5,10 +5,13 @@ import { useT } from "@/components/lang/provider";
 import { useTheme } from "@/components/theme/provider";
 
 /**
- * Phones get a wordmark and a single labelled menu button — the language and
- * theme controls move inside the panel, because three competing circular
- * buttons next to the name read as clutter at 375px. Above 860px the four
+ * Phones get a wordmark, the contact call to action and a menu button — the
+ * language and theme controls move inside the panel, because three competing
+ * circular buttons next to the name read as clutter at 375px. Above 860px the
  * links sit inline and the panel is never used.
+ *
+ * "Let's talk" is the one control that never hides: on a twelve-screen page
+ * the form is otherwise a long way from wherever the visitor decides.
  */
 export function Header() {
   const { t, lang, setLang } = useT();
@@ -102,27 +105,36 @@ export function Header() {
           <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} />
         </nav>
 
-        <button
-          type="button"
-          className="nav-burger"
-          aria-expanded={open}
-          aria-controls="nav-panel"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? t.nav.closeLabel : t.nav.menuLabel}
-          <svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true">
-            {open ? (
-              <path
-                d="M1.5 1.5l12 8M13.5 1.5l-12 8"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                fill="none"
-              />
-            ) : (
-              <path d="M0 1.2h15M0 9.8h15" stroke="currentColor" strokeWidth="1.4" />
-            )}
-          </svg>
-        </button>
+        <div className="nav-actions">
+          <a href="#contact" className="nav-cta" onClick={() => setOpen(false)}>
+            {t.nav.cta}
+          </a>
+
+          <button
+            type="button"
+            className="nav-burger"
+            aria-expanded={open}
+            aria-controls="nav-panel"
+            aria-label={open ? t.nav.closeLabel : t.nav.menuLabel}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="nav-burger-label" aria-hidden="true">
+              {open ? t.nav.closeLabel : t.nav.menuLabel}
+            </span>
+            <svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true">
+              {open ? (
+                <path
+                  d="M1.5 1.5l12 8M13.5 1.5l-12 8"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  fill="none"
+                />
+              ) : (
+                <path d="M0 1.2h15M0 9.8h15" stroke="currentColor" strokeWidth="1.4" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       </header>
@@ -131,7 +143,7 @@ export function Header() {
           containing block for position:fixed descendants, which would resolve
           the panel's top/bottom against a 60px box instead of the viewport. */}
       <nav id="nav-panel" className={`nav-panel${open ? " open" : ""}`} aria-label={t.nav.menuLabel}>
-        {t.nav.items.map(([label, href], i) => (
+        {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, href], i) => (
           <a key={href} href={href} onClick={() => setOpen(false)}>
             <span className="n latin">{String(i + 1).padStart(2, "0")}</span>
             {label}

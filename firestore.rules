@@ -6,11 +6,16 @@ service cloud.firestore {
     // must match the exact shape the form sends, with length caps so the
     // collection cannot be used as free storage. Reads stay closed: messages
     // are consumed by the Cloud Function and the Firebase console.
+    //
+    // intent / budget / timeline / company are optional, so a page still
+    // running the older form keeps working while this ships. The enums mirror
+    // lib/contact.ts.
     match /messages/{messageId} {
       allow read, update, delete: if false;
 
       allow create: if request.resource.data.keys().hasOnly(
-                         ['name', 'email', 'message', 'lang', 'createdAt', 'status', 'emailNotified'])
+                         ['name', 'email', 'message', 'lang', 'createdAt', 'status', 'emailNotified',
+                          'intent', 'budget', 'timeline', 'company'])
                     && request.resource.data.keys().hasAll(
                          ['name', 'email', 'message', 'lang', 'createdAt', 'status', 'emailNotified'])
                     && request.resource.data.name is string
@@ -25,7 +30,16 @@ service cloud.firestore {
                     && request.resource.data.lang in ['en', 'ar']
                     && request.resource.data.createdAt is string
                     && request.resource.data.status == 'unread'
-                    && request.resource.data.emailNotified == false;
+                    && request.resource.data.emailNotified == false
+                    && (!('intent' in request.resource.data)
+                        || request.resource.data.intent in ['project', 'role', 'other'])
+                    && (!('budget' in request.resource.data)
+                        || request.resource.data.budget in ['lt1k', '1-3k', '3-8k', '8k+', 'unsure'])
+                    && (!('timeline' in request.resource.data)
+                        || request.resource.data.timeline in ['asap', '1-3m', 'flexible'])
+                    && (!('company' in request.resource.data)
+                        || (request.resource.data.company is string
+                            && request.resource.data.company.size() <= 120));
     }
 
     match /{document=**} {

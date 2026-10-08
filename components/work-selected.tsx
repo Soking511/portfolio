@@ -3,6 +3,7 @@
 import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 import { ProjectImage } from "@/components/project-image";
+import { ProjectLink } from "@/components/project-link";
 import { SELECTED } from "@/lib/projects";
 
 /**
@@ -40,6 +41,7 @@ export function WorkSelected() {
             return (
               <li
                 key={p.title}
+                id={meta.slug}
                 data-reveal
                 className="r-selected-row"
                 style={{ paddingBlock: 22, borderTop: "1px solid var(--rule)" }}
@@ -87,36 +89,9 @@ export function WorkSelected() {
                       {s}
                     </span>
                   ))}
-                  {meta.url ? (
-                    <a
-                      href={meta.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mono tap"
-                      style={{
-                        fontSize: 12,
-                        letterSpacing: "0.06em",
-                        color: "var(--accent)",
-                        textDecoration: "underline",
-                        textUnderlineOffset: 4,
-                        marginInlineStart: 4,
-                      }}
-                    >
-                      {t.misc.visit_project} ↗
-                    </a>
-                  ) : (
-                    <span
-                      className="mono"
-                      style={{
-                        fontSize: 11.5,
-                        letterSpacing: "0.06em",
-                        color: "var(--fg-dim)",
-                        marginInlineStart: 4,
-                      }}
-                    >
-                      {W.offline_note}
-                    </span>
-                  )}
+                  <span style={{ marginInlineStart: 4 }}>
+                    <ProjectLink meta={meta} size={12} />
+                  </span>
                 </div>
               </li>
             );
