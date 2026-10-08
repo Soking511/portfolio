@@ -15,7 +15,7 @@ import { trackAttrs } from "@/lib/analytics";
  * the form is otherwise a long way from wherever the visitor decides.
  */
 export function Header() {
-  const { t, lang, setLang } = useT();
+  const { t, altLang, altHref, homeAnchor } = useT();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -76,7 +76,7 @@ export function Header() {
         }}
       >
         <a
-          href="#index"
+          href={homeAnchor("#index")}
           className="mono latin tap"
           onClick={() => setOpen(false)}
           style={{ fontSize: 13, letterSpacing: "0.1em", fontWeight: 500, whiteSpace: "nowrap" }}
@@ -85,10 +85,10 @@ export function Header() {
         </a>
 
         <nav className="nav-items" aria-label={t.nav.menuLabel}>
-          {t.nav.items.map(([label, href]) => (
+          {t.nav.items.map(([label, hash]) => (
             <a
-              key={href}
-              href={href}
+              key={hash}
+              href={homeAnchor(hash)}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -102,13 +102,13 @@ export function Header() {
             </a>
           ))}
           <span style={{ width: 8 }} />
-          <LangButton lang={lang} setLang={setLang} label={t.nav.langLabel} />
+          <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} />
           <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} />
         </nav>
 
         <div className="nav-actions">
           <a
-            href="#contact"
+            href={homeAnchor("#contact")}
             className="nav-cta"
             onClick={() => setOpen(false)}
             {...trackAttrs("header_cta")}
@@ -149,15 +149,15 @@ export function Header() {
           containing block for position:fixed descendants, which would resolve
           the panel's top/bottom against a 60px box instead of the viewport. */}
       <nav id="nav-panel" className={`nav-panel${open ? " open" : ""}`} aria-label={t.nav.menuLabel}>
-        {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, href], i) => (
-          <a key={href} href={href} onClick={() => setOpen(false)}>
+        {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, hash], i) => (
+          <a key={hash} href={homeAnchor(hash)} onClick={() => setOpen(false)}>
             <span className="n latin">{String(i + 1).padStart(2, "0")}</span>
             {label}
           </a>
         ))}
 
         <div style={{ display: "flex", gap: 10, marginTop: 28 }}>
-          <LangButton lang={lang} setLang={setLang} label={t.nav.langLabel} wide />
+          <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} wide />
           <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} wide />
         </div>
       </nav>
@@ -165,24 +165,28 @@ export function Header() {
   );
 }
 
-function LangButton({
-  lang,
-  setLang,
+/** A link to this same page in the other language — each is its own URL. */
+function LangLink({
+  altLang,
+  href,
   label,
   wide = false,
 }: {
-  lang: "en" | "ar";
-  setLang: (l: "en" | "ar") => void;
+  altLang: "en" | "ar";
+  href: string;
   label: string;
   wide?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      onClick={() => setLang(lang === "en" ? "ar" : "en")}
+    <a
+      href={href}
+      hrefLang={altLang}
+      lang={altLang}
       className="mono"
-      {...trackAttrs("lang_switch", { to: lang === "en" ? "ar" : "en" })}
+      {...trackAttrs("lang_switch", { to: altLang })}
       style={{
+        display: "inline-flex",
+        alignItems: "center",
         minHeight: 44,
         padding: wide ? "0 22px" : "0 14px",
         border: "1px solid var(--rule)",
@@ -191,7 +195,7 @@ function LangButton({
       }}
     >
       {label}
-    </button>
+    </a>
   );
 }
 

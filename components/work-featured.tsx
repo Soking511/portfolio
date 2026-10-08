@@ -4,7 +4,10 @@ import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 import { ProjectImage } from "@/components/project-image";
 import { ProjectLink } from "@/components/project-link";
+import { Arrow } from "@/components/arrow";
 import { FEATURED } from "@/lib/projects";
+import { workPath } from "@/lib/i18n";
+import { trackAttrs } from "@/lib/analytics";
 import type { FeaturedWork } from "@/components/lang/strings";
 
 /**
@@ -104,7 +107,7 @@ function ProjectBlock({
   );
 }
 
-function Beat({ label, text, isKey }: { label: string; text: string; isKey?: boolean }) {
+export function Beat({ label, text, isKey }: { label: string; text: string; isKey?: boolean }) {
   return (
     <div className={`proj-beat${isKey ? " proj-beat--key" : ""}`}>
       <div
@@ -121,7 +124,7 @@ function Beat({ label, text, isKey }: { label: string; text: string; isKey?: boo
 }
 
 /** A verified result. Only rendered once there is an honest number to put here. */
-function Outcome({ label, text }: { label: string; text: string }) {
+export function Outcome({ label, text }: { label: string; text: string }) {
   return (
     <div className="proj-outcome">
       <div className="eyebrow" style={{ marginBottom: 6, color: "var(--accent)" }}>
@@ -143,6 +146,7 @@ function Foot({
   meta: (typeof FEATURED)[number];
   labels: ReturnType<typeof useT>["t"]["works"];
 }) {
+  const { lang } = useT();
   return (
     <div
       className="proj-foot"
@@ -166,7 +170,15 @@ function Foot({
           </span>
         ))}
       </div>
-      <span style={{ marginInlineStart: "auto" }}>
+      <span className="proj-links">
+        <a
+          href={workPath(lang, meta.slug)}
+          className="tap proj-case-link"
+          {...trackAttrs("case_study_open", { project: meta.slug, from: "home" })}
+        >
+          {labels.case_study}
+          <Arrow size={12} />
+        </a>
         <ProjectLink meta={meta} />
       </span>
     </div>

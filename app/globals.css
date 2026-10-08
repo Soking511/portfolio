@@ -5,7 +5,8 @@
 /* ────────────────────────────────────────────────────────────────────────────
    Design tokens. One art direction, two themes: stamp data-theme on <html>.
    Latin font variables (--font-geist, etc.) come from next/font in
-   app/layout.tsx. Arabic fonts are lazy-injected via <link> by LangProvider.
+   components/shell/root-shell.tsx; the Arabic one from app/(ar)/layout.tsx,
+   so only Arabic pages load it.
    ──────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -53,13 +54,25 @@
 }
 
 [dir="rtl"] {
-  --sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
-  --serif: "Amiri", "Times New Roman", serif;
-  --italic-style: normal; /* Amiri has no true italic — colour carries the emphasis */
+  /* Arabic glyphs from Plex Arabic; Latin words (product names, the stack)
+     fall through to Geist, so they look the same in both languages. */
+  --sans: var(--font-plex-arabic), var(--font-geist), "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --italic-style: normal; /* Arabic has no italic — colour carries the emphasis */
 }
-[dir="rtl"] .mono { letter-spacing: 0.04em; }
+/* Arabic is a joined script: tracking pulls its letters apart, and Geist Mono
+   has no Arabic glyphs. So in RTL, Arabic in a mono line falls through to
+   Plex Arabic and loses the tracking; Latin runs (.latin) keep both. */
+[dir="rtl"] { --mono: var(--font-geist-mono), var(--font-plex-arabic), ui-monospace, monospace; }
+[dir="rtl"] .mono:not(.latin) { letter-spacing: 0 !important; }
 [dir="rtl"] .arrow-x { transform: scaleX(-1); }
+.arrow-x.arrow-back { transform: scaleX(-1); }
+[dir="rtl"] .arrow-x.arrow-back { transform: none; }
 [dir="rtl"] .latin { direction: ltr; unicode-bidi: isolate; }
+/* A Latin block (a product name as a heading, a year above a role) still
+   lines up with the Arabic around it: direction: ltr would otherwise push it
+   to the left edge. Inline runs are unaffected. */
+[dir="rtl"] .latin,
+[dir="rtl"] [lang="en"][dir="ltr"] { text-align: right; }
 
 * { box-sizing: border-box; }
 
@@ -270,6 +283,23 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
 }
 .hero-recent a:hover { text-decoration-color: var(--accent); }
 
+/* The other-language offer sits in the gap between the fixed header and the
+   status line, out of flow, so it can appear after hydration without moving
+   anything. */
+.hero-alt {
+  position: absolute;
+  top: 61px;
+  inset-inline: 0;
+  font-size: 14px;
+}
+.hero-alt a {
+  display: inline-block;
+  padding-block: 4px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 /* ── featured project ─────────────────────────────────────────────────────
    Mobile is the base case: one column, media edge-to-edge and portrait.
    Desktop re-composes the same DOM with grid areas.                        */
@@ -287,6 +317,21 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
 .proj--media-first .proj-media { order: -1; }
 
 .proj-outcome { padding-bottom: 15px; }
+.proj-links {
+  margin-inline-start: auto;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 22px;
+}
+.proj-case-link {
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 5px;
+}
 .proj-beat { padding-block: 15px; border-top: 1px solid var(--rule); }
 .proj-beat:first-child { border-top: 0; padding-top: 0; }
 /* The decision is the point of the case study, so it is the one that is styled. */
@@ -431,6 +476,68 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
   font-size: 12.5px;
   line-height: 1.5;
   color: var(--fg-dim);
+}
+
+/* ── case study page ─────────────────────────────────────────────────────── */
+
+.cs-head { padding-top: 104px; padding-bottom: 32px; }
+.cs-back {
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--fg-dim);
+}
+.cs-back:hover { color: var(--fg); }
+.cs-meta {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.cs-meta .eyebrow { flex-basis: 100%; }
+.cs-section { padding-block: 48px; border-top: 1px solid var(--rule); }
+/* Label above on phones, a narrow label column beside the content above. */
+.cs-text { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.cs-beats { display: grid; grid-template-columns: 1fr; }
+.cs-diagram { border: 1px solid var(--rule); }
+.cs-gallery { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
+.cs-gallery figure { margin: 0; display: grid; gap: 10px; }
+.cs-gallery img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background: var(--card);
+}
+.cs-gallery figure:last-child { max-width: 300px; }
+.cs-next a {
+  display: grid;
+  gap: 8px;
+  padding-block: 56px 72px;
+}
+.cs-next-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: clamp(32px, 8vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+.cs-next a:hover .cs-next-title { color: var(--accent); }
+
+@media (min-width: 721px) {
+  .cs-head { padding-top: 128px; }
+  .cs-hero-media { aspect-ratio: 16 / 9; }
+  .cs-beats { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .cs-beats .proj-beat { border-top: 0; padding-top: 0; }
+  .cs-beats .proj-beat--key { margin-top: 0; }
+  .cs-section { padding-block: 64px; }
+  .cs-text { grid-template-columns: 200px 1fr; gap: 40px; }
+  .cs-gallery { grid-template-columns: 2.6fr 1fr; gap: 32px; }
+  .cs-gallery figure:last-child { max-width: none; }
 }
 
 /* ── layout patterns ─────────────────────────────────────────────────────── */

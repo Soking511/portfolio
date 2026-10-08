@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 import { useContactIntent } from "@/components/contact-intent";
@@ -21,14 +22,23 @@ import { trackAttrs } from "@/lib/analytics";
  * Nothing here carries data-reveal: first paint must not wait for hydration.
  */
 export function Hero() {
-  const { t } = useT();
+  const { t, altLang, altHref } = useT();
   const { setIntent } = useContactIntent();
   const H = t.hero;
+
+  // Only after mount (navigator is client-only), and absolutely positioned in
+  // the gap under the header, so appearing late never shifts the fold.
+  const [suggestAlt, setSuggestAlt] = useState(false);
+  useEffect(() => {
+    const preferred = (navigator.languages?.[0] ?? navigator.language ?? "").toLowerCase();
+    setSuggestAlt(preferred.startsWith(altLang));
+  }, [altLang]);
 
   return (
     <section
       id="index"
       style={{
+        position: "relative",
         minHeight: "min(84svh, 780px)",
         display: "flex",
         flexDirection: "column",
@@ -37,6 +47,20 @@ export function Hero() {
         paddingBottom: 28,
       }}
     >
+      {suggestAlt && (
+        <div className="container-edge hero-alt">
+          <a
+            href={altHref}
+            hrefLang={altLang}
+            lang={altLang}
+            dir={altLang === "ar" ? "rtl" : "ltr"}
+            {...trackAttrs("lang_suggest", { to: altLang })}
+          >
+            {H.alt_suggest}
+          </a>
+        </div>
+      )}
+
       <div className="container-edge" style={{ width: "100%" }}>
         <p
           className="mono"

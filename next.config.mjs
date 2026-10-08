@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
+  // /ar/ and /work/<slug>/ export as directories with an index.html, which
+  // Firebase Hosting (and any static server) serves without rewrites.
+  trailingSlash: true,
   // Static export cannot run the image optimizer; screenshots in /public/work
   // are pre-sized WebP at 1440w and 720w instead.
   images: { unoptimized: true },

@@ -1,8 +1,9 @@
 /**
  * Runs before React hydrates. Three jobs:
  *
- *  1. Stamp data-theme, lang and dir from localStorage so the first paint
- *     already matches the persisted preference (no FOUC).
+ *  1. Stamp data-theme from localStorage so the first paint already matches
+ *     the persisted preference (no FOUC). Language is not stored: lang and
+ *     dir come from the page itself — "/" is English, "/ar/" is Arabic.
  *  2. Fall back to the OS colour scheme when nothing is stored.
  *  3. Set data-reveal-ready, which is the ONLY thing that arms the
  *     scroll-reveal hidden state in globals.css. Without JavaScript, or under
@@ -19,9 +20,6 @@ const SCRIPT = `
       theme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
     }
     root.setAttribute('data-theme',theme);
-    var lang=localStorage.getItem('portfolio:lang')==='ar'?'ar':'en';
-    root.setAttribute('lang',lang);
-    root.setAttribute('dir',lang==='ar'?'rtl':'ltr');
   } catch (_) {}
   try {
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;

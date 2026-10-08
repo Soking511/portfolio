@@ -1,5 +1,8 @@
 import type { Diagram } from "@/components/lang/strings";
 
+/** ASCII plus the middle dot, i.e. a Latin product name like "Node.js · Express". */
+const LATIN = /^[\x20-\x7E·]+$/;
+
 /**
  * An architecture diagram drawn as an ordered list, not an SVG: the stages
  * are real text, so they translate, wrap, flip for RTL and read out to a
@@ -14,7 +17,7 @@ export function FlowDiagram({ diagram }: { diagram: Diagram }) {
           <li key={node.name} className={`flow-node${node.bought ? " flow-node--bought" : ""}`}>
             <span className="flow-n mono latin">{String(i + 1).padStart(2, "0")}</span>
             <span>
-              <span className="flow-name latin">{node.name}</span>
+              <span className={`flow-name${LATIN.test(node.name) ? " latin" : ""}`}>{node.name}</span>
               <span className="flow-note">{node.note}</span>
             </span>
           </li>

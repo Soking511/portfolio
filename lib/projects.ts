@@ -12,8 +12,9 @@ export type ProjectMeta = {
   status: ProjectStatus;
   /** Basename in /public/work — resolves to <slug>-1440.webp and <slug>-720.webp. */
   image: string | null;
-  /** An architecture diagram shown in place of a screenshot. */
-  diagram?: "xtranslator";
+  /** An architecture diagram: in place of a missing screenshot on the home
+   *  page, and as its own section on the case-study page. */
+  diagram?: "xtranslator" | "eg-pricey";
   /** Brand colour, used for the typographic panel when there is no screenshot. */
   swatch: string;
 };
@@ -28,6 +29,7 @@ export const FEATURED: ProjectMeta[] = [
     url: "https://eg-pricey.com/",
     status: "live",
     image: "eg-pricey",
+    diagram: "eg-pricey",
     swatch: "#0B63E5",
   },
   {

@@ -41,6 +41,12 @@ export type FeaturedWork = {
   stack: string[];
   /** Real, verifiable outcome. Left undefined until there are honest numbers. */
   outcome?: string;
+  /** Long-form sections for the case-study page. Each renders only when filled. */
+  caseStudy?: {
+    context?: string;
+    challenges?: Array<{ title: string; body: string }>;
+    differently?: string;
+  };
 };
 
 /** A selected project is one scannable row. */
@@ -56,6 +62,12 @@ export type SelectedWork = {
 
 export type Strings = {
   dir: "ltr" | "rtl";
+  seo: {
+    title: string;
+    title_template: string;
+    description: string;
+    og_alt: string;
+  };
   nav: {
     items: Array<[string, string]>;
     /** Contact as a plain link (footer, mobile panel). */
@@ -80,6 +92,8 @@ export type Strings = {
     recent_label: string;
     /** [label, anchor id] — anchor ids are the slugs in lib/projects.ts. */
     recent: Array<[string, string]>;
+    /** Written in the *other* language: offered to visitors whose browser prefers it. */
+    alt_suggest: string;
   };
   works: {
     eyebrow: string;
@@ -92,6 +106,7 @@ export type Strings = {
     label_decision: string;
     label_role: string;
     outcome_label: string;
+    case_study: string;
     featured: FeaturedWork[];
     selected_eyebrow: string;
     selected_headline: string;
@@ -103,6 +118,21 @@ export type Strings = {
   testimonials: {
     eyebrow: string;
     items: Testimonial[];
+  };
+  case: {
+    back: string;
+    architecture: string;
+    context: string;
+    challenges: string;
+    differently: string;
+    gallery: string;
+    desktop: string;
+    mobile: string;
+    cta_pre: string;
+    cta_em: string;
+    cta_post: string;
+    cta_body: string;
+    next: string;
   };
   principles: {
     eyebrow: string;
@@ -189,14 +219,22 @@ export type Strings = {
     to_top: string;
   };
   misc: {
+    skip: string;
     visit_project: string;
     screenshot_alt: (title: string) => string;
-    diagrams: Record<"xtranslator", Diagram>;
+    diagrams: Record<"xtranslator" | "eg-pricey", Diagram>;
   };
 };
 
 const en: Strings = {
   dir: "ltr",
+  seo: {
+    title: "Youseef Tareq — Full-Stack Engineer, Cairo",
+    title_template: "%s | Youseef Tareq",
+    description:
+      "Full-stack engineer in Cairo building Arabic and English web products — live-data platforms, subscription apps and internal dashboards with Angular, Node.js and TypeScript.",
+    og_alt: "Youseef Tareq — full-stack engineer, Cairo",
+  },
   nav: {
     items: [
       ["Work", "#work"],
@@ -228,6 +266,7 @@ const en: Strings = {
       ["Jafy", "jafy"],
       ["Damanhour University", "nursing"],
     ],
+    alt_suggest: "هذا الموقع متاح بالعربية ←",
   },
   works: {
     eyebrow: "Featured work",
@@ -240,6 +279,7 @@ const en: Strings = {
     label_decision: "Key decision",
     label_role: "Role",
     outcome_label: "Outcome",
+    case_study: "Read the case study",
     featured: [
       {
         n: "01",
@@ -338,6 +378,21 @@ const en: Strings = {
   testimonials: {
     eyebrow: "In their words",
     items: [],
+  },
+  case: {
+    back: "All work",
+    architecture: "Architecture",
+    context: "Context",
+    challenges: "What was hard",
+    differently: "What I’d do differently",
+    gallery: "On screen",
+    desktop: "Desktop",
+    mobile: "Phone",
+    cta_pre: "Have something ",
+    cta_em: "similar",
+    cta_post: " in mind?",
+    cta_body: "Tell me what you’re building — or, if you’re hiring, about the role.",
+    next: "Next case study",
   },
   principles: {
     eyebrow: "How I work",
@@ -499,9 +554,25 @@ const en: Strings = {
     to_top: "Back to top",
   },
   misc: {
+    skip: "Skip to content",
     visit_project: "Visit live site",
     screenshot_alt: (title: string) => `Screenshot of the ${title} website`,
     diagrams: {
+      "eg-pricey": {
+        caption: "Prices are pushed, not polled — a tab left open all morning stays correct.",
+        nodes: [
+          {
+            name: "Price sources",
+            note: "Currencies, gold, fuel and food — from sources that rarely agree",
+          },
+          { name: "Node.js · Express", note: "The API, with prices kept in MongoDB" },
+          { name: "Socket.IO", note: "Pushes every change to every open tab instead of polling" },
+          {
+            name: "Angular app",
+            note: "Arabic-first and RTL; announces a reconnect rather than show a stale price",
+          },
+        ],
+      },
       xtranslator: {
         caption: "How a request travels. The highlighted stages are bought, not rebuilt.",
         nodes: [
@@ -521,6 +592,13 @@ const en: Strings = {
 
 const ar: Strings = {
   dir: "rtl",
+  seo: {
+    title: "يوسف طارق — مهندس ويب شامل، القاهرة",
+    title_template: "%s | يوسف طارق",
+    description:
+      "مهندس ويب شامل من القاهرة يبني منتجات ويب بالعربية والإنجليزية — منصات بيانات حية وتطبيقات اشتراك ولوحات تحكم داخلية باستخدام Angular وNode.js وTypeScript.",
+    og_alt: "يوسف طارق — مهندس ويب شامل، القاهرة",
+  },
   nav: {
     items: [
       ["الأعمال", "#work"],
@@ -552,6 +630,7 @@ const ar: Strings = {
       ["Jafy", "jafy"],
       ["جامعة دمنهور", "nursing"],
     ],
+    alt_suggest: "This site is also in English →",
   },
   works: {
     eyebrow: "أعمال مختارة",
@@ -564,6 +643,7 @@ const ar: Strings = {
     label_decision: "القرار الأهم",
     label_role: "دوري",
     outcome_label: "النتيجة",
+    case_study: "اقرأ دراسة الحالة",
     featured: [
       {
         n: "٠١",
@@ -662,6 +742,21 @@ const ar: Strings = {
   testimonials: {
     eyebrow: "بكلماتهم",
     items: [],
+  },
+  case: {
+    back: "كل الأعمال",
+    architecture: "البنية",
+    context: "السياق",
+    challenges: "ما كان صعبًا",
+    differently: "ما كنت سأفعله بشكل مختلف",
+    gallery: "على الشاشة",
+    desktop: "سطح المكتب",
+    mobile: "الهاتف",
+    cta_pre: "لديك فكرة ",
+    cta_em: "مشابهة",
+    cta_post: "؟",
+    cta_body: "أخبرني بما تبنيه — أو، إن كنت توظّف، عن الوظيفة.",
+    next: "دراسة الحالة التالية",
   },
   principles: {
     eyebrow: "طريقتي في العمل",
@@ -823,9 +918,22 @@ const ar: Strings = {
     to_top: "العودة إلى الأعلى",
   },
   misc: {
+    skip: "انتقل إلى المحتوى",
     visit_project: "زيارة الموقع",
     screenshot_alt: (title: string) => `لقطة شاشة من موقع ${title}`,
     diagrams: {
+      "eg-pricey": {
+        caption: "الأسعار تُدفع ولا تُستعلم — فتبقى الصفحة المفتوحة طوال الصباح صحيحة.",
+        nodes: [
+          { name: "مصادر الأسعار", note: "العملات والذهب والوقود والسلع — من مصادر نادرًا ما تتفق" },
+          { name: "Node.js · Express", note: "الواجهة البرمجية، والأسعار محفوظة في MongoDB" },
+          { name: "Socket.IO", note: "يدفع كل تغيير إلى كل صفحة مفتوحة بدل الاستعلام المتكرر" },
+          {
+            name: "Angular app",
+            note: "عربي أولًا ومن اليمين لليسار؛ يُعلن إعادة الاتصال بدل عرض سعر قديم",
+          },
+        ],
+      },
       xtranslator: {
         caption: "مسار الطلب. المراحل المميّزة تُشترى ولا يُعاد بناؤها.",
         nodes: [

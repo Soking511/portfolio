@@ -12,6 +12,7 @@ import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { useReveal } from "@/components/theme/use-reveal";
 import { ContactIntentProvider } from "@/components/contact-intent";
+import { useT } from "@/components/lang/provider";
 
 /**
  * Section order is chosen for rhythm as much as for narrative. Reading down,
@@ -19,12 +20,13 @@ import { ContactIntentProvider } from "@/components/contact-intent";
  * two adjacent sections share a mode. On a phone, where everything is one
  * column, that alternation is the main thing keeping the scroll moving.
  */
-export default function Home() {
+export function HomePage() {
+  const { t } = useT();
   useReveal();
   return (
     <ContactIntentProvider>
       <a className="skip-link" href="#main">
-        Skip to content
+        {t.misc.skip}
       </a>
       <Header />
       <main id="main">
