@@ -494,7 +494,7 @@ const en: Strings = {
     elsewhere_label: "Elsewhere",
     direct_label: "Direct",
     colophon_text:
-      "Designed and built end to end. Bilingual, light and dark, no analytics, no cookies, no pop-ups.",
+      "Designed and built end to end. Bilingual, light and dark — no cookies, no pop-ups.",
     copyright: "© 2026 Youseef Tareq",
     to_top: "Back to top",
   },
@@ -818,7 +818,7 @@ const ar: Strings = {
     elsewhere_label: "في أماكن أخرى",
     direct_label: "مباشر",
     colophon_text:
-      "مصمَّم ومبني بالكامل. ثنائي اللغة، فاتح وداكن، بلا تتبّع ولا كوكيز ولا نوافذ منبثقة.",
+      "مصمَّم ومبني بالكامل. ثنائي اللغة، فاتح وداكن — بلا كوكيز ولا نوافذ منبثقة.",
     copyright: "© ٢٠٢٦ يوسف طارق",
     to_top: "العودة إلى الأعلى",
   },

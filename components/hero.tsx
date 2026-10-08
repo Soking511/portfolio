@@ -5,6 +5,7 @@ import { Latin } from "@/components/lang/latin";
 import { useContactIntent } from "@/components/contact-intent";
 import { Arrow } from "@/components/arrow";
 import { RESUME_PATH } from "@/lib/site";
+import { trackAttrs } from "@/lib/analytics";
 
 /**
  * The fold. In order of what a stranger needs: availability, what I build,
@@ -81,11 +82,16 @@ export function Hero() {
             marginTop: 30,
           }}
         >
-          <a href="#contact" className="btn btn-primary" onClick={() => setIntent("project")}>
+          <a
+            href="#contact"
+            className="btn btn-primary"
+            onClick={() => setIntent("project")}
+            {...trackAttrs("hero_start_project")}
+          >
             {H.cta_project}
             <Arrow />
           </a>
-          <a href="#cv" className="btn btn-ghost">
+          <a href="#cv" className="btn btn-ghost" {...trackAttrs("hero_hiring")}>
             {H.cta_hiring}
           </a>
         </div>
@@ -94,7 +100,12 @@ export function Hero() {
           <p className="hero-recent">
             <span className="eyebrow">{H.recent_label}</span>
             {H.recent.map(([label, anchor]) => (
-              <a key={anchor} href={`#${anchor}`} className="tap">
+              <a
+                key={anchor}
+                href={`#${anchor}`}
+                className="tap"
+                {...trackAttrs("hero_recent", { project: anchor })}
+              >
                 {label}
               </a>
             ))}
@@ -119,6 +130,7 @@ export function Hero() {
               href={RESUME_PATH}
               download
               className="mono tap"
+              {...trackAttrs("resume_download", { from: "hero" })}
               style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}
             >
               {H.resume} ↓

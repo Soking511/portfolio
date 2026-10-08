@@ -5,6 +5,7 @@ import { Latin } from "@/components/lang/latin";
 import { useContactIntent } from "@/components/contact-intent";
 import { Arrow } from "@/components/arrow";
 import { GITHUB_URL, LINKEDIN_URL, RESUME_PATH } from "@/lib/site";
+import { trackAttrs } from "@/lib/analytics";
 
 /**
  * Where the hero's "Hiring?" button lands, so the top of this section is the
@@ -47,7 +48,12 @@ export function Experience() {
             <span className="em">{E.headline_em}</span>
             {E.headline_post}
           </h2>
-          <a href={RESUME_PATH} download className="btn btn-ghost">
+          <a
+            href={RESUME_PATH}
+            download
+            className="btn btn-ghost"
+            {...trackAttrs("resume_download", { from: "cv" })}
+          >
             {E.download}
           </a>
         </div>
@@ -58,10 +64,22 @@ export function Experience() {
             {E.recruiter_line}
           </p>
           <span className="cv-recruiter-links">
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="latin tap">
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="latin tap"
+              {...trackAttrs("profile_click", { network: "github", from: "cv" })}
+            >
               GitHub ↗
             </a>
-            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="latin tap">
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="latin tap"
+              {...trackAttrs("profile_click", { network: "linkedin", from: "cv" })}
+            >
               LinkedIn ↗
             </a>
             <a
@@ -69,6 +87,7 @@ export function Experience() {
               className="tap accent"
               style={{ gap: 8 }}
               onClick={() => setIntent("role")}
+              {...trackAttrs("cv_role_cta")}
             >
               {E.role_cta}
               <Arrow size={12} />

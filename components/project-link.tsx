@@ -2,6 +2,7 @@
 
 import { useT } from "@/components/lang/provider";
 import type { ProjectMeta } from "@/lib/projects";
+import { trackAttrs } from "@/lib/analytics";
 
 /**
  * The outbound link for a project — but only when it is live. Anything else
@@ -28,6 +29,7 @@ export function ProjectLink({ meta, size = 12.5 }: { meta: ProjectMeta; size?: n
       target="_blank"
       rel="noopener noreferrer"
       className="mono tap"
+      {...trackAttrs("live_site", { project: meta.slug })}
       style={{
         fontSize: size,
         letterSpacing: "0.06em",

@@ -7,7 +7,7 @@ import { Newsreader, Geist, Geist_Mono } from "next/font/google";
 import { LangProvider } from "@/components/lang/provider";
 import { ThemeProvider } from "@/components/theme/provider";
 import { PreHydrationScript } from "@/components/theme/pre-hydration-script";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL } from "@/lib/site";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL, UMAMI_WEBSITE_ID } from "@/lib/site";
 
 
 
@@ -139,6 +139,16 @@ export default function RootLayout({
         <ThemeProvider>
           <LangProvider>{children}</LangProvider>
         </ThemeProvider>
+        {/* Cookie-free analytics, and only on the production domain, so local
+            builds and Firebase preview channels never count as visits. */}
+        {UMAMI_WEBSITE_ID && (
+          <Script
+            src="https://cloud.umami.is/script.js"
+            data-website-id={UMAMI_WEBSITE_ID}
+            data-domains={new URL(SITE_URL).host}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

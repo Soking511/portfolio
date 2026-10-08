@@ -5,6 +5,7 @@ import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
 import { BOOKING_URL } from "@/lib/site";
 import { BUDGETS, INTENTS, TIMELINES, type Budget, type Timeline } from "@/lib/contact";
+import { track, trackAttrs } from "@/lib/analytics";
 
 type FormState = {
   name: string;
@@ -76,6 +77,7 @@ export function Contact() {
       ]);
       if (!db) throw new Error("Firestore not initialized");
       await addDoc(collection(db, "messages"), doc);
+      track("contact_sent", { intent });
       setSentName(form.name.split(" ")[0] || (isAR ? "صديقي" : "friend"));
       setSend("sent");
     } catch (err) {
@@ -122,12 +124,19 @@ export function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-ghost"
+                {...trackAttrs("whatsapp_click", { from: "contact" })}
               >
                 <WhatsAppIcon />
                 {C.whatsapp_cta}
               </a>
               {BOOKING_URL && (
-                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                <a
+                  href={BOOKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ghost"
+                  {...trackAttrs("booking_click")}
+                >
                   {C.booking_cta}
                 </a>
               )}

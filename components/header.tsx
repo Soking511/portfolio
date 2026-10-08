@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { useTheme } from "@/components/theme/provider";
+import { trackAttrs } from "@/lib/analytics";
 
 /**
  * Phones get a wordmark, the contact call to action and a menu button — the
@@ -106,7 +107,12 @@ export function Header() {
         </nav>
 
         <div className="nav-actions">
-          <a href="#contact" className="nav-cta" onClick={() => setOpen(false)}>
+          <a
+            href="#contact"
+            className="nav-cta"
+            onClick={() => setOpen(false)}
+            {...trackAttrs("header_cta")}
+          >
             {t.nav.cta}
           </a>
 
@@ -175,6 +181,7 @@ function LangButton({
       type="button"
       onClick={() => setLang(lang === "en" ? "ar" : "en")}
       className="mono"
+      {...trackAttrs("lang_switch", { to: lang === "en" ? "ar" : "en" })}
       style={{
         minHeight: 44,
         padding: wide ? "0 22px" : "0 14px",
