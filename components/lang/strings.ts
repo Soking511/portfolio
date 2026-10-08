@@ -119,6 +119,19 @@ export type Strings = {
     eyebrow: string;
     items: Testimonial[];
   };
+  notes: {
+    nav: string;
+    title: string;
+    headline_pre: string;
+    headline_em: string;
+    headline_post: string;
+    intro: string;
+    empty: string;
+    latest: string;
+    all: string;
+    cta: string;
+    feed: string;
+  };
   case: {
     back: string;
     architecture: string;
@@ -378,6 +391,19 @@ const en: Strings = {
   testimonials: {
     eyebrow: "In their words",
     items: [],
+  },
+  notes: {
+    nav: "Notes",
+    title: "Notes",
+    headline_pre: "Notes from ",
+    headline_em: "the work",
+    headline_post: ".",
+    intro: "Longer versions of the decisions on this site — what I tried, what broke, and what I’d keep.",
+    empty: "The first note is on its way.",
+    latest: "Latest notes",
+    all: "All notes",
+    cta: "Working on something like this?",
+    feed: "RSS feed",
   },
   case: {
     back: "All work",
@@ -742,6 +768,19 @@ const ar: Strings = {
   testimonials: {
     eyebrow: "بكلماتهم",
     items: [],
+  },
+  notes: {
+    nav: "ملاحظات",
+    title: "ملاحظات",
+    headline_pre: "ملاحظات من ",
+    headline_em: "العمل",
+    headline_post: ".",
+    intro: "نسخ أطول من القرارات المذكورة في هذا الموقع — ما جرّبته، وما تعطّل، وما سأبقي عليه.",
+    empty: "أول ملاحظة في الطريق.",
+    latest: "أحدث الملاحظات",
+    all: "كل الملاحظات",
+    cta: "تعمل على شيء مشابه؟",
+    feed: "خلاصة RSS",
   },
   case: {
     back: "كل الأعمال",

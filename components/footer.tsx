@@ -13,7 +13,7 @@ const ELSEWHERE: Array<[string, string]> = [
 ];
 
 export function Footer() {
-  const { t, homeAnchor } = useT();
+  const { t, homeAnchor, nav } = useT();
   const F = t.footer;
 
   return (
@@ -40,9 +40,9 @@ export function Footer() {
               {F.index_label}
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-              {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, hash]) => (
-                <li key={hash}>
-                  <a href={homeAnchor(hash)} className="tap" style={{ fontSize: 14 }}>
+              {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href]) => (
+                <li key={href}>
+                  <a href={href} className="tap" style={{ fontSize: 14 }}>
                     {label}
                   </a>
                 </li>

@@ -15,7 +15,7 @@ import { trackAttrs } from "@/lib/analytics";
  * the form is otherwise a long way from wherever the visitor decides.
  */
 export function Header() {
-  const { t, altLang, altHref, homeAnchor } = useT();
+  const { t, altLang, altHref, homeAnchor, nav } = useT();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -85,10 +85,10 @@ export function Header() {
         </a>
 
         <nav className="nav-items" aria-label={t.nav.menuLabel}>
-          {t.nav.items.map(([label, hash]) => (
+          {nav.map(([label, href]) => (
             <a
-              key={hash}
-              href={homeAnchor(hash)}
+              key={href}
+              href={href}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -149,8 +149,8 @@ export function Header() {
           containing block for position:fixed descendants, which would resolve
           the panel's top/bottom against a 60px box instead of the viewport. */}
       <nav id="nav-panel" className={`nav-panel${open ? " open" : ""}`} aria-label={t.nav.menuLabel}>
-        {[...t.nav.items, [t.nav.contact, "#contact"]].map(([label, hash], i) => (
-          <a key={hash} href={homeAnchor(hash)} onClick={() => setOpen(false)}>
+        {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href], i) => (
+          <a key={href} href={href} onClick={() => setOpen(false)}>
             <span className="n latin">{String(i + 1).padStart(2, "0")}</span>
             {label}
           </a>

@@ -5,6 +5,7 @@ import { Hero } from "@/components/hero";
 import { WorkFeatured } from "@/components/work-featured";
 import { Testimonials } from "@/components/testimonials";
 import { Principles } from "@/components/principles";
+import { NotesStrip } from "@/components/notes-strip";
 import { About } from "@/components/about";
 import { WorkSelected } from "@/components/work-selected";
 import { Experience } from "@/components/experience";
@@ -19,6 +20,10 @@ import { useT } from "@/components/lang/provider";
  * the background alternates paper → ink → paper → tint → paper → tint, so no
  * two adjacent sections share a mode. On a phone, where everything is one
  * column, that alternation is the main thing keeping the scroll moving.
+ *
+ * Testimonials and the notes strip are tinted bands that slot in after work
+ * and after "How I work" without breaking that — and render nothing until
+ * they have content.
  */
 export function HomePage() {
   const { t } = useT();
@@ -34,6 +39,7 @@ export function HomePage() {
         <WorkFeatured />
         <Testimonials />
         <Principles />
+        <NotesStrip />
         <About />
         <WorkSelected />
         <Experience />

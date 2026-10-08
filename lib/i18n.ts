@@ -26,6 +26,10 @@ export function workPath(lang: Lang, slug: string): string {
   return localize(lang, `/work/${slug}/`);
 }
 
+export function notesPath(lang: Lang, slug?: string): string {
+  return localize(lang, slug ? `/notes/${slug}/` : "/notes/");
+}
+
 /** hreflang map for a language-neutral path, for metadata and the sitemap. */
 export function languageAlternates(path: string, origin = "") {
   return {

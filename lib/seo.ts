@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { STRINGS, type Lang } from "@/components/lang/strings";
 import { FEATURED } from "@/lib/projects";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL } from "@/lib/site";
-import { languageAlternates, localize, workPath } from "@/lib/i18n";
+import { languageAlternates, localize, notesPath, workPath } from "@/lib/i18n";
+import { findNote, notesIn } from "@/content/notes/meta";
 
 const OG_LOCALE: Record<Lang, string> = { en: "en_US", ar: "ar_EG" };
 
@@ -19,6 +20,8 @@ function pageMetadata({
   image,
   imageAlt,
   type = "website",
+  languages = languageAlternates(path),
+  extra = {},
 }: {
   lang: Lang;
   /** Language-neutral path, e.g. "/" or "/work/eg-pricey/". */
@@ -29,13 +32,16 @@ function pageMetadata({
   image: string;
   imageAlt: string;
   type?: "website" | "article";
+  /** hreflang map; defaults to the page's twin in the other language. */
+  languages?: Record<string, string>;
+  extra?: Partial<Metadata>;
 }): Metadata {
   const url = localize(lang, path);
   const fullTitle = title ?? STRINGS[lang].seo.title;
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: url, languages: languageAlternates(path) },
+    alternates: { canonical: url, languages },
     openGraph: {
       type,
       url,
@@ -47,6 +53,7 @@ function pageMetadata({
       images: [{ url: image, width: 1200, height: 630, alt: imageAlt }],
     },
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [image] },
+    ...extra,
   };
 }
 
@@ -90,6 +97,76 @@ export function caseStudyMetadata(lang: Lang, slug: string): Metadata {
     imageAlt: `${project.title} — ${project.kicker}`,
     type: "article",
   });
+}
+
+const FEED_TYPE = "application/rss+xml";
+
+/**
+ * Notes are written per language, so hreflang only names a counterpart that
+ * exists. An index with no notes yet is kept out of search entirely.
+ */
+export function notesIndexMetadata(lang: Lang): Metadata {
+  const N = STRINGS[lang].notes;
+  const other: Lang = lang === "en" ? "ar" : "en";
+  const languages: Record<string, string> = { [lang]: notesPath(lang) };
+  if (notesIn(other).length) languages[other] = notesPath(other);
+  const hasNotes = notesIn(lang).length > 0;
+  return pageMetadata({
+    lang,
+    path: "/notes/",
+    title: N.title,
+    description: N.intro,
+    image: "/og.png",
+    imageAlt: STRINGS[lang].seo.og_alt,
+    languages,
+    extra: {
+      robots: { index: hasNotes, follow: true },
+      alternates: {
+        canonical: notesPath(lang),
+        languages,
+        types: { [FEED_TYPE]: localize(lang, "/notes/feed.xml") },
+      },
+    },
+  });
+}
+
+export function noteMetadata(lang: Lang, slug: string): Metadata {
+  const note = findNote(lang, slug);
+  const other: Lang = lang === "en" ? "ar" : "en";
+  const languages: Record<string, string> = { [lang]: notesPath(lang, slug) };
+  if (note.translation) languages[other] = notesPath(other, note.translation);
+  return pageMetadata({
+    lang,
+    path: `/notes/${slug}/`,
+    title: note.title,
+    description: note.description,
+    image: "/og.png",
+    imageAlt: note.title,
+    type: "article",
+    languages,
+    extra: {
+      alternates: {
+        canonical: notesPath(lang, slug),
+        languages,
+        types: { [FEED_TYPE]: localize(lang, "/notes/feed.xml") },
+      },
+    },
+  });
+}
+
+export function noteJsonLd(lang: Lang, slug: string) {
+  const note = findNote(lang, slug);
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: note.title,
+    description: note.description,
+    datePublished: note.date,
+    inLanguage: lang,
+    url: `${SITE_URL}${notesPath(lang, slug)}`,
+    image: `${SITE_URL}/og.png`,
+    author: person(lang),
+  };
 }
 
 export function findProject(lang: Lang, slug: string) {

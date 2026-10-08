@@ -540,6 +540,52 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
   .cs-gallery figure:last-child { max-width: none; }
 }
 
+/* ── notes ───────────────────────────────────────────────────────────────── */
+
+.notes-main { padding-top: 112px; padding-bottom: 96px; }
+.notes-list { list-style: none; margin: 48px 0 0; padding: 0; }
+.notes-list--strip { margin-top: 0; }
+.notes-list li { border-top: 1px solid var(--rule); }
+.notes-list a { display: grid; gap: 6px; padding-block: 24px; }
+.notes-list time { font-size: 12px; }
+.notes-list-title { font-size: clamp(21px, 2.4vw, 28px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
+.notes-list a:hover .notes-list-title { color: var(--accent); }
+
+.note-head { padding-bottom: 32px; border-bottom: 1px solid var(--rule); }
+/* Long-form type: a measured column, the site's scale, real code blocks. */
+.note-body { max-width: 68ch; padding-top: 40px; font-size: 17.5px; line-height: 1.7; }
+.note-body > * + * { margin-top: 1.1em; }
+.note-body p, .note-body ul, .note-body ol { margin-bottom: 0; }
+.note-body h2 { margin: 2em 0 0; font-size: clamp(23px, 2.6vw, 30px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; }
+.note-body h3 { margin: 1.6em 0 0; font-size: 20px; font-weight: 500; }
+.note-body a { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+/* Tailwind's preflight strips list markers; long-form text wants them back. */
+.note-body ul, .note-body ol { padding-inline-start: 1.3em; }
+.note-body ul { list-style: disc; }
+.note-body ol { list-style: decimal; }
+.note-body li + li { margin-top: 0.4em; }
+.note-body blockquote {
+  margin-inline: 0;
+  padding-inline-start: 18px;
+  border-inline-start: 2px solid var(--accent);
+  color: var(--fg-dim);
+}
+.note-body code { font-family: var(--mono); font-size: 0.88em; padding: 0.1em 0.35em; background: var(--card); border-radius: 4px; }
+.note-body pre {
+  direction: ltr;
+  overflow-x: auto;
+  padding: 18px 20px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.note-body pre code { padding: 0; background: none; font-size: inherit; }
+.note-body img { border: 1px solid var(--rule); }
+.note-body hr { border: 0; border-top: 1px solid var(--rule); margin-block: 2.4em; }
+[dir="rtl"] .note-body { font-size: 18px; line-height: 1.85; }
+.note-cta { margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--rule); }
+
 /* ── layout patterns ─────────────────────────────────────────────────────── */
 
 .r-text-aside { display: grid; grid-template-columns: 1fr; gap: 24px; }

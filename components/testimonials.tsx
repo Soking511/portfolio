@@ -13,7 +13,7 @@ export function Testimonials() {
   if (!T.items.length) return null;
 
   return (
-    <section className="section-tight">
+    <section className="band section-tight">
       <div className="container-edge">
         <div
           data-reveal

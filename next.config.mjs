@@ -1,3 +1,9 @@
+import createMDX from "@next/mdx";
+
+// Notes are .mdx modules imported from content/notes, not routes of their
+// own, so pageExtensions stays at the default: only imports go through MDX.
+const withMDX = createMDX();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
@@ -18,4 +24,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

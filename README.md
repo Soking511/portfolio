@@ -28,6 +28,7 @@ app/
   (en)/layout.tsx          <html lang="en" dir="ltr">
   (en)/page.tsx            /
   (en)/work/[slug]/        /work/<slug>/ case studies
+  (en)/notes/[[...slug]]/  /notes/ index and each note; feed.xml beside it
   (ar)/layout.tsx          <html lang="ar" dir="rtl">, Arabic font
   (ar)/ar/…                the same pages under /ar/
   globals.css              the design system
@@ -46,6 +47,11 @@ components/
   contact-intent.tsx       lets a CTA preselect "project" / "role" on the form
   lang/                    strings.ts (en + ar), provider, RTL helper
   theme/                   light/dark, no-FOUC script, reveal hook
+content/notes/
+  meta.ts         published notes (title, date, language) — client-safe
+  bodies.ts       each note's MDX body, imported only by the note route
+  _drafts/        outlines; never built
+mdx-components.tsx  required by @next/mdx; external links open in a new tab
 lib/
   site.ts         canonical origin, contact details, optional slots
   projects.ts     project slugs, status, images, diagrams
@@ -75,6 +81,15 @@ it.
 
 **Project links follow `status` in `lib/projects.ts`.** Only `live` projects
 link out; `private`, `maintenance` and `offline` show a label instead.
+
+**Notes are written per language and appear with the first one.** To
+publish: write `content/notes/<lang>/<slug>.mdx`, import it in `bodies.ts`,
+add its entry to `meta.ts` (newest first; `translation` names its twin in the
+other language, if any). Until a language has a note, its `/notes/` page is
+`noindex`, absent from the sitemap and not linked from the nav or home page.
+The notes route is an optional catch-all because static export rejects a
+dynamic route with no params — which is exactly the state before the first
+note.
 
 **Content is visible by default.** `[data-reveal]` elements are only hidden once
 the pre-hydration script sets `data-reveal-ready` on `<html>`, and it omits that
