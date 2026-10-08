@@ -88,7 +88,6 @@ export type Strings = {
     stack_line: string;
     cta_project: string;
     cta_hiring: string;
-    resume: string;
     recent_label: string;
     /** [label, anchor id] — anchor ids are the slugs in lib/projects.ts. */
     recent: Array<[string, string]>;
@@ -192,6 +191,8 @@ export type Strings = {
     details_label: string;
     rows: Array<[string, string, string | null]>;
     availability: string;
+    copy: string;
+    copied: string;
     whatsapp_cta: string;
     whatsapp_href: string;
     booking_cta: string;
@@ -270,7 +271,6 @@ const en: Strings = {
     stack_line: "Angular · Node · TypeScript · Django",
     cta_project: "Start a project",
     cta_hiring: "Hiring? See my résumé",
-    resume: "Résumé",
     recent_label: "Recent work",
     recent: [
       ["EG-Pricey", "eg-pricey"],
@@ -284,9 +284,9 @@ const en: Strings = {
   works: {
     eyebrow: "Featured work",
     headline_pre: "Three projects, ",
-    headline_em: "in full",
-    headline_post: ".",
-    intro: "The problem, what I built, and the one decision that mattered.",
+    headline_em: "one decision",
+    headline_post: " each.",
+    intro: "The call that mattered most in each. The problem, the build and the rest of the story are a click away.",
     label_problem: "Problem",
     label_built: "What I built",
     label_decision: "Key decision",
@@ -524,6 +524,8 @@ const en: Strings = {
       ["Based", "Cairo · Remote worldwide", null],
     ],
     availability: "Open to projects and roles · replies within 24 hours",
+    copy: "Copy",
+    copied: "Copied",
     whatsapp_cta: "Message on WhatsApp",
     whatsapp_href: whatsappLink("Hi Youseef — I found you through soking.digital."),
     booking_cta: "Book a 20-minute call",
@@ -647,7 +649,6 @@ const ar: Strings = {
     stack_line: "Angular · Node · TypeScript · Django",
     cta_project: "ابدأ مشروعًا",
     cta_hiring: "تبحث عن مطوّر؟ سيرتي الذاتية",
-    resume: "السيرة الذاتية",
     recent_label: "أعمال حديثة",
     recent: [
       ["EG-Pricey", "eg-pricey"],
@@ -661,9 +662,9 @@ const ar: Strings = {
   works: {
     eyebrow: "أعمال مختارة",
     headline_pre: "ثلاثة مشاريع، ",
-    headline_em: "بالتفصيل",
-    headline_post: ".",
-    intro: "المشكلة، وما الذي بنيته، والقرار الذي صنع الفارق.",
+    headline_em: "وقرار واحد",
+    headline_post: " في كلٍّ منها.",
+    intro: "القرار الذي صنع الفارق في كل مشروع. المشكلة وما بنيته وبقية القصة على بُعد نقرة.",
     label_problem: "المشكلة",
     label_built: "ما بنيته",
     label_decision: "القرار الأهم",
@@ -901,6 +902,8 @@ const ar: Strings = {
       ["المقر", "القاهرة · عن بُعد حول العالم", null],
     ],
     availability: "متاح للمشاريع والوظائف · أرد خلال ٢٤ ساعة",
+    copy: "نسخ",
+    copied: "تم النسخ",
     whatsapp_cta: "راسلني على واتساب",
     whatsapp_href: whatsappLink("مرحبًا يوسف — وصلت إليك عبر soking.digital."),
     booking_cta: "احجز مكالمة لمدة ٢٠ دقيقة",

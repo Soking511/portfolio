@@ -282,6 +282,31 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
   transition: text-decoration-color .18s ease;
 }
 .hero-recent a:hover { text-decoration-color: var(--accent); }
+.hero-stack { margin-top: 10px; }
+
+/* Phones: the work names become one row that scrolls sideways, edge to edge,
+   fading out at the far end to say there is more — instead of wrapping into
+   loose rows of 44px tap targets. The stack line is repeated further down,
+   so it goes. */
+@media (max-width: 720px) {
+  .hero-recent {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--pad) * -1);
+    padding-inline: var(--pad);
+    gap: 0 18px;
+    -webkit-mask-image: linear-gradient(to right, #000 88%, transparent);
+    mask-image: linear-gradient(to right, #000 88%, transparent);
+  }
+  [dir="rtl"] .hero-recent {
+    -webkit-mask-image: linear-gradient(to left, #000 88%, transparent);
+    mask-image: linear-gradient(to left, #000 88%, transparent);
+  }
+  .hero-recent::-webkit-scrollbar { display: none; }
+  .hero-recent > * { flex: none; white-space: nowrap; }
+  .hero-stack { display: none; }
+}
 
 /* The other-language offer sits in the gap between the fixed header and the
    status line, out of flow, so it can appear after hydration without moving
@@ -315,6 +340,20 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
 }
 /* The middle project leads with its visual, so the three do not share a shape. */
 .proj--media-first .proj-media { order: -1; }
+
+/* Title and picture both open the case study. The title says so on hover;
+   the picture eases forward a touch. */
+.proj-title-link {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color .18s ease;
+}
+.proj-title-link:hover { text-decoration-color: var(--accent); }
+.proj-media--link { display: block; }
+.proj-media--link img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) { .proj-media--link:hover img { transform: scale(1.02); } }
 
 .proj-outcome { padding-bottom: 15px; }
 .proj-links {
@@ -366,40 +405,27 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
       "media beats"
       "foot  foot";
   }
+  /* The lead project: title and its decision side by side above a
+     full-width picture. */
   .proj--wide {
-    grid-template-columns: 1fr;
-    grid-template-areas: "head" "media" "beats" "foot";
+    grid-template-areas:
+      "head  beats"
+      "media media"
+      "foot  foot";
+    align-items: end;
   }
   .proj-head { grid-area: head; }
   .proj-media { grid-area: media; }
   .proj-beats { grid-area: beats; }
   .proj-foot { grid-area: foot; }
-  .proj--wide .proj-media { max-height: min(62vh, 620px); }
-  .proj--wide .proj-beats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--rule);
-    border-block: 1px solid var(--rule);
-  }
-  .proj--wide .proj-outcome {
-    grid-column: 1 / -1;
-    background: var(--bg);
-    padding: 24px 22px;
-  }
-  .proj--wide .proj-beat {
-    background: var(--bg);
-    padding: 24px 22px;
-    border: 0;
-    margin-top: 0;
-  }
-  /* Keep the key beat marked even when the beats become a three-up row. */
-  .proj--wide .proj-beat--key {
-    border-inline-start: 2px solid var(--accent);
-    padding-inline-start: 20px;
-  }
+  /* Full row width at a capped height. A height cap on a fixed 16:10 box
+     would shrink its width instead and leave a gap at the end of the row. */
+  .proj--wide .proj-media { aspect-ratio: auto; height: min(62vh, 620px); }
   /* In the split layouts the media spans two rows, so let it fill the column
      instead of leaving a void beneath a 16:10 box. */
+  /* When the media is the taller side, its extra height goes below the
+     decision rather than opening a gap between the title and the decision. */
+  .proj:not(.proj--wide) { grid-template-rows: auto 1fr auto; }
   .proj:not(.proj--wide) .proj-media {
     aspect-ratio: auto;
     height: 100%;
@@ -649,6 +675,18 @@ section[id], article[id], li[id] { scroll-margin-top: 76px; }
    never clipped by the horizontal-overflow guard. */
 .r-contact-rows { display: grid; gap: 16px; margin: 0; }
 .r-contact-rows dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.contact-value { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.copy-btn {
+  min-height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--fg-dim);
+  transition: color .15s ease, border-color .15s ease;
+}
+.copy-btn:hover { color: var(--fg); border-color: var(--fg-dim); }
+@media (pointer: coarse) { .copy-btn { min-height: 36px; padding: 0 14px; } }
 @media (min-width: 420px) {
   .r-contact-rows { grid-template-columns: auto 1fr; gap: 12px 24px; align-items: baseline; }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
 import { BOOKING_URL } from "@/lib/site";
@@ -24,7 +24,9 @@ const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "
  * One form for both audiences. The first question — a project, a role, or
  * something else — decides the rest: a client is asked for budget and
  * timeline (one tap each, both optional), a recruiter for the company. Every
- * extra field is optional so qualifying a lead never costs the lead.
+ * extra field is optional so qualifying a lead never costs the lead — and the
+ * optional ones come after the message, so nobody has to answer them before
+ * they can start typing.
  */
 export function Contact() {
   const { t, lang } = useT();
@@ -148,7 +150,13 @@ export function Contact() {
               </div>
               <dl className="r-contact-rows">
                 {C.rows.map(([k, v, href]) => (
-                  <Row key={k} label={k} value={v} href={href} />
+                  <Row
+                    key={k}
+                    label={k}
+                    value={v}
+                    href={href}
+                    copy={href?.startsWith("mailto:") ? [C.copy, C.copied] : undefined}
+                  />
                 ))}
               </dl>
             </div>
@@ -212,25 +220,6 @@ export function Contact() {
                   onChange={setIntent}
                 />
 
-                {intent === "project" && (
-                  <>
-                    <Choices
-                      legend={C.budget_label}
-                      optional={C.optional}
-                      options={BUDGETS.map((v) => [v, C.budgets[v]] as const)}
-                      value={form.budget}
-                      onChange={(v) => set("budget", v)}
-                    />
-                    <Choices
-                      legend={C.timeline_label}
-                      optional={C.optional}
-                      options={TIMELINES.map((v) => [v, C.timelines[v]] as const)}
-                      value={form.timeline}
-                      onChange={(v) => set("timeline", v)}
-                    />
-                  </>
-                )}
-
                 <Field
                   kind="text"
                   label={C.f_name}
@@ -269,6 +258,25 @@ export function Contact() {
                   onChange={(v) => set("msg", v)}
                 />
 
+                {intent === "project" && (
+                  <>
+                    <Choices
+                      legend={C.budget_label}
+                      optional={C.optional}
+                      options={BUDGETS.map((v) => [v, C.budgets[v]] as const)}
+                      value={form.budget}
+                      onChange={(v) => set("budget", v)}
+                    />
+                    <Choices
+                      legend={C.timeline_label}
+                      optional={C.optional}
+                      options={TIMELINES.map((v) => [v, C.timelines[v]] as const)}
+                      value={form.timeline}
+                      onChange={(v) => set("timeline", v)}
+                    />
+                  </>
+                )}
+
                 {send === "error" && (
                   <p
                     className="mono"
@@ -301,13 +309,24 @@ export function Contact() {
   );
 }
 
-function Row({ label, value, href }: { label: string; value: string; href: string | null }) {
+function Row({
+  label,
+  value,
+  href,
+  copy,
+}: {
+  label: string;
+  value: string;
+  href: string | null;
+  /** [label, confirmation] — offers a copy button beside the value. */
+  copy?: [string, string];
+}) {
   const isLatin = /^[\x00-\x7F+\-.,/@\s]+$/.test(value);
   const external = href?.startsWith("http");
   return (
     <>
       <dt className="eyebrow">{label}</dt>
-      <dd style={{ margin: 0 }}>
+      <dd className="contact-value">
         {href ? (
           <a
             href={href}
@@ -328,8 +347,40 @@ function Row({ label, value, href }: { label: string; value: string; href: strin
             {value}
           </span>
         )}
+        {copy && <CopyButton text={value} label={copy[0]} done={copy[1]} />}
       </dd>
     </>
+  );
+}
+
+/**
+ * A mailto link does nothing on a computer with no mail app set up, which is
+ * most work laptops — so the address can also be copied. If the clipboard is
+ * unavailable the button stays as it was; the link beside it still works.
+ */
+function CopyButton({ text, label, done }: { text: string; label: string; done: string }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const id = window.setTimeout(() => setCopied(false), 2000);
+    return () => window.clearTimeout(id);
+  }, [copied]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      track("copy_email");
+    } catch {
+      /* no clipboard access: nothing to undo */
+    }
+  };
+
+  return (
+    <button type="button" onClick={copy} className="copy-btn mono" aria-live="polite">
+      {copied ? done : label}
+    </button>
   );
 }
 

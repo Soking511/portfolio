@@ -11,8 +11,13 @@ import { trackAttrs } from "@/lib/analytics";
 import type { FeaturedWork } from "@/components/lang/strings";
 
 /**
- * Three case studies. One DOM order — metadata, title, media, beats, footer —
- * recomposed per breakpoint in globals.css:
+ * Three projects as a skim layer: title, kicker, picture and the one decision
+ * that mattered. The problem, the build and the rest live on each project's
+ * case-study page, which the title and the picture both open — printing all
+ * four beats here made the home page sixteen screens long on a phone.
+ *
+ * One DOM order — metadata, title, media, decision, footer — recomposed per
+ * breakpoint in globals.css:
  *
  *   phones   one column, media edge-to-edge and portrait; the middle project
  *            leads with its visual so the three do not share a silhouette.
@@ -55,8 +60,9 @@ function ProjectBlock({
   index: number;
   labels: ReturnType<typeof useT>["t"]["works"];
 }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const meta = FEATURED[index];
+  const caseHref = workPath(lang, meta.slug);
 
   return (
     <article id={meta.slug} data-reveal>
@@ -75,28 +81,56 @@ function ProjectBlock({
               </Latin>
             </div>
 
-            <h3 className="d3 latin">{project.title}</h3>
+            <h3 className="d3">
+              <a
+                href={caseHref}
+                className="proj-title-link"
+                {...trackAttrs("case_study_open", { project: meta.slug, from: "home_title" })}
+              >
+                <span className="latin">{project.title}</span>
+              </a>
+            </h3>
             <p className="lead" style={{ marginTop: 8, maxWidth: "30ch" }}>
               {project.kicker}
             </p>
           </header>
 
-          <div className="proj-media">
-            <ProjectImage
-              image={meta.image}
-              title={project.title}
-              swatch={meta.swatch}
-              alt={t.misc.screenshot_alt(project.title)}
-              priority={index === 0}
-              variant="feature"
-              diagram={meta.diagram ? t.misc.diagrams[meta.diagram] : undefined}
-            />
-          </div>
+          {meta.image ? (
+            // A second way into the case study, for the many who click the
+            // picture. Out of the tab order: the title link already is one.
+            <a
+              href={caseHref}
+              className="proj-media proj-media--link"
+              tabIndex={-1}
+              aria-hidden="true"
+              {...trackAttrs("case_study_open", { project: meta.slug, from: "home_media" })}
+            >
+              <ProjectImage
+                image={meta.image}
+                title={project.title}
+                swatch={meta.swatch}
+                alt={t.misc.screenshot_alt(project.title)}
+                priority={index === 0}
+                variant="feature"
+              />
+            </a>
+          ) : (
+            // A diagram is content in its own right, so it is not hidden
+            // inside a link.
+            <div className="proj-media">
+              <ProjectImage
+                image={meta.image}
+                title={project.title}
+                swatch={meta.swatch}
+                alt={t.misc.screenshot_alt(project.title)}
+                variant="feature"
+                diagram={meta.diagram ? t.misc.diagrams[meta.diagram] : undefined}
+              />
+            </div>
+          )}
 
           <div className="proj-beats">
             {project.outcome && <Outcome label={labels.outcome_label} text={project.outcome} />}
-            <Beat label={labels.label_problem} text={project.problem} />
-            <Beat label={labels.label_built} text={project.built} />
             <Beat label={labels.label_decision} text={project.decision} isKey />
           </div>
 

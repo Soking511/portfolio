@@ -5,13 +5,14 @@ import { useT } from "@/components/lang/provider";
 import { Latin } from "@/components/lang/latin";
 import { useContactIntent } from "@/components/contact-intent";
 import { Arrow } from "@/components/arrow";
-import { RESUME_PATH } from "@/lib/site";
 import { trackAttrs } from "@/lib/analytics";
 
 /**
  * The fold. In order of what a stranger needs: availability, what I build,
  * who I am, one action per audience (a client, a recruiter), then proof —
- * the names of real shipped work — and what I build it with.
+ * the names of real shipped work — and what I build it with. The résumé is
+ * reached through "Hiring?", not a third link of its own; phones drop the
+ * stack line, which "What I reach for" repeats further down.
  *
  * The name is deliberately absent — the header wordmark already carries it,
  * and repeating it burned the most valuable line on the page.
@@ -135,31 +136,11 @@ export function Hero() {
             ))}
           </p>
 
-          <div
-            style={{
-              marginTop: 10,
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "10px 20px",
-            }}
-          >
-            <Latin as="span" className="mono">
-              <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
-                {H.stack_line}
-              </span>
-            </Latin>
-            <a
-              href={RESUME_PATH}
-              download
-              className="mono tap"
-              {...trackAttrs("resume_download", { from: "hero" })}
-              style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}
-            >
-              {H.resume} ↓
-            </a>
-          </div>
+          <Latin as="div" className="mono hero-stack">
+            <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
+              {H.stack_line}
+            </span>
+          </Latin>
         </div>
       </div>
     </section>
