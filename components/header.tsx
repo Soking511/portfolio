@@ -6,25 +6,51 @@ import { useTheme } from "@/components/theme/provider";
 import { trackAttrs } from "@/lib/analytics";
 
 /**
- * Phones get a wordmark, the contact call to action and a menu button — the
- * language and theme controls move inside the panel, because three competing
- * circular buttons next to the name read as clutter at 375px. Above 860px the
- * links sit inline and the panel is never used.
+ * Phones get the name, the contact button and a menu — language and theme
+ * move inside the panel, because three small controls next to the name read
+ * as clutter at 375px. From 900px the links sit inline.
  *
- * "Let's talk" is the one control that never hides: on a twelve-screen page
- * the form is otherwise a long way from wherever the visitor decides.
+ * The contact button never hides: on a long page the form is otherwise a
+ * long way from wherever the visitor decides.
  */
 export function Header() {
   const { t, altLang, altHref, homeAnchor, nav } = useT();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
+  // Read from the page as it scrolls: whether to show the header's edge, and
+  // which section is in view (the menu marks it; home page only).
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
+    const ids = ["work", "skills", "about", "cv", "contact"];
+    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setScrolled(window.scrollY > 8);
+      // The section crossing a line just above the middle of the screen is
+      // the one being read. Measured, not inferred from observer events, so
+      // a jump (an anchor link, the End key) lands on the right answer.
+      const line = window.innerHeight * 0.45;
+      const current = sections.find((s) => {
+        const r = s.getBoundingClientRect();
+        return r.top <= line && r.bottom > line;
+      });
+      setActive(current?.id ?? null);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
@@ -33,7 +59,7 @@ export function Header() {
       if (e.key === "Escape") setOpen(false);
     };
     const onResize = () => {
-      if (window.innerWidth > 860) setOpen(false);
+      if (window.innerWidth >= 900) setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
@@ -45,120 +71,70 @@ export function Header() {
     };
   }, [open]);
 
-  const chromeOn = scrolled || open;
+  const close = () => setOpen(false);
 
   return (
     <>
-      <header
-        style={{
-          position: "fixed",
-        top: 0,
-        insetInline: 0,
-        zIndex: 50,
-        height: 60,
-        display: "flex",
-        alignItems: "center",
-        background: chromeOn ? "color-mix(in oklab, var(--bg) 90%, transparent)" : "transparent",
-        backdropFilter: chromeOn ? "blur(12px)" : "none",
-        WebkitBackdropFilter: chromeOn ? "blur(12px)" : "none",
-        borderBottom: `1px solid ${chromeOn ? "var(--rule)" : "transparent"}`,
-        transition: "background .25s ease, border-color .25s ease",
-      }}
-    >
-      <div
-        className="container-edge"
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-        }}
-      >
-        <a
-          href={homeAnchor("#index")}
-          className="mono latin tap"
-          onClick={() => setOpen(false)}
-          style={{ fontSize: 13, letterSpacing: "0.1em", fontWeight: 500, whiteSpace: "nowrap" }}
-        >
-          Youseef Tareq
-        </a>
-
-        <nav className="nav-items" aria-label={t.nav.menuLabel}>
-          {nav.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                minHeight: 40,
-                padding: "0 14px",
-                fontSize: 14.5,
-                borderRadius: 999,
-              }}
-            >
-              {label}
-            </a>
-          ))}
-          <span style={{ width: 8 }} />
-          <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} />
-          <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} />
-        </nav>
-
-        <div className="nav-actions">
-          <a
-            href={homeAnchor("#contact")}
-            className="nav-cta"
-            onClick={() => setOpen(false)}
-            {...trackAttrs("header_cta")}
-          >
-            {t.nav.cta}
+      <header className="site-header" data-scrolled={scrolled || open}>
+        <div className="container site-header__row">
+          <a href={homeAnchor("#top")} className="wordmark" onClick={close}>
+            {t.hero.name}
           </a>
 
-          <button
-            type="button"
-            className="nav-burger"
-            aria-expanded={open}
-            aria-controls="nav-panel"
-            aria-label={open ? t.nav.closeLabel : t.nav.menuLabel}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="nav-burger-label" aria-hidden="true">
-              {open ? t.nav.closeLabel : t.nav.menuLabel}
-            </span>
-            <svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true">
-              {open ? (
-                <path
-                  d="M1.5 1.5l12 8M13.5 1.5l-12 8"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  fill="none"
-                />
-              ) : (
-                <path d="M0 1.2h15M0 9.8h15" stroke="currentColor" strokeWidth="1.4" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
+          <nav className="nav-items" aria-label={t.nav.menuLabel}>
+            {nav.map(([label, href]) => (
+              <a key={href} href={href} aria-current={href === `#${active}` ? "true" : undefined}>
+                {label}
+              </a>
+            ))}
+          </nav>
 
+          <div className="nav-actions">
+            <span className="nav-desktop">
+              <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} />
+              <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} />
+            </span>
+            <a
+              href={homeAnchor("#contact")}
+              className="btn btn--primary nav-cta"
+              onClick={close}
+              {...trackAttrs("header_cta")}
+            >
+              {t.nav.cta}
+            </a>
+            <button
+              type="button"
+              className="icon-btn nav-burger"
+              aria-expanded={open}
+              aria-controls="nav-panel"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {/* Visible on most phones; on the narrowest the word is hidden
+                  visually but stays the button's name. */}
+              <span className="nav-burger-label">{open ? t.nav.closeLabel : t.nav.menuLabel}</span>
+              <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true">
+                {open ? (
+                  <path d="M2 1l12 10M14 1L2 11" stroke="currentColor" strokeWidth="1.6" fill="none" />
+                ) : (
+                  <path d="M0 2h16M0 10h16" stroke="currentColor" strokeWidth="1.6" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
       </header>
 
-      {/* Sibling, not a child: backdrop-filter on <header> makes it the
-          containing block for position:fixed descendants, which would resolve
-          the panel's top/bottom against a 60px box instead of the viewport. */}
+      {/* A sibling, not a child: backdrop-filter on the header would make it
+          the containing block for this fixed panel. */}
       <nav id="nav-panel" className={`nav-panel${open ? " open" : ""}`} aria-label={t.nav.menuLabel}>
-        {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href], i) => (
-          <a key={href} href={href} onClick={() => setOpen(false)}>
-            <span className="n latin">{String(i + 1).padStart(2, "0")}</span>
+        {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href]) => (
+          <a key={href} href={href} className="nav-panel__link" onClick={close}>
             {label}
           </a>
         ))}
-
-        <div style={{ display: "flex", gap: 10, marginTop: 28 }}>
-          <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} wide />
-          <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} wide />
+        <div className="nav-panel__tools">
+          <LangLink altLang={altLang} href={altHref} label={t.nav.langLabel} />
+          <ThemeButton theme={theme} toggle={toggleTheme} label={t.nav.themeLabel} withText />
         </div>
       </nav>
     </>
@@ -166,33 +142,14 @@ export function Header() {
 }
 
 /** A link to this same page in the other language — each is its own URL. */
-function LangLink({
-  altLang,
-  href,
-  label,
-  wide = false,
-}: {
-  altLang: "en" | "ar";
-  href: string;
-  label: string;
-  wide?: boolean;
-}) {
+function LangLink({ altLang, href, label }: { altLang: "en" | "ar"; href: string; label: string }) {
   return (
     <a
       href={href}
       hrefLang={altLang}
       lang={altLang}
-      className="mono"
+      className="icon-btn"
       {...trackAttrs("lang_switch", { to: altLang })}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        minHeight: 44,
-        padding: wide ? "0 22px" : "0 14px",
-        border: "1px solid var(--rule)",
-        borderRadius: 999,
-        fontSize: 12.5,
-      }}
     >
       {label}
     </a>
@@ -203,37 +160,30 @@ function ThemeButton({
   theme,
   toggle,
   label,
-  wide = false,
+  withText = false,
 }: {
   theme: "light" | "dark";
   toggle: () => void;
   label: string;
-  wide?: boolean;
+  withText?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={label}
-      style={{
-        minHeight: 44,
-        minWidth: 44,
-        padding: wide ? "0 22px" : 0,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "1px solid var(--rule)",
-        borderRadius: 999,
-      }}
+      className="icon-btn"
+      aria-label={withText ? undefined : label}
+      aria-pressed={theme === "dark"}
     >
       {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+      {withText && <span>{label}</span>}
     </button>
   );
 }
 
 function MoonIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M14 9.5A6.2 6.2 0 016.5 2 6.5 6.5 0 108 14.5a6.5 6.5 0 006-5z" fill="currentColor" />
     </svg>
   );
@@ -241,7 +191,7 @@ function MoonIcon() {
 
 function SunIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
       <circle cx="8" cy="8" r="3.2" fill="currentColor" />
       <path
         d="M8 .8v2M8 13.2v2M.8 8h2M13.2 8h2M2.9 2.9l1.4 1.4M11.7 11.7l1.4 1.4M13.1 2.9l-1.4 1.4M4.3 11.7l-1.4 1.4"

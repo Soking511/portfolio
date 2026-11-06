@@ -1,15 +1,13 @@
 /**
- * Runs before React hydrates. Three jobs:
+ * Runs before React hydrates. Two jobs:
  *
  *  1. Stamp data-theme from localStorage so the first paint already matches
  *     the persisted preference (no FOUC). Language is not stored: lang and
  *     dir come from the page itself — "/" is English, "/ar/" is Arabic.
  *  2. Fall back to the OS colour scheme when nothing is stored.
- *  3. Set data-reveal-ready, which is the ONLY thing that arms the
- *     scroll-reveal hidden state in globals.css. Without JavaScript, or under
- *     prefers-reduced-motion, the attribute is never set and every element
- *     stays visible — content is never hidden behind an animation that may
- *     not run.
+ *
+ * There is no scroll-reveal any more, so nothing on the page is ever hidden
+ * waiting for JavaScript.
  */
 const SCRIPT = `
 (function(){
@@ -20,10 +18,6 @@ const SCRIPT = `
       theme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
     }
     root.setAttribute('data-theme',theme);
-  } catch (_) {}
-  try {
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!reduce) root.setAttribute('data-reveal-ready','');
   } catch (_) {}
 })();
 `.trim();

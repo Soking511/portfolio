@@ -1,7 +1,7 @@
 "use client";
 
 import { useT } from "@/components/lang/provider";
-import { Arrow } from "@/components/arrow";
+import { SectionHead } from "@/components/section-head";
 import { formatNoteDate, notesIn } from "@/content/notes/meta";
 import { notesPath } from "@/lib/i18n";
 
@@ -15,32 +15,25 @@ export function NotesStrip() {
   if (!notes.length) return null;
 
   return (
-    <section className="band section-tight">
-      <div className="container-edge">
-        <div
-          data-reveal
-          style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}
-        >
-          <span className="eyebrow">{t.notes.latest}</span>
-          <span className="rule" style={{ flex: 1 }} />
-          <a href={notesPath(lang)} className="tap" style={{ gap: 8, fontSize: 14 }}>
-            {t.notes.all}
-            <Arrow size={12} />
-          </a>
-        </div>
-        <ol className="notes-list notes-list--strip">
+    <section className="section" aria-labelledby="notes-strip-title">
+      <div className="container">
+        <SectionHead id="notes-strip-title" title={t.notes.latest} />
+        <ol className="notes-list" style={{ marginTop: 0 }}>
           {notes.map((note) => (
-            <li key={note.slug} data-reveal>
+            <li key={note.slug}>
               <a href={notesPath(lang, note.slug)}>
-                <time className="mono dim" dateTime={note.date}>
-                  {formatNoteDate(lang, note.date)}
-                </time>
+                <time dateTime={note.date}>{formatNoteDate(lang, note.date)}</time>
                 <span className="notes-list-title">{note.title}</span>
-                <span className="body dim">{note.description}</span>
+                <span className="soft">{note.description}</span>
               </a>
             </li>
           ))}
         </ol>
+        <p style={{ marginTop: 24 }}>
+          <a href={notesPath(lang)} className="link">
+            {t.notes.all}
+          </a>
+        </p>
       </div>
     </section>
   );

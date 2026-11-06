@@ -1,7 +1,7 @@
 import type React from "react";
 import "@/app/globals.css";
 import Script from "next/script";
-import { Newsreader, Geist, Geist_Mono } from "next/font/google";
+import { Alexandria, IBM_Plex_Sans } from "next/font/google";
 
 import { LangProvider } from "@/components/lang/provider";
 import { STRINGS, type Lang } from "@/components/lang/strings";
@@ -9,28 +9,25 @@ import { ThemeProvider } from "@/components/theme/provider";
 import { PreHydrationScript } from "@/components/theme/pre-hydration-script";
 import { SITE_URL, UMAMI_WEBSITE_ID } from "@/lib/site";
 
-// Three families, not six. Newsreader is italic-only in the UI (the emphasised
-// phrase in every heading), so only the italic face is requested. The Arabic
-// face is loaded by the Arabic layout alone, so English pages never fetch it.
-const newsreader = Newsreader({
+// Two families. Alexandria — by the Egyptian designer Mohamed Gaber, with
+// Arabic and Latin drawn as one design — sets the name and the headings, so
+// the bilingual name in the hero is a single typeface in two scripts. IBM
+// Plex Sans carries the reading text; the Arabic layout adds its Arabic twin.
+//
+// Only the Latin subset is preloaded here. The Arabic faces are still
+// declared (by unicode-range) and the Arabic layout preloads them, so an
+// English page fetches Alexandria's Arabic only for the two words of the name.
+const alexandria = Alexandria({
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic"],
-  variable: "--font-newsreader",
+  weight: "variable",
+  variable: "--font-alexandria",
   display: "swap",
 });
 
-const geist = Geist({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-geist",
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-geist-mono",
+  weight: ["400", "600"],
+  variable: "--font-plex",
   display: "swap",
 });
 
@@ -49,7 +46,7 @@ export function RootShell({
   fontClassName?: string;
   children: React.ReactNode;
 }) {
-  const fontVariables = [newsreader.variable, geist.variable, geistMono.variable, fontClassName]
+  const fontVariables = [alexandria.variable, plexSans.variable, fontClassName]
     .filter(Boolean)
     .join(" ");
 
@@ -63,8 +60,8 @@ export function RootShell({
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#F4F0E6" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0E1A33" media="(prefers-color-scheme: dark)" />
         <PreHydrationScript />
       </head>
       <body>

@@ -27,6 +27,9 @@ const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "
  * extra field is optional so qualifying a lead never costs the lead — and the
  * optional ones come after the message, so nobody has to answer them before
  * they can start typing.
+ *
+ * This is the page's one dark band: the end of the page, where it asks for
+ * something. The form itself sits on paper inside it, as the place to act.
  */
 export function Contact() {
   const { t, lang } = useT();
@@ -53,7 +56,13 @@ export function Contact() {
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      // Take the visitor to the first field that needs attention.
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>("#contact [aria-invalid='true']")?.focus(),
+      );
+      return;
+    }
     setSend("sending");
 
     // Only the fields that belong to the chosen intent are sent; the rest are
@@ -98,34 +107,23 @@ export function Contact() {
   const [msgLabel, msgPlaceholder] = C.f_msg[intent];
 
   return (
-    <section id="contact" className="band section-open">
-      <div className="container-edge">
-        <header
-          data-reveal
-          style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}
-        >
-          <span className="eyebrow">{C.eyebrow}</span>
-          <span className="rule" style={{ flex: 1 }} />
-        </header>
-
-        <h2 className="d2" data-reveal style={{ maxWidth: "16ch", marginBottom: 48 }}>
-          {C.headline_a}
-          <span className="em">{C.headline_em}</span>
-          {C.headline_b}
-        </h2>
-
-        <div className="r-contact">
-          <div data-reveal style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-            <p className="lead" style={{ maxWidth: "46ch" }}>
-              {C.lead}
-            </p>
+    <section id="contact" className="section section--band" aria-labelledby="contact-title">
+      <div className="container">
+        <div className="contact">
+          <div className="contact__aside">
+            <header className="section-head" style={{ marginBottom: 0 }}>
+              <h2 className="h2" id="contact-title">
+                {C.title}
+              </h2>
+              <p className="lead">{C.lead}</p>
+            </header>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
               <a
                 href={C.whatsapp_href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-ghost"
+                className="btn btn--secondary"
                 {...trackAttrs("whatsapp_click", { from: "contact" })}
               >
                 <WhatsAppIcon />
@@ -136,7 +134,7 @@ export function Contact() {
                   href={BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-ghost"
+                  className="btn btn--secondary"
                   {...trackAttrs("booking_click")}
                 >
                   {C.booking_cta}
@@ -145,10 +143,10 @@ export function Contact() {
             </div>
 
             <div>
-              <div className="eyebrow" style={{ marginBottom: 16 }}>
+              <h3 className="label" style={{ color: "var(--band-soft)", marginBottom: 14 }}>
                 {C.details_label}
-              </div>
-              <dl className="r-contact-rows">
+              </h3>
+              <dl className="direct">
                 {C.rows.map(([k, v, href]) => (
                   <Row
                     key={k}
@@ -161,52 +159,22 @@ export function Contact() {
               </dl>
             </div>
 
-            <p
-              className="mono"
-              style={{
-                margin: 0,
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                fontSize: 12,
-                color: "var(--fg-dim)",
-              }}
-            >
-              <span className="status-dot" aria-hidden="true" />
-              {C.availability}
-            </p>
+            <p className="availability">{C.availability}</p>
           </div>
 
-          <form
-            onSubmit={submit}
-            noValidate
-            aria-label={C.form_label}
-            data-reveal
-            data-reveal-delay="1"
-            style={{
-              padding: 28,
-              background: "var(--bg)",
-              border: "1px solid var(--rule)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 22,
-            }}
-          >
+          <form onSubmit={submit} noValidate aria-label={C.form_label} className="form-panel">
             {send === "sent" ? (
-              <div
-                role="status"
-                style={{ display: "flex", flexDirection: "column", gap: 12, padding: "24px 0" }}
-              >
-                <span className="eyebrow" style={{ color: "var(--accent)" }}>
+              <div role="status" style={{ display: "grid", gap: 12, padding: "16px 0" }}>
+                <p className="label" style={{ color: "var(--accent)" }}>
                   {C.sent_label}
-                </span>
-                <h3 className="d3">{C.sent_title(sentName)}</h3>
-                <p className="body dim">{C.sent_body}</p>
+                </p>
+                <h3 className="h3">{C.sent_title(sentName)}</h3>
+                <p className="soft">{C.sent_body}</p>
                 <button
                   type="button"
                   onClick={reset}
-                  className="btn btn-ghost"
-                  style={{ alignSelf: "flex-start", marginTop: 8 }}
+                  className="btn btn--secondary"
+                  style={{ justifySelf: "start", marginTop: 8 }}
                 >
                   {C.sent_again}
                 </button>
@@ -222,6 +190,7 @@ export function Contact() {
 
                 <Field
                   kind="text"
+                  name="name"
                   label={C.f_name}
                   placeholder={C.f_name_p}
                   value={form.name}
@@ -231,6 +200,7 @@ export function Contact() {
                 />
                 <Field
                   kind="email"
+                  name="email"
                   label={C.f_email}
                   placeholder={C.f_email_p}
                   value={form.email}
@@ -241,6 +211,7 @@ export function Contact() {
                 {intent === "role" && (
                   <Field
                     kind="text"
+                    name="company"
                     label={C.f_company}
                     optional={C.optional}
                     placeholder={C.f_company_p}
@@ -251,6 +222,7 @@ export function Contact() {
                 )}
                 <Field
                   kind="textarea"
+                  name="message"
                   label={msgLabel}
                   placeholder={msgPlaceholder}
                   value={form.msg}
@@ -278,11 +250,7 @@ export function Contact() {
                 )}
 
                 {send === "error" && (
-                  <p
-                    className="mono"
-                    role="alert"
-                    style={{ margin: 0, fontSize: 12.5, color: "var(--danger)" }}
-                  >
+                  <p className="form-error" role="alert">
                     {C.e_submit}
                   </p>
                 )}
@@ -290,13 +258,8 @@ export function Contact() {
                 <button
                   type="submit"
                   disabled={send === "sending"}
-                  className="btn btn-primary"
-                  style={{
-                    alignSelf: "flex-start",
-                    marginTop: 4,
-                    opacity: send === "sending" ? 0.7 : 1,
-                    cursor: send === "sending" ? "not-allowed" : "pointer",
-                  }}
+                  className="btn btn--primary"
+                  style={{ alignSelf: "flex-start", marginTop: 4 }}
                 >
                   {send === "sending" ? C.sending : C.f_send}
                 </button>
@@ -324,32 +287,24 @@ function Row({
   const isLatin = /^[\x00-\x7F+\-.,/@\s]+$/.test(value);
   const external = href?.startsWith("http");
   return (
-    <>
-      <dt className="eyebrow">{label}</dt>
-      <dd className="contact-value">
+    <div>
+      <dt>{label}</dt>
+      <dd>
         {href ? (
           <a
             href={href}
             target={external ? "_blank" : undefined}
             rel={external ? "noopener noreferrer" : undefined}
             className={isLatin ? "latin tap" : "tap"}
-            style={{
-              fontSize: 16.5,
-              textDecoration: "underline",
-              textDecorationColor: "var(--rule)",
-              textUnderlineOffset: 4,
-            }}
           >
             {value}
           </a>
         ) : (
-          <span className={isLatin ? "latin" : undefined} style={{ fontSize: 16.5 }}>
-            {value}
-          </span>
+          <span className={isLatin ? "latin" : undefined}>{value}</span>
         )}
         {copy && <CopyButton text={value} label={copy[0]} done={copy[1]} />}
       </dd>
-    </>
+    </div>
   );
 }
 
@@ -378,13 +333,13 @@ function CopyButton({ text, label, done }: { text: string; label: string; done: 
   };
 
   return (
-    <button type="button" onClick={copy} className="copy-btn mono" aria-live="polite">
+    <button type="button" onClick={copy} className="copy-btn" aria-live="polite">
       {copied ? done : label}
     </button>
   );
 }
 
-/** A row of one-tap pills backed by real radio inputs, so arrow keys work. */
+/** A row of one-tap options backed by real radio inputs, so arrow keys work. */
 function Choices<T extends string>({
   legend,
   optional,
@@ -401,9 +356,9 @@ function Choices<T extends string>({
   const name = useId();
   return (
     <fieldset className="choices">
-      <legend className="eyebrow">
+      <legend className="field__label">
         {legend}
-        {optional && <span style={{ opacity: 0.7 }}> · {optional}</span>}
+        {optional && <span className="field__optional"> ({optional})</span>}
       </legend>
       <div className="choices-row">
         {options.map(([v, label]) => (
@@ -425,6 +380,7 @@ function Choices<T extends string>({
 
 function Field({
   kind,
+  name,
   label,
   optional,
   placeholder,
@@ -434,6 +390,7 @@ function Field({
   onChange,
 }: {
   kind: "text" | "email" | "textarea";
+  name: string;
   label: string;
   optional?: string;
   placeholder: string;
@@ -447,44 +404,36 @@ function Field({
 
   const shared = {
     id,
+    name,
+    className: "field-input",
     value,
     placeholder,
     autoComplete,
+    spellCheck: kind === "email" ? false : undefined,
     "aria-invalid": error ? (true as const) : undefined,
     "aria-describedby": error ? errorId : undefined,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       onChange(e.target.value),
-    style: {
-      width: "100%",
-      background: "transparent",
-      border: 0,
-      outline: "none",
-      color: "var(--fg)",
-      font: "inherit",
-      fontSize: 16.5,
-      padding: "10px 0",
-      borderBottom: `1px solid ${error ? "var(--danger)" : "var(--rule)"}`,
-      direction: "inherit" as const,
-    },
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <label htmlFor={id} className="eyebrow">
+    <div className="field">
+      <div className="field__top">
+        <label htmlFor={id} className="field__label">
           {label}
-          {optional && <span style={{ opacity: 0.7 }}> · {optional}</span>}
+          {optional && <span className="field__optional"> ({optional})</span>}
         </label>
         {error && (
-          <span id={errorId} role="alert" className="mono" style={{ fontSize: 11, color: "var(--danger)" }}>
+          <span id={errorId} role="alert" className="field__error">
             {error}
           </span>
         )}
       </div>
       {kind === "textarea" ? (
-        <textarea {...shared} rows={4} style={{ ...shared.style, resize: "vertical" }} />
+        <textarea {...shared} rows={4} />
       ) : (
-        <input {...shared} type={kind} />
+        // An email address reads left to right even on the Arabic page.
+        <input {...shared} type={kind} dir={kind === "email" ? "ltr" : undefined} />
       )}
     </div>
   );
@@ -492,7 +441,7 @@ function Field({
 
 function WhatsAppIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
       <path
         d="M8 1.2a6.8 6.8 0 00-5.86 10.25L1.2 14.8l3.44-.9A6.8 6.8 0 108 1.2zm0 12.3a5.5 5.5 0 01-2.8-.77l-.2-.12-2.04.53.55-1.99-.13-.2A5.5 5.5 0 118 13.5zm3.02-4.12c-.17-.08-.98-.48-1.13-.54-.15-.05-.26-.08-.37.09-.11.16-.43.54-.52.65-.1.1-.2.12-.36.04a4.5 4.5 0 01-2.24-1.96c-.17-.29.17-.27.48-.9.05-.11.03-.2-.01-.29-.04-.08-.37-.9-.51-1.23-.13-.32-.27-.28-.37-.28h-.32a.6.6 0 00-.44.2c-.15.17-.58.57-.58 1.38s.6 1.6.68 1.71c.08.11 1.17 1.79 2.84 2.51 1.05.45 1.46.49 1.99.41.32-.05.98-.4 1.12-.79.14-.39.14-.72.1-.79-.04-.07-.15-.11-.32-.19z"
         fill="currentColor"

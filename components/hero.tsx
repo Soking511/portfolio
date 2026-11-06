@@ -2,33 +2,38 @@
 
 import { useEffect, useState } from "react";
 import { useT } from "@/components/lang/provider";
-import { Latin } from "@/components/lang/latin";
 import { useContactIntent } from "@/components/contact-intent";
-import { Arrow } from "@/components/arrow";
 import { trackAttrs } from "@/lib/analytics";
+import { FEATURED } from "@/lib/projects";
 
 /**
- * The fold. In order of what a stranger needs: availability, what I build,
- * who I am, one action per audience (a client, a recruiter), then proof —
- * the names of real shipped work — and what I build it with. The résumé is
- * reached through "Hiring?", not a third link of its own; phones drop the
- * stack line, which "What I reach for" repeats further down.
+ * The fold, in the order a stranger needs it: who I am (the name, in both of
+ * the scripts I work in), what I do in one sentence, a button per audience,
+ * and the facts a recruiter scans for, availability first. Availability is
+ * a fact like the others, not a badge.
  *
- * The name is deliberately absent — the header wordmark already carries it,
- * and repeating it burned the most valuable line on the page.
+ * The name in two scripts is the page's one bold gesture: this page's script
+ * heavy, the other light beneath it, one typeface drawing both. Its second
+ * line settles in once on load (CSS only, skipped under reduced motion);
+ * nothing else here moves, so first paint never waits on React.
  *
- * Kept short of a full screen so the next section's heading shows at the
- * bottom edge: a fold that fills the viewport exactly reads as the whole page.
- *
- * Nothing here carries data-reveal: first paint must not wait for hydration.
+ * Under it, a row of three real projects, so the first screen shows work and
+ * not only claims; each opens that project further down the page. On phones
+ * the facts move below that row (CSS order only; they hold nothing
+ * focusable), or the row would start a full screen down.
  */
 export function Hero() {
-  const { t, altLang, altHref } = useT();
+  const { t, lang, altLang, altHref } = useT();
   const { setIntent } = useContactIntent();
   const H = t.hero;
+  const W = t.works;
+  const recent = ["menuvista", "damanhour-university", "eg-pricey"].map((slug) => {
+    const i = FEATURED.findIndex((m) => m.slug === slug);
+    return { slug, title: W.featured[i].title, sub: W.featured[i].kicker, image: FEATURED[i].image! };
+  });
 
-  // Only after mount (navigator is client-only), and absolutely positioned in
-  // the gap under the header, so appearing late never shifts the fold.
+  // After mount only (navigator is client-side); positioned out of flow in
+  // globals.css, so appearing late never shifts the fold.
   const [suggestAlt, setSuggestAlt] = useState(false);
   useEffect(() => {
     const preferred = (navigator.languages?.[0] ?? navigator.language ?? "").toLowerCase();
@@ -36,112 +41,89 @@ export function Hero() {
   }, [altLang]);
 
   return (
-    <section
-      id="index"
-      style={{
-        position: "relative",
-        minHeight: "min(84svh, 780px)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        paddingTop: 92,
-        paddingBottom: 28,
-      }}
-    >
-      {suggestAlt && (
-        <div className="container-edge hero-alt">
-          <a
-            href={altHref}
-            hrefLang={altLang}
+    <section id="top" className="hero" aria-labelledby="hero-name">
+      <div className="container">
+        {suggestAlt && (
+          <p className="hero-alt">
+            <a
+              href={altHref}
+              hrefLang={altLang}
+              lang={altLang}
+              dir={altLang === "ar" ? "rtl" : "ltr"}
+              {...trackAttrs("lang_suggest", { to: altLang })}
+            >
+              {H.alt_suggest}
+            </a>
+          </p>
+        )}
+
+        {/* The name in two scripts. avoid-ai-design-ignore: SD5 */}
+        <h1 className="hero-name" id="hero-name">
+          <span className="hero-name__line hero-name__line--primary">{H.name}</span>
+          <span
+            className="hero-name__line hero-name__line--alt"
             lang={altLang}
             dir={altLang === "ar" ? "rtl" : "ltr"}
-            {...trackAttrs("lang_suggest", { to: altLang })}
+            translate="no"
           >
-            {H.alt_suggest}
-          </a>
-        </div>
-      )}
-
-      <div className="container-edge" style={{ width: "100%" }}>
-        <p
-          className="mono"
-          style={{
-            margin: "0 0 22px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 9,
-            fontSize: 11.5,
-            letterSpacing: "0.14em",
-            color: "var(--accent)",
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: 99,
-              background: "var(--accent)",
-              flex: "none",
-            }}
-          />
-          {H.status_line}
-        </p>
-
-        <h1 className="d1" style={{ maxWidth: "15ch" }}>
-          {H.headline_pre}
-          <span className="em">{H.headline_em}</span>
-          {H.headline_post}
+            {H.name_alt}
+          </span>
         </h1>
 
-        <p className="lead dim" style={{ maxWidth: "40ch", marginTop: 22 }}>
-          {H.sub}
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 12,
-            alignItems: "center",
-            marginTop: 30,
-          }}
-        >
-          <a
-            href="#contact"
-            className="btn btn-primary"
-            onClick={() => setIntent("project")}
-            {...trackAttrs("hero_start_project")}
-          >
-            {H.cta_project}
-            <Arrow />
-          </a>
-          <a href="#cv" className="btn btn-ghost" {...trackAttrs("hero_hiring")}>
-            {H.cta_hiring}
-          </a>
-        </div>
-
-        <div style={{ marginTop: 40, paddingTop: 18, borderTop: "1px solid var(--rule)" }}>
-          <p className="hero-recent">
-            <span className="eyebrow">{H.recent_label}</span>
-            {H.recent.map(([label, anchor]) => (
+        <div className="hero-body">
+          <div className="hero-pitch">
+            <p className="hero-statement">{H.statement}</p>
+            <div className="hero-actions">
               <a
-                key={anchor}
-                href={`#${anchor}`}
-                className="tap"
-                {...trackAttrs("hero_recent", { project: anchor })}
+                href="#contact"
+                className="btn btn--primary"
+                onClick={() => setIntent("project")}
+                {...trackAttrs("hero_start_project")}
               >
-                {label}
+                {H.cta_project}
               </a>
-            ))}
-          </p>
+              <a href="#cv" className="btn btn--secondary" {...trackAttrs("hero_hiring")}>
+                {H.cta_hiring}
+              </a>
+            </div>
+          </div>
 
-          <Latin as="div" className="mono hero-stack">
-            <span style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--fg-dim)" }}>
-              {H.stack_line}
-            </span>
-          </Latin>
+          <dl className="facts" lang={lang}>
+            {H.facts.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
+
+        <nav className="hero-work" aria-label={H.peek_label}>
+          <h2 className="label">{H.peek_label}</h2>
+          <ul>
+            {recent.map((p, i) => (
+              <li key={p.slug}>
+                <a href={`#${p.slug}`} {...trackAttrs("hero_recent", { project: p.slug })}>
+                  <span className="hero-work__shot">
+                    <img
+                      src={`/work/${p.image}-720.webp`}
+                      srcSet={`/work/${p.image}-720.webp 720w, /work/${p.image}-1440.webp 1440w`}
+                      sizes="(max-width: 720px) 80vw, 380px"
+                      width={720}
+                      height={450}
+                      alt=""
+                      decoding="async"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === 0 ? "high" : undefined}
+                    />
+                  </span>
+                  <span className="hero-work__name latin">{p.title}</span>
+                  <span className="hero-work__sub">{p.sub}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </section>
   );

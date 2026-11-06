@@ -4,109 +4,56 @@ import { useT } from "@/components/lang/provider";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, whatsappLink } from "@/lib/site";
 
 // Kept here rather than in strings.ts: these are URLs, not copy, and they are
-// identical in both languages. Professional profiles only — a personal
-// social account is noise to someone deciding whether to hire.
+// identical in both languages. Professional profiles only: a personal social
+// account is noise to someone deciding whether to hire.
 const ELSEWHERE: Array<[string, string]> = [
   ["GitHub", GITHUB_URL],
   ["LinkedIn", LINKEDIN_URL],
   ["WhatsApp", whatsappLink()],
 ];
 
+/**
+ * Who, how to reach me, and where else I am. No sitemap columns: the header
+ * already holds the page's sections, and repeating them here was template.
+ */
 export function Footer() {
-  const { t, homeAnchor, nav } = useT();
+  const { t } = useT();
   const F = t.footer;
 
   return (
-    <footer
-      className="section-y"
-      style={{ borderTop: "1px solid var(--rule)", paddingBottom: 32 }}
-    >
-      <div className="container-edge">
-        <div className="r-footer-cols">
+    <footer className="site-footer">
+      <div className="container">
+        <div className="footer-main">
           <div>
-            <div className="mono latin" style={{ fontSize: 13, letterSpacing: "0.1em", fontWeight: 500 }}>
-              Youseef Tareq
-            </div>
-            <p className="dim" style={{ margin: "8px 0 0", fontSize: 14 }}>
+            <p className="wordmark" style={{ minHeight: 0 }}>
+              {t.hero.name}
+            </p>
+            <p className="soft" style={{ marginTop: 6 }}>
               {F.identity_tagline}
             </p>
-            <p className="dim" style={{ margin: "18px 0 0", fontSize: 13, lineHeight: 1.6, maxWidth: "40ch" }}>
-              {F.colophon_text}
-            </p>
           </div>
-
-          <nav aria-label={F.index_label}>
-            <div className="eyebrow" style={{ marginBottom: 14 }}>
-              {F.index_label}
-            </div>
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-              {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href]) => (
-                <li key={href}>
-                  <a href={href} className="tap" style={{ fontSize: 14 }}>
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div>
-            <div className="eyebrow" style={{ marginBottom: 14 }}>
-              {F.elsewhere_label}
-            </div>
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-              {ELSEWHERE.map(([label, href]) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="latin tap"
-                    style={{ fontSize: 14 }}
-                  >
-                    {label} ↗
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <div className="eyebrow" style={{ marginBottom: 14 }}>
-              {F.direct_label}
-            </div>
-            <a
-              href={`mailto:${EMAIL}`}
-              className="latin tap"
-              style={{ fontSize: 14, overflowWrap: "anywhere" }}
-            >
-              {EMAIL}
-            </a>
-          </div>
+          <a href={`mailto:${EMAIL}`} className="footer-email latin">
+            {EMAIL}
+          </a>
         </div>
 
-        <div
-          style={{
-            marginTop: 56,
-            paddingTop: 20,
-            borderTop: "1px solid var(--rule)",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 16,
-          }}
-        >
-          <span className="mono" style={{ fontSize: 11.5, color: "var(--fg-dim)", letterSpacing: "0.04em" }}>
-            {F.copyright}
-          </span>
-          <a
-            href="#main"
-            className="mono tap"
-            style={{ fontSize: 11.5, color: "var(--fg-dim)", letterSpacing: "0.04em" }}
-          >
-            {F.to_top} ↑
-          </a>
+        <div className="footer-bottom">
+          <p>
+            {F.copyright}. {F.colophon_text}
+          </p>
+          <ul className="footer-links">
+            {ELSEWHERE.map(([label, href]) => (
+              <li key={label}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className="latin">
+                  {label}
+                  <span className="visually-hidden"> {t.misc.new_tab}</span>
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href="#main">{F.to_top}</a>
+            </li>
+          </ul>
         </div>
       </div>
     </footer>

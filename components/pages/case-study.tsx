@@ -3,27 +3,25 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Arrow } from "@/components/arrow";
-import { Latin } from "@/components/lang/latin";
 import { useT } from "@/components/lang/provider";
 import { FlowDiagram } from "@/components/flow-diagram";
 import { ProjectImage } from "@/components/project-image";
 import { ProjectLink } from "@/components/project-link";
-import { Beat, Outcome } from "@/components/work-featured";
+import { Answers } from "@/components/work-featured";
 import { contactHref } from "@/components/contact-intent";
-import { useReveal } from "@/components/theme/use-reveal";
 import { FEATURED } from "@/lib/projects";
 import { homePath, workPath } from "@/lib/i18n";
 import { trackAttrs } from "@/lib/analytics";
 
 /**
  * One featured project on its own URL, so it can be shared, linked from a
- * proposal and found by search. The page grows with the content: context,
+ * proposal and found by search. It answers the same questions as the home
+ * page — with the problem in front — and grows with the content: context,
  * challenges, "what I'd do differently", an outcome and a client quote each
- * render only once they exist in strings.ts — nothing here is padding.
+ * render only once they exist in strings.ts. Nothing here is padding.
  */
 export function CaseStudyPage({ slug }: { slug: string }) {
   const { t, lang } = useT();
-  useReveal();
 
   const index = FEATURED.findIndex((m) => m.slug === slug);
   const meta = FEATURED[index];
@@ -45,53 +43,31 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       </a>
       <Header />
       <main id="main">
-        <article>
-          <header className="container-edge cs-head">
-            <a href={`${home}#${slug}`} className="mono tap cs-back">
-              <Arrow size={12} back />
+        <article aria-labelledby="cs-title">
+          <header className="container cs-head">
+            <a href={`${home}#${slug}`} className="back-link">
+              <Arrow size={14} back />
               {CS.back}
             </a>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "28px 0 14px" }}>
-              <Latin as="span" className="mono accent">
-                <span style={{ fontSize: 12, letterSpacing: "0.14em" }}>{project.n}</span>
-              </Latin>
-              <span className="rule" style={{ flex: 1 }} />
-              <Latin as="span" className="mono">
-                <span style={{ fontSize: 11.5, letterSpacing: "0.1em", color: "var(--fg-dim)" }}>
-                  {project.year}
-                </span>
-              </Latin>
-            </div>
-
-            <h1 className="d1 latin">{project.title}</h1>
-            <p className="lead" style={{ marginTop: 14, maxWidth: "36ch" }}>
-              {project.kicker}
-            </p>
+            <h1 className="cs-title latin" id="cs-title" style={{ viewTransitionName: `title-${slug}` }}>
+              {project.title}
+            </h1>
+            <p className="lead soft cs-kicker">{project.kicker}</p>
 
             <div className="cs-meta">
-              <span className="eyebrow">
-                {W.label_role} — {project.role}
-              </span>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {project.stack.map((s) => (
-                  <span key={s} className="chip latin">
-                    {s}
-                  </span>
-                ))}
-              </div>
-              <span style={{ marginInlineStart: "auto" }}>
-                <ProjectLink meta={meta} />
-              </span>
+              <p className="soft">
+                {project.role}, {project.year}
+              </p>
+              <ProjectLink meta={meta} />
             </div>
           </header>
 
-          <div className="container-edge">
-            <div className="proj-media cs-hero-media">
+          <div className="container">
+            <div className="project__media cs-hero-media" style={{ viewTransitionName: `media-${slug}` }}>
               <ProjectImage
                 image={meta.image}
                 title={project.title}
-                swatch={meta.swatch}
                 alt={t.misc.screenshot_alt(project.title)}
                 priority
                 variant="feature"
@@ -100,20 +76,18 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             </div>
           </div>
 
-          <section className="container-edge">
+          <section className="container" aria-label={project.title}>
             <div className="cs-section" style={{ borderTop: 0 }}>
-              {project.outcome && <Outcome label={W.outcome_label} text={project.outcome} />}
-              <div className="cs-beats" data-reveal>
-                <Beat label={W.label_problem} text={project.problem} />
-                <Beat label={W.label_built} text={project.built} />
-                <Beat label={W.label_decision} text={project.decision} isKey />
-              </div>
+              <Answers project={project} labels={W} withProblem className="cs-answers" />
+              <p className="cs-stack">
+                <strong>{W.label_stack}:</strong> <span className="latin">{project.stack.join(", ")}</span>
+              </p>
             </div>
           </section>
 
           {diagram && meta.image && (
             <TextSection label={CS.architecture}>
-              <div className="cs-diagram">
+              <div className="project__media" style={{ aspectRatio: "auto" }}>
                 <FlowDiagram diagram={diagram} />
               </div>
             </TextSection>
@@ -130,8 +104,8 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               <div style={{ display: "grid", gap: 28 }}>
                 {extra.challenges.map((c) => (
                   <div key={c.title}>
-                    <h3 style={{ margin: 0, fontSize: 19, fontWeight: 500 }}>{c.title}</h3>
-                    <p className="body dim" style={{ marginTop: 8 }}>
+                    <h3 className="h3">{c.title}</h3>
+                    <p className="soft" style={{ marginTop: 8 }}>
                       {c.body}
                     </p>
                   </div>
@@ -142,79 +116,58 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
           {extra?.differently && (
             <TextSection label={CS.differently}>
-              <p className="body">{extra.differently}</p>
+              <p>{extra.differently}</p>
             </TextSection>
           )}
 
           {meta.image && (
             <TextSection label={CS.gallery}>
               <div className="cs-gallery">
-                <figure>
-                  <img
-                    src={`/work/${meta.image}-1440.webp`}
-                    srcSet={`/work/${meta.image}-720.webp 720w, /work/${meta.image}-1440.webp 1440w`}
-                    sizes="(max-width: 720px) 100vw, 60vw"
-                    width={1440}
-                    height={900}
-                    loading="lazy"
-                    decoding="async"
-                    alt={`${t.misc.screenshot_alt(project.title)} — ${CS.desktop}`}
-                  />
-                  <figcaption className="eyebrow">{CS.desktop}</figcaption>
-                </figure>
-                <figure>
-                  <img
-                    src={`/work/${meta.image}-m780.webp`}
-                    srcSet={`/work/${meta.image}-m390.webp 390w, /work/${meta.image}-m780.webp 780w`}
-                    sizes="(max-width: 720px) 60vw, 22vw"
-                    width={390}
-                    height={520}
-                    loading="lazy"
-                    decoding="async"
-                    alt={`${t.misc.screenshot_alt(project.title)} — ${CS.mobile}`}
-                  />
-                  <figcaption className="eyebrow">{CS.mobile}</figcaption>
-                </figure>
+                <img
+                  src={`/work/${meta.image}-m780.webp`}
+                  srcSet={`/work/${meta.image}-m390.webp 390w, /work/${meta.image}-m780.webp 780w`}
+                  sizes="320px"
+                  width={390}
+                  height={520}
+                  loading="lazy"
+                  decoding="async"
+                  alt={`${t.misc.screenshot_alt(project.title)} — ${CS.mobile}`}
+                />
               </div>
             </TextSection>
           )}
 
           {quote && (
-            <section className="container-edge" data-reveal>
-              <figure className="cs-section" style={{ margin: 0 }}>
-                <blockquote className="statement" style={{ margin: 0, maxWidth: "32ch" }}>
-                  “{quote.quote}”
-                </blockquote>
-                <figcaption style={{ marginTop: 16, fontSize: 14 }}>
-                  <span style={{ fontWeight: 500 }}>{quote.name}</span>
-                  <span className="dim"> · {quote.role}</span>
+            <section className="container">
+              <figure className="cs-section quote">
+                <blockquote style={{ maxWidth: "36ch" }}>“{quote.quote}”</blockquote>
+                <figcaption>
+                  <strong style={{ fontWeight: 600 }}>{quote.name}</strong>
+                  <span className="soft">, {quote.role}</span>
                 </figcaption>
               </figure>
             </section>
           )}
 
-          <section className="band section-y" style={{ marginTop: 40 }}>
-            <div className="container-edge" data-reveal>
-              <h2 className="d2" style={{ maxWidth: "16ch" }}>
-                {CS.cta_pre}
-                <span className="em">{CS.cta_em}</span>
-                {CS.cta_post}
+          <section className="section section--surface" style={{ marginTop: 40 }} aria-labelledby="cs-cta">
+            <div className="container">
+              <h2 className="h2" id="cs-cta">
+                {CS.cta_title.replace("{project}", project.title)}
               </h2>
-              <p className="lead dim" style={{ marginTop: 18, maxWidth: "44ch" }}>
+              <p className="lead soft" style={{ marginTop: 16, maxWidth: "48ch" }}>
                 {CS.cta_body}
               </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
+              <div className="hero-actions">
                 <a
                   href={contactHref(home, "project")}
-                  className="btn btn-primary"
+                  className="btn btn--primary"
                   {...trackAttrs("case_cta_project", { project: slug })}
                 >
                   {t.hero.cta_project}
-                  <Arrow />
                 </a>
                 <a
                   href={`${home}#cv`}
-                  className="btn btn-ghost"
+                  className="btn btn--secondary"
                   {...trackAttrs("case_cta_hiring", { project: slug })}
                 >
                   {t.hero.cta_hiring}
@@ -223,19 +176,14 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             </div>
           </section>
 
-          <nav className="container-edge cs-next" aria-label={CS.next}>
+          <nav className="container cs-next" aria-label={CS.next}>
             <a
               href={workPath(lang, next.meta.slug)}
               {...trackAttrs("case_study_open", { project: next.meta.slug, from: "next" })}
             >
-              <span className="eyebrow">{CS.next}</span>
-              <span className="cs-next-title">
-                <span className="latin">{next.project.title}</span>
-                <Arrow size={22} />
-              </span>
-              <span className="dim" style={{ fontSize: 15 }}>
-                {next.project.kicker}
-              </span>
+              <span className="label">{CS.next}</span>
+              <span className="cs-next__title latin">{next.project.title}</span>
+              <span className="soft">{next.project.kicker}</span>
             </a>
           </nav>
         </article>
@@ -247,9 +195,9 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
 function TextSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="container-edge" data-reveal>
+    <section className="container" aria-label={label}>
       <div className="cs-section cs-text">
-        <div className="eyebrow">{label}</div>
+        <h2 className="label">{label}</h2>
         <div>{children}</div>
       </div>
     </section>

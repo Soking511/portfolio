@@ -1,6 +1,7 @@
 "use client";
 
 import { useT } from "@/components/lang/provider";
+import { SectionHead } from "@/components/section-head";
 
 /**
  * Quotes from real clients, with names and roles. Renders nothing at all
@@ -13,25 +14,16 @@ export function Testimonials() {
   if (!T.items.length) return null;
 
   return (
-    <section className="band section-tight">
-      <div className="container-edge">
-        <div
-          data-reveal
-          style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}
-        >
-          <span className="eyebrow">{T.eyebrow}</span>
-          <span className="rule" style={{ flex: 1 }} />
-        </div>
-
-        <div className="r-quotes">
+    <section className="section" aria-labelledby="quotes-title">
+      <div className="container">
+        <SectionHead id="quotes-title" title={T.title} />
+        <div className="quotes">
           {T.items.map((q) => (
-            <figure key={q.name} data-reveal style={{ margin: 0 }}>
-              <blockquote className="statement" style={{ margin: 0, fontSize: "clamp(20px, 2.4vw, 26px)" }}>
-                “{q.quote}”
-              </blockquote>
-              <figcaption style={{ marginTop: 16, fontSize: 14 }}>
-                <span style={{ fontWeight: 500 }}>{q.name}</span>
-                <span className="dim"> · {q.role}</span>
+            <figure key={q.name} className="quote">
+              <blockquote>“{q.quote}”</blockquote>
+              <figcaption>
+                <strong style={{ fontWeight: 600 }}>{q.name}</strong>
+                <span className="soft">, {q.role}</span>
               </figcaption>
             </figure>
           ))}

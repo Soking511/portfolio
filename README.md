@@ -1,6 +1,6 @@
 # soking.digital
 
-Personal site for Youseef Tareq — full-stack engineer, Cairo.
+Personal site for Youseef Tareq — software engineer (MEAN stack), Cairo.
 
 Next.js 15 (App Router) exported as a fully static site and deployed to
 Firebase Hosting by GitHub Actions on push to `main`.
@@ -10,7 +10,8 @@ Firebase Hosting by GitHub Actions on push to `main`.
 | Concern | Choice |
 |---|---|
 | Framework | Next.js 15, React 19, TypeScript, `output: "export"` |
-| Styling | CSS custom properties in `app/globals.css` + inline styles. Tailwind is present for preflight and the odd utility only. |
+| Styling | One design system in `app/globals.css` (tokens + component classes). Tailwind is present for preflight only. |
+| Type | Alexandria (display, Arabic + Latin) and IBM Plex Sans / Plex Sans Arabic (text), self-hosted by `next/font` |
 | Content | One typed bilingual file: `components/lang/strings.ts` |
 | Languages | English at `/`, Arabic at `/ar/` — separate static pages, one root layout each |
 | Contact form | Firestore write → Cloud Function → email |
@@ -18,8 +19,17 @@ Firebase Hosting by GitHub Actions on push to `main`.
 | Hosting | Firebase Hosting (`out/`) |
 
 There is no animation library, no component library and no CSS framework doing
-the layout. That is deliberate: the whole design system is about 300 lines of
-CSS.
+the layout. That is deliberate: the whole design system is one CSS file.
+
+## Design system
+
+`DESIGN.md` is the contract: direction, tokens and rules. `app/globals.css`
+implements it. Read it before changing any page.
+
+In short: calm and easy on the eye. A soft paper ground, lapis ink, one muted
+teal accent, limestone for alternate sections, and one dark band for contact.
+Alexandria sets the name and headings in both scripts; IBM Plex sets the
+reading text. No cards or shadows on content, no bright colours.
 
 ## Layout
 
@@ -37,16 +47,23 @@ components/
   shell/root-shell.tsx     fonts, head, providers, analytics — shared by both layouts
   pages/home.tsx           section order
   pages/case-study.tsx     one featured project on its own URL
-  hero.tsx                 the fold — no reveal animation
-  work-featured.tsx        3 case studies, 3 different layouts
+  hero.tsx                 the fold: the name in both scripts, one sentence,
+                           two actions, and three facts
+  section-head.tsx         plain section heading + optional intro line
+  work-featured.tsx        3 projects in one shared shape; Answers for the
+                           case-study page
   work-selected.tsx        remaining projects as a list
-  principles.tsx  about.tsx  experience.tsx  contact.tsx  footer.tsx  header.tsx
+  capabilities.tsx         services: plain text, links to the proof,
+                           and a tools table
+  principles.tsx           three beliefs, and how a project goes
+  about.tsx                who I am
+  experience.tsx  contact.tsx  footer.tsx  header.tsx
   testimonials.tsx         hidden until strings.ts has a real quote
   project-image.tsx        screenshot, diagram, or a wordmark panel
   flow-diagram.tsx         architecture diagram as an ordered list
   contact-intent.tsx       lets a CTA preselect "project" / "role" on the form
-  lang/                    strings.ts (en + ar), provider, RTL helper
-  theme/                   light/dark, no-FOUC script, reveal hook
+  lang/                    strings.ts (en + ar), provider
+  theme/                   light/dark, no-FOUC script
 content/notes/
   meta.ts         published notes (title, date, language) — client-safe
   bodies.ts       each note's MDX body, imported only by the note route
@@ -79,8 +96,19 @@ it.
 `outcome` on a featured project, a testimonial, `PORTRAIT`, `BOOKING_URL` and
 `UMAMI_WEBSITE_ID` all render nothing until set.
 
-**Project links follow `status` in `lib/projects.ts`.** Only `live` projects
-link out; `private`, `maintenance` and `offline` show a label instead.
+**Project links follow `status` in `lib/projects.ts`.** `live` links to the
+site and `source` to public code on GitHub; `private`, `maintenance`,
+`offline` and `unreleased` show a label instead. MenuVista is `unreleased`
+until menuvista.net serves a valid certificate. Check the live sites now and then — a project
+that comes back from maintenance should link again.
+
+**Claims match the résumé.** Years, roles and "My part" for each project are
+taken from `public/youseef-tareq-resume.pdf`. When one changes, change both.
+
+**Two border weights.** `--rule` is a quiet hairline for dividers.
+`--rule-strong` (3:1 against the background) outlines anything you can
+interact with — inputs, outline buttons, the form's choices — so controls
+can be found.
 
 **Notes are written per language and appear with the first one.** To
 publish: write `content/notes/<lang>/<slug>.mdx`, import it in `bodies.ts`,
@@ -91,11 +119,10 @@ The notes route is an optional catch-all because static export rejects a
 dynamic route with no params — which is exactly the state before the first
 note.
 
-**Content is visible by default.** `[data-reveal]` elements are only hidden once
-the pre-hydration script sets `data-reveal-ready` on `<html>`, and it omits that
-under `prefers-reduced-motion`. Without JavaScript, or with reduced motion, the
-page renders fully. Nothing above the fold animates, so first paint never waits
-for hydration.
+**Content is never hidden waiting for JavaScript.** All motion is CSS (see
+the rules in `DESIGN.md`): no text waits on an animation, scroll-linked
+effects only run where scroll timelines exist, and everything is skipped
+under `prefers-reduced-motion`.
 
 **Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
 Earlier versions embedded each project as a live `<iframe>`; that was removed
@@ -132,8 +159,17 @@ chrome --headless=new --disable-gpu --hide-scrollbars \
 Then crop any promo or consent bar, resize to 1440w and 720w, and write WebP at
 quality 82 into `public/work/<slug>-{1440,720}.webp`.
 
-Case-study share images (`public/og/<slug>.png`, 1200×630) are drawn the same
-way as `public/og.png`: an SVG composited with the 1440w screenshot by `sharp`.
+Share images (`public/og.png` and `public/og/<slug>.png`, 1200×630) are
+rendered from `scripts/og-template.html` with headless Chrome, so they use the
+site's own fonts and palette. Copy the project's 1440w screenshot next to the
+template, then:
+
+```bash
+chrome --headless=new --hide-scrollbars --allow-file-access-from-files   --window-size=1200,630 --virtual-time-budget=12000 --screenshot=og.png   "file:///…/og-template.html?kind=case&title=EG-Pricey&kicker=…&stack=…&img=eg-pricey-1440.webp"
+```
+
+`kind=home` draws the home image; a case without `img` takes `nodes=A|*B|C`
+(a `*` marks a bought service) and draws its architecture instead.
 Regenerate them when a project's title, kicker or screenshot changes.
 
 ## Deploying

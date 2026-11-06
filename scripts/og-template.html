@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@250;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+  :root { --paper:#FBFBF9; --surface:#ECF1F1; --ink:#13264D; --soft:#4A5872; --accent:#0A7671; --gold:#0A7671; --line:#D5DDE0; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: "IBM Plex Sans", sans-serif; }
+  .bar { position: absolute; inset: 0 0 auto; height: 8px; background: var(--gold); }
+  .home { padding: 84px 80px 0; }
+  .name { font-family: Alexandria, sans-serif; font-size: 112px; line-height: 1.02; letter-spacing: -0.035em; }
+  .name b { font-weight: 700; display: block; }
+  .name span { font-weight: 250; color: var(--soft); display: block; text-align: right; letter-spacing: 0; line-height: 1.2; }
+  .foot { position: absolute; left: 80px; right: 80px; bottom: 56px; display: flex; justify-content: space-between; align-items: end; border-top: 1px solid var(--line); padding-top: 24px; font-size: 26px; }
+  .foot p { color: var(--soft); }
+  .foot strong { color: var(--accent); font-weight: 600; }
+
+  .case { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 72px 72px 0; height: 100%; }
+  .label { font-size: 22px; font-weight: 600; color: var(--soft); }
+  .title { margin-top: 18px; font-family: Alexandria, sans-serif; font-weight: 700; font-size: 78px; line-height: 1.02; letter-spacing: -0.03em; }
+  .kicker { margin-top: 18px; font-size: 30px; line-height: 1.35; color: var(--soft); }
+  .stack { position: absolute; left: 72px; bottom: 64px; width: 500px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 22px; color: var(--soft); }
+  .stack strong { display: block; margin-top: 6px; color: var(--accent); font-weight: 600; }
+  .media { align-self: start; height: 486px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+  .media img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .flow { height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 32px 40px; }
+  .node { display: flex; gap: 16px; align-items: baseline; padding: 14px 18px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); font-size: 24px; font-weight: 600; }
+  .node i { font-style: normal; color: var(--soft); font-size: 20px; }
+  .node.bought { border: 2px dashed var(--accent); border-radius: 0; }
+  .node.bought i { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<main id="root"></main>
+<script>
+  const q = new URLSearchParams(location.search);
+  const root = document.getElementById("root");
+  const kind = q.get("kind") || "home";
+  if (kind === "home") {
+    root.innerHTML = `
+      <div class="home">
+        <div class="name"><b>Youseef Tareq</b><span lang="ar" dir="rtl">يوسف طارق</span></div>
+      </div>
+      <div class="foot">
+        <p>Software engineer in Cairo<br>MEAN stack, in Arabic and English</p>
+        <strong>soking.digital</strong>
+      </div>`;
+  } else {
+    const nodes = (q.get("nodes") || "").split("|").filter(Boolean);
+    const media = q.get("img")
+      ? `<img src="${q.get("img")}" alt="">`
+      : `<div class="flow">${nodes.map((n, i) => {
+          const bought = n.startsWith("*");
+          return `<div class="node${bought ? " bought" : ""}"><i>${i + 1}</i>${bought ? n.slice(1) : n}</div>`;
+        }).join("")}</div>`;
+    root.innerHTML = `
+      <div class="case">
+        <div>
+          <p class="label">Youseef Tareq, case study</p>
+          <h1 class="title">${q.get("title")}</h1>
+          <p class="kicker">${q.get("kicker")}</p>
+        </div>
+        <div class="media">${media}</div>
+      </div>
+      <div class="stack">${q.get("stack")}<strong>soking.digital</strong></div>`;
+  }
+</script>
+</body>
+</html>

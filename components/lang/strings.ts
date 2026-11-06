@@ -28,18 +28,23 @@ export type Diagram = {
   nodes: Array<{ name: string; note: string; bought?: boolean }>;
 };
 
-/** A featured project gets the full four-beat story treatment. */
+/**
+ * A featured project: what it is, what was built, what I personally did, and
+ * the one decision that mattered. Every claim here should match the résumé.
+ */
 export type FeaturedWork = {
   n: string;
   title: string;
   kicker: string;
   problem: string;
   built: string;
+  /** My own part, in plain words, kept apart from what the product is. */
+  contribution: string;
   decision: string;
   role: string;
   year: string;
   stack: string[];
-  /** Real, verifiable outcome. Left undefined until there are honest numbers. */
+  /** Who uses it, or a real, verifiable result. Left undefined until true. */
   outcome?: string;
   /** Long-form sections for the case-study page. Each renders only when filled. */
   caseStudy?: {
@@ -58,6 +63,15 @@ export type SelectedWork = {
   role: string;
   year: string;
   stack: string[];
+};
+
+/** Something I can build, said plainly, with the projects that show it. */
+export type Capability = {
+  icon: "app" | "dashboard" | "realtime" | "payments" | "bilingual" | "server";
+  title: string;
+  body: string;
+  /** [project name, anchor id on the home page] — each one a link. */
+  proof: Array<[string, string]>;
 };
 
 export type Strings = {
@@ -80,50 +94,55 @@ export type Strings = {
     closeLabel: string;
   };
   hero: {
-    status_line: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
-    sub: string;
-    stack_line: string;
+    /** The name in this page's script; the other script is set beneath it. */
+    name: string;
+    name_alt: string;
+    /** One plain sentence: who and what, before anything else. */
+    statement: string;
+    /** Availability, shown in the small pill above the name. */
+    /** [label, value] — the facts a recruiter scans for in the first seconds. */
+    facts: Array<[string, string]>;
     cta_project: string;
     cta_hiring: string;
-    recent_label: string;
-    /** [label, anchor id] — anchor ids are the slugs in lib/projects.ts. */
-    recent: Array<[string, string]>;
+    /** Names the row of project screenshots under the hero text. */
+    peek_label: string;
     /** Written in the *other* language: offered to visitors whose browser prefers it. */
     alt_suggest: string;
   };
   works: {
-    eyebrow: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
+    title: string;
     intro: string;
     label_problem: string;
     label_built: string;
+    label_contribution: string;
     label_decision: string;
     label_role: string;
+    label_stack: string;
     outcome_label: string;
     case_study: string;
     featured: FeaturedWork[];
-    selected_eyebrow: string;
     selected_headline: string;
     selected_note: string;
     selected: SelectedWork[];
     /** Shown instead of a link for anything that is not live. */
-    status: Record<Exclude<ProjectStatus, "live">, string>;
+    status: Record<Exclude<ProjectStatus, "live" | "source">, string>;
+  };
+  capabilities: {
+    title: string;
+    intro: string;
+    proof_label: string;
+    items: Capability[];
+    stack_label: string;
+    /** [area, tools] — the stack as plain rows. */
+    stack: Array<[string, string]>;
   };
   testimonials: {
-    eyebrow: string;
+    title: string;
     items: Testimonial[];
   };
   notes: {
     nav: string;
     title: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
     intro: string;
     empty: string;
     latest: string;
@@ -138,38 +157,29 @@ export type Strings = {
     challenges: string;
     differently: string;
     gallery: string;
-    desktop: string;
     mobile: string;
-    cta_pre: string;
-    cta_em: string;
-    cta_post: string;
+    cta_title: string;
     cta_body: string;
     next: string;
   };
   principles: {
-    eyebrow: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
-    items: Array<{ n: string; title: string; body: string; anchor: string }>;
-    tools_label: string;
-    tools: Array<[string, string]>;
+    title: string;
+    intro: string;
+    beliefs_label: string;
+    items: Array<{ title: string; body: string; anchor: string }>;
+    /** How a project goes, as one sentence rather than a numbered diagram. */
+    process: string;
   };
   about: {
-    eyebrow: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
+    title: string;
     p1: string;
     p2: string;
     p3: string;
     portrait_alt: string;
   };
   cv: {
-    eyebrow: string;
-    headline_pre: string;
-    headline_em: string;
-    headline_post: string;
+    title: string;
+    intro: string;
     download: string;
     recruiter_line: string;
     role_cta: string;
@@ -183,10 +193,7 @@ export type Strings = {
     }>;
   };
   contact: {
-    eyebrow: string;
-    headline_a: string;
-    headline_em: string;
-    headline_b: string;
+    title: string;
     lead: string;
     details_label: string;
     rows: Array<[string, string, string | null]>;
@@ -225,154 +232,197 @@ export type Strings = {
   };
   footer: {
     identity_tagline: string;
-    index_label: string;
-    elsewhere_label: string;
-    direct_label: string;
     colophon_text: string;
     copyright: string;
     to_top: string;
   };
   misc: {
     skip: string;
+    /** Read by screen readers after a link that opens in a new tab. */
+    new_tab: string;
+    /** Before the name of the next section, in the link at a section's end. */
+    next_label: string;
     visit_project: string;
+    view_source: string;
     screenshot_alt: (title: string) => string;
-    diagrams: Record<"xtranslator" | "eg-pricey", Diagram>;
+    diagrams: Record<"xtranslator" | "eg-pricey" | "menuvista" | "ufeed", Diagram>;
   };
 };
 
 const en: Strings = {
   dir: "ltr",
   seo: {
-    title: "Youseef Tareq — Full-Stack Engineer, Cairo",
+    title: "Youseef Tareq — Software Engineer (MEAN Stack), Cairo",
     title_template: "%s | Youseef Tareq",
     description:
-      "Full-stack engineer in Cairo building Arabic and English web products — live-data platforms, subscription apps and internal dashboards with Angular, Node.js and TypeScript.",
-    og_alt: "Youseef Tareq — full-stack engineer, Cairo",
+      "Software engineer in Cairo building complete web products with the MEAN stack (MongoDB, Express, Angular, Node.js), in Arabic and English.",
+    og_alt: "Youseef Tareq — software engineer, Cairo",
   },
   nav: {
     items: [
       ["Work", "#work"],
+      ["Services", "#skills"],
       ["About", "#about"],
-      ["Résumé", "#cv"],
+      ["Experience", "#cv"],
     ],
     contact: "Contact",
-    cta: "Let’s talk",
+    cta: "Contact me",
     langLabel: "العربية",
-    themeLabel: "Toggle dark mode",
+    themeLabel: "Switch between light and dark",
     menuLabel: "Menu",
     closeLabel: "Close",
   },
   hero: {
-    status_line: "Open to projects and full-time roles",
-    headline_pre: "I build web products that ",
-    headline_em: "hold up",
-    headline_post: " in production.",
-    sub: "Full-stack engineer in Cairo, currently at The POST. I build web products in Arabic and English — live-data platforms, subscription apps, internal dashboards.",
-    stack_line: "Angular · Node · TypeScript · Django",
-    cta_project: "Start a project",
-    cta_hiring: "Hiring? See my résumé",
-    recent_label: "Recent work",
-    recent: [
-      ["EG-Pricey", "eg-pricey"],
-      ["XTranslator", "xtranslator"],
-      ["TileGreen", "tilegreen"],
-      ["Jafy", "jafy"],
-      ["Damanhour University", "nursing"],
+    name: "Youseef Tareq",
+    name_alt: "يوسف طارق",
+    statement:
+      "Software engineer in Cairo. I build complete web products, from the database to the screen, in Arabic and English.",
+    facts: [
+      ["Open to", "Projects and full-time roles"],
+      ["Now", "Full-stack developer at The POST"],
+      ["Stack", "MEAN: MongoDB, Express, Angular, Node.js"],
+      ["Works in", "Arabic and English, remote or in Cairo"],
     ],
-    alt_suggest: "هذا الموقع متاح بالعربية ←",
+    cta_project: "Start a project",
+    cta_hiring: "See my résumé",
+    peek_label: "Recent work",
+    alt_suggest: "هذا الموقع متاح بالعربية",
   },
   works: {
-    eyebrow: "Featured work",
-    headline_pre: "Three projects, ",
-    headline_em: "one decision",
-    headline_post: " each.",
-    intro: "The call that mattered most in each. The problem, the build and the rest of the story are a click away.",
-    label_problem: "Problem",
-    label_built: "What I built",
+    title: "Work",
+    intro: "Six recent projects. Open any one for the full story.",
+    label_problem: "The problem",
+    label_built: "What it is",
+    label_contribution: "My part",
     label_decision: "Key decision",
     label_role: "Role",
-    outcome_label: "Outcome",
+    label_stack: "Built with",
+    outcome_label: "Used by",
     case_study: "Read the case study",
     featured: [
       {
         n: "01",
+        title: "MenuVista",
+        kicker: "Digital menus and table ordering for restaurants in Egypt",
+        problem:
+          "A printed menu is out of date the day prices change, and a QR code that opens a PDF can’t take an order.",
+        built:
+          "A platform for many restaurants at once. Each gets its own menu in Arabic and English at its own address, opened from a QR code. Diners order from their table without an account, waiters get the orders on their own phones, and owners run menus, branches, staff and their plan from one dashboard.",
+        contribution:
+          "I built it end to end: the Django back end and data model, the owner dashboard, waiter app and public menus in Angular, the live updates, the subscription plans, and deployment with Docker.",
+        decision:
+          "Anyone can open a menu link from home, so an order has to prove the diner is at the table. Each order shows a 4-digit code on the diner’s phone; the waiter types it in to accept the order, and five wrong tries lock it. Live updates run over WebSockets, but every screen also checks in every few seconds when the connection drops, because waiters’ phones drop it whenever they’re locked. A lost connection slows an order down; it never stops one.",
+        role: "Full-stack developer, whole project",
+        year: "2026",
+        stack: ["Angular", "Django", "PostgreSQL", "Redis", "WebSockets"],
+      },
+      {
+        n: "02",
+        title: "UFeed",
+        kicker: "Job evaluation and staff surveys for HR teams",
+        outcome: "Companies including Bosta and Breadfast.",
+        problem:
+          "HR teams grade jobs and survey their staff across spreadsheets and separate tools, and the old UFeed was itself several separate apps.",
+        built:
+          "One HR platform for companies and their subsidiaries: a job evaluation tool that scores positions into a grading matrix, employee engagement surveys with reports, and a salary survey, in Arabic and English. Each company’s plan decides which of these it gets and how many seats.",
+        contribution:
+          "At The POST I developed the platform across the Django back end and the Angular app: job evaluation, the engagement surveys and their reports, the plans that switch modules on per company, and the import that brought each client’s data over from the old system.",
+        decision:
+          "Instead of patching the old apps one by one, the platform was rebuilt as one, and each client’s data was carried across by an import that converts the old exports into the new structure. Companies moved to the new system without starting their evaluations again.",
+        role: "Full-stack developer, The POST",
+        year: "2025",
+        stack: ["Angular", "Django", "PostgreSQL", "Redis"],
+      },
+      {
+        n: "03",
+        title: "Damanhour University",
+        kicker: "The official websites of the university and its faculties",
+        problem:
+          "A public university has to present itself, every faculty and their services to students, staff and the public, and many of them open the sites on older phones over slow connections.",
+        built:
+          "The university’s official site and the sites of all its faculties, in Arabic and English. Each faculty site covers its history and leadership, departments and programmes, services for students and graduates, and its news, and all of them run on the same structure.",
+        contribution:
+          "I worked across the university site and the faculty sites: the shared structure, connecting the sites to their APIs, and the UI and UX of the services and other parts of the sites.",
+        decision:
+          "Every faculty site is built on one Angular structure and talks to the same API, so a service or a fix made once can reach every faculty’s site. Speed on older devices and slow connections came first throughout.",
+        role: "Front-end developer",
+        year: "2025",
+        stack: ["Angular", "REST API", "RTL"],
+      },
+      {
+        n: "04",
         title: "EG-Pricey",
         kicker: "Live currency, gold and fuel prices for Egypt",
         problem:
-          "Egyptians check the dollar and gold rate several times a day, across a dozen sources that rarely agree.",
+          "People in Egypt check the dollar and gold price several times a day, across a dozen sources that rarely agree.",
         built:
-          "One live tracker for currencies, gold, fuel and food prices, with loan and investment calculators on top of it. Arabic-first, RTL throughout.",
+          "One Arabic-first site that tracks currency, gold, fuel and food prices as they change, with loan, investment and savings calculators built on the same data.",
+        contribution:
+          "I built the whole product: the price API and database, the live updates, the right-to-left Angular interface and the calculators.",
         decision:
-          "Prices push over WebSockets instead of polling, so a tab left open all morning stays correct without hammering the API. A stale price is worse than no price, so the interface announces a reconnect rather than quietly showing an old number.",
-        role: "Lead developer · full project",
+          "Prices are pushed to the page the moment they change, instead of the page asking the server every few seconds (WebSockets, not polling). A tab left open all morning stays correct without overloading the server. And because a wrong price is worse than none, the page says so when the connection drops instead of quietly showing an old number.",
+        role: "Full-stack developer, whole project",
         year: "2025",
         stack: ["Angular", "Node.js", "Express", "MongoDB", "Socket.IO"],
       },
       {
-        n: "02",
+        n: "05",
         title: "XTranslator",
-        kicker: "A subscription translation platform, sold worldwide",
+        kicker: "A subscription translation service, built to sell internationally",
         problem:
-          "Selling a subscription internationally is a tax, currency and fraud problem long before it is a translation problem.",
+          "Selling a subscription to customers in many countries is a tax, currency and fraud problem long before it is a translation problem.",
         built:
-          "A translation service covering many languages and regions, with accounts, subscription billing and abuse protection from day one.",
+          "A translation service for text, documents, images and audio in 41 languages, with user accounts, subscription billing and protection against abuse from day one.",
+        contribution:
+          "I built the localisation, the subscription billing integration, and the rate limiting and bot filtering that protect the service.",
         decision:
-          "Billing runs through Lemon Squeezy as merchant of record, so VAT and cross-border compliance are bought rather than rebuilt badly. Traffic sits behind Cloudflare for rate limiting and bot filtering, which keeps the origin small.",
-        role: "Full project",
-        year: "2025",
+          "Instead of building billing in-house, payments go through Lemon Squeezy as merchant of record. They handle VAT and international tax compliance, which is easy to get wrong. Traffic passes through Cloudflare first, which blocks bots and limits abuse before it reaches the server, so the server itself stays small.",
+        role: "Full-stack developer",
+        year: "2024",
         stack: ["Angular", "Node.js", "Lemon Squeezy", "Cloudflare"],
       },
       {
-        n: "03",
+        n: "06",
         title: "TileGreen",
-        kicker: "Turning plastic waste into building materials",
+        kicker: "The website of a startup turning plastic waste into building materials",
         problem:
-          "A climate-tech startup needed a site that would hold up in front of investors and industrial buyers, not just look current.",
+          "A climate-tech startup needed a website that would convince investors and industrial buyers.",
         built:
-          "The public site for an Egyptian company recycling plastic waste into construction tiles — bilingual, image-heavy, structured around the technology rather than the brand.",
+          "The bilingual public site for an Egyptian company that turns non-recyclable plastic into more than 40 building products. It is image-led, and structured around how the technology works rather than around the brand.",
+        contribution:
+          "I built the front end in English and Arabic, including the page motion that paces the story.",
         decision:
-          "English and Arabic share one layout system instead of two templates, so the RTL site is the same site and not a mirrored copy that drifts. Motion paces the story down the page and stops there.",
+          "English and Arabic share one layout system instead of two separate templates. The Arabic site is the same site, flipped correctly, so the two never drift apart. Motion guides the reader down the page, and stops there.",
         role: "Front-end developer",
         year: "2024",
         stack: ["Angular", "SCSS", "Motion"],
       },
     ],
-    selected_eyebrow: "Selected work",
     selected_headline: "Also shipped",
-    selected_note: "Client and institutional projects, 2024 — 2025.",
+    selected_note: "Client, employer and personal projects, 2024 – 2025.",
     selected: [
       {
-        n: "04",
-        title: "UFeed",
-        kicker: "HR evaluation, automated",
+        n: "07",
+        title: "Contact Management",
+        kicker: "A shared contacts app that prevents editing conflicts",
         blurb:
-          "Turns employee evaluation cycles into dashboards a team can act on, instead of spreadsheets nobody opens twice.",
+          "A MEAN-stack app with a secured REST API and an Angular interface. When someone opens a contact it locks for everyone else in real time, and the lock clears itself if they disconnect or go idle.",
         role: "Full-stack developer",
-        year: "2024",
-        stack: ["Angular", "Django", "PostgreSQL"],
+        year: "2025",
+        stack: ["Angular", "Node.js", "Express", "MongoDB", "Socket.IO", "JWT"],
       },
       {
-        n: "05",
+        n: "08",
         title: "Jafy",
-        kicker: "Premium furniture, online",
+        kicker: "A furniture and lighting store",
         blurb:
-          "A furniture and lighting store built to browse like a catalogue — large imagery, calm pacing, a checkout that stays out of the way.",
+          "An online store for premium furniture and lighting, designed to browse like a printed catalogue: large photography and a calm pace.",
         role: "Front-end developer",
         year: "2024",
         stack: ["Angular", "TypeScript"],
       },
       {
-        n: "06",
-        title: "Faculty of Nursing — Damanhour University",
-        kicker: "A public faculty, online",
-        blurb:
-          "The official faculty site: bilingual, readable on old devices and slow connections, built to stay current for a decade.",
-        role: "Front-end developer",
-        year: "2024",
-        stack: ["Angular", "Responsive"],
-      },
-      {
-        n: "07",
+        n: "09",
         title: "Dr. Genedy",
         kicker: "A clinic people can trust",
         blurb:
@@ -383,22 +433,70 @@ const en: Strings = {
       },
     ],
     status: {
-      private: "Private tool · login required",
-      maintenance: "Site in maintenance",
-      offline: "Site offline",
+      private: "Private tool, login required",
+      maintenance: "Site under maintenance",
+      unreleased: "Not public yet",
+      offline: "Site no longer online",
     },
   },
+  capabilities: {
+    title: "Services",
+    intro: "Each one links to a project that shows it.",
+    proof_label: "See",
+    items: [
+      {
+        icon: "app",
+        title: "Complete web apps",
+        body: "Accounts, data, an admin side and the screens people use, built end to end.",
+        proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
+      },
+      {
+        icon: "dashboard",
+        title: "Dashboards and internal tools",
+        body: "Scattered data turned into screens a team can act on.",
+        proof: [["UFeed", "ufeed"]],
+      },
+      {
+        icon: "realtime",
+        title: "Live, real-time features",
+        body: "Prices, alerts and shared editing that update without a refresh.",
+        proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
+      },
+      {
+        icon: "payments",
+        title: "Subscriptions and payments",
+        body: "Plans and billing that handle tax and customers abroad.",
+        proof: [["XTranslator", "xtranslator"]],
+      },
+      {
+        icon: "bilingual",
+        title: "Arabic and English products",
+        body: "Right-to-left done properly: one product in two languages.",
+        proof: [["MenuVista", "menuvista"], ["TileGreen", "tilegreen"], ["EG-Pricey", "eg-pricey"]],
+      },
+      {
+        icon: "server",
+        title: "APIs, hosting and security",
+        body: "Secure APIs, sign-in and bot protection, running on real servers.",
+        proof: [["XTranslator", "xtranslator"], ["Contact Management", "contact-management"]],
+      },
+    ],
+    stack_label: "Tools I use",
+    stack: [
+      ["Front end", "Angular, TypeScript, Tailwind"],
+      ["Back end", "Node.js, Express, Django"],
+      ["Data", "MongoDB, PostgreSQL, Redis"],
+      ["Hosting", "Docker, Cloudflare, Linux servers"],
+    ],
+  },
   testimonials: {
-    eyebrow: "In their words",
+    title: "What clients say",
     items: [],
   },
   notes: {
     nav: "Notes",
     title: "Notes",
-    headline_pre: "Notes from ",
-    headline_em: "the work",
-    headline_post: ".",
-    intro: "Longer versions of the decisions on this site — what I tried, what broke, and what I’d keep.",
+    intro: "Longer versions of the decisions on this site: what I tried, what broke, and what I’d keep.",
     empty: "The first note is on its way.",
     latest: "Latest notes",
     all: "All notes",
@@ -407,127 +505,108 @@ const en: Strings = {
   },
   case: {
     back: "All work",
-    architecture: "Architecture",
+    architecture: "How it fits together",
     context: "Context",
     challenges: "What was hard",
     differently: "What I’d do differently",
-    gallery: "On screen",
-    desktop: "Desktop",
+    gallery: "On a phone",
     mobile: "Phone",
-    cta_pre: "Have something ",
-    cta_em: "similar",
-    cta_post: " in mind?",
-    cta_body: "Tell me what you’re building — or, if you’re hiring, about the role.",
+    cta_title: "Want something like {project}?",
+    cta_body: "Tell me what you’re building. If you’re hiring, tell me about the role.",
     next: "Next case study",
   },
   principles: {
-    eyebrow: "How I work",
-    headline_pre: "Three things I ",
-    headline_em: "actually",
-    headline_post: " believe.",
+    title: "How I work",
+    intro: "What I believe about building software, and how working with me goes.",
+    beliefs_label: "What I believe",
     items: [
       {
-        n: "01",
         title: "Correct beats clever.",
-        body: "A price that has silently gone stale is worse than no price at all. I would rather spend the week on the failure cases than on the animation.",
-        anchor: "EG-Pricey · live data",
+        body: "A stale price is worse than no price. I work on what happens when things fail before anything else.",
+        anchor: "In practice: EG-Pricey’s live prices",
       },
       {
-        n: "02",
         title: "Arabic is not a translation.",
-        body: "RTL changes layout, typography and numerals, not just text direction. I build both directions from one system so neither is the afterthought.",
-        anchor: "TileGreen · this site",
+        body: "Right-to-left changes layout, type and numbers. Both languages come from one system, so neither is an afterthought.",
+        anchor: "In practice: TileGreen, and this site",
       },
       {
-        n: "03",
         title: "Buy the hard parts.",
-        body: "Tax, compliance and bot traffic are solved problems owned by other people. I reach for a merchant of record and an edge proxy before writing my own.",
-        anchor: "XTranslator · billing",
+        body: "Tax, payments and bot traffic are solved problems. I use proven services and spend the time on what makes the product different.",
+        anchor: "In practice: XTranslator’s billing",
       },
     ],
-    tools_label: "What I reach for",
-    tools: [
-      ["Front-end", "Angular · TypeScript · Tailwind"],
-      ["Back-end", "Node.js · Express · Django"],
-      ["Data", "MongoDB · PostgreSQL · Redis"],
-      ["Infrastructure", "Docker · Cloudflare · Linux VPS"],
-    ],
+
+    process:
+      "How a project goes: we talk through the problem, I write down what gets built and when, you try working versions as I go, and after launch I stay reachable.",
   },
   about: {
-    eyebrow: "About",
-    headline_pre: "Seven products ",
-    headline_em: "shipped",
-    headline_post: " from Cairo.",
-    p1: "I’m Youseef. I build web products end to end — currently with The POST, and independently for clients who need something shipped properly rather than quickly.",
-    p2: "Most of the work is live-data platforms, subscription products and internal dashboards. Angular and Node by default; Django and Postgres when the data model earns it.",
-    p3: "I care about the parts people actually feel: first load, forms that don’t lose your work, and Arabic that behaves like a first language instead of a mirrored afterthought.",
+    title: "I like owning the whole problem",
+    p1: "I’m Youseef Tareq, a software engineer in Cairo. I studied computer science at Cairo Higher Institute, trained on the MEAN stack at NTI, and freelanced for clients in several countries before joining The POST as a full-stack developer.",
+    p2: "Freelancing taught me the part of the job that isn’t code: scoping honestly, asking the awkward question early, and delivering on the date I gave. At The POST I build internal tools, dashboards and customer portals with a small remote team, shipping every week.",
+    p3: "I care most about what people feel even when they never see it: pages that load fast, forms that don’t lose your work, prices that are never quietly wrong, and Arabic that reads as if it was written first.",
     portrait_alt: "Portrait of Youseef Tareq",
   },
   cv: {
-    eyebrow: "Résumé",
-    headline_pre: "On ",
-    headline_em: "paper",
-    headline_post: ".",
-    download: "Download full résumé (PDF)",
-    recruiter_line: "Open to full-time roles — remote, or on-site in Cairo.",
+    title: "Experience",
+    intro: "Where I’ve worked and studied, newest first.",
+    download: "Download résumé (PDF)",
+    recruiter_line: "Open to full-time roles, remote or on-site in Cairo.",
     role_cta: "Talk about a role",
     rows: [
       {
-        years: "2025 — Now",
+        years: "2025–now",
         role: "Full-Stack Developer",
         org: "The POST",
         loc: "Remote",
-        tags: ["Angular", "Node", "Mongo", "TS"],
+        tags: ["Angular", "Node.js", "MongoDB", "TypeScript"],
         blurb:
-          "Internal tools, analytics dashboards and customer-facing portals, shipped in weekly increments alongside a small team.",
+          "Internal tools, analytics dashboards and customer-facing portals, shipped in weekly increments with a small remote product team. Built UFeed, an HR evaluation platform.",
       },
       {
-        years: "2024 — 25",
-        role: "Freelance Developer",
-        org: "Upwork · Fiverr · Khamsat",
+        years: "2024–25",
+        role: "Freelance Full-Stack Developer",
+        org: "Upwork, Fiverr and Khamsat",
         loc: "Remote",
-        tags: ["Angular", "Django", "Node"],
+        tags: ["MEAN", "Django", "C#", "Lua"],
         blurb:
-          "Contract work across several countries and industries — where I learned to scope honestly, ask the awkward question early, and ship on the date I gave.",
+          "Web and desktop applications for clients across several countries and industries. Where I learned to scope honestly, ask the awkward question early, and deliver on the agreed date.",
       },
       {
         years: "2023",
-        role: "Full-Stack Training",
-        org: "NTI · National Telecom Institute",
+        role: "Full-Stack Web Development (MEAN)",
+        org: "National Telecommunication Institute (NTI)",
         loc: "Cairo",
-        tags: ["JS", "MEAN"],
+        tags: ["MongoDB", "Express", "Angular", "Node.js"],
         blurb:
-          "A focused programme on modern web development, from front-end through server deployment and security.",
+          "An intensive programme covering the MEAN stack end to end, from the interface through server deployment and security.",
       },
       {
-        years: "2020 — 25",
+        years: "2020–25",
         role: "B.Sc. Computer Science",
         org: "Cairo Higher Institute",
         loc: "Cairo",
-        tags: ["CS", "Software"],
+        tags: ["Algorithms", "Databases"],
         blurb: "Software engineering, algorithms, databases and web development.",
       },
     ],
   },
   contact: {
-    eyebrow: "Contact",
-    headline_a: "Let’s build something ",
-    headline_em: "good",
-    headline_b: ".",
-    lead: "A project or a role — either way, a few lines is enough to start. I read every message myself and reply within a day.",
+    title: "Contact",
+    lead: "Tell me about a project, a role or a question. A few lines is enough. I read every message myself and reply within a day.",
     details_label: "Direct",
     rows: [
       ["Email", EMAIL, `mailto:${EMAIL}`],
       ["WhatsApp", WHATSAPP_DISPLAY, whatsappLink()],
       ["LinkedIn", LINKEDIN_DISPLAY, LINKEDIN_URL],
       ["GitHub", GITHUB_DISPLAY, GITHUB_URL],
-      ["Based", "Cairo · Remote worldwide", null],
+      ["Based", "Cairo, and remote worldwide", null],
     ],
-    availability: "Open to projects and roles · replies within 24 hours",
+    availability: "Available for projects and roles. I reply within a day.",
     copy: "Copy",
     copied: "Copied",
     whatsapp_cta: "Message on WhatsApp",
-    whatsapp_href: whatsappLink("Hi Youseef — I found you through soking.digital."),
+    whatsapp_href: whatsappLink("Hi Youseef, I found you through soking.digital."),
     booking_cta: "Book a 20-minute call",
     form_label: "Send a message",
     intent_label: "I’m getting in touch about",
@@ -552,48 +631,66 @@ const en: Strings = {
     f_msg: {
       project: [
         "What are you building?",
-        "A few lines is plenty — what it is, who it’s for, and anything already built.",
+        "What it is, who it’s for, and anything already built…",
       ],
       role: [
         "Tell me about the role",
-        "Team, stack, remote or on-site — and a link to the posting if there is one.",
+        "Team, stack, remote or on-site, and a link to the posting…",
       ],
       other: ["Your message", "What’s on your mind?"],
     },
     f_send: "Send message",
     sending: "Sending…",
-    e_required: "Required",
-    e_email: "Please enter a valid email",
+    e_required: "Please fill this in",
+    e_email: "Please enter a valid email address",
     e_msg: "A few more words, please",
-    e_submit: "Could not send. Try again, or email me directly.",
+    e_submit: "Your message couldn’t be sent. Please try again, or email me directly.",
     sent_label: "Message sent",
     sent_title: (name: string) => `Thanks, ${name}.`,
     sent_body: `I’ll reply from ${EMAIL} within a day. For anything urgent, WhatsApp is fastest.`,
     sent_again: "Send another",
   },
   footer: {
-    identity_tagline: "Full-stack engineer · Cairo",
-    index_label: "Navigate",
-    elsewhere_label: "Elsewhere",
-    direct_label: "Direct",
+    identity_tagline: "Software engineer in Cairo, working with the MEAN stack",
     colophon_text:
-      "Designed and built end to end. Bilingual, light and dark — no cookies, no pop-ups.",
+      "Designed and built by me, with no cookies.",
     copyright: "© 2026 Youseef Tareq",
     to_top: "Back to top",
   },
   misc: {
     skip: "Skip to content",
+    new_tab: "(opens in a new tab)",
+    next_label: "Next",
     visit_project: "Visit live site",
+    view_source: "View source on GitHub",
     screenshot_alt: (title: string) => `Screenshot of the ${title} website`,
     diagrams: {
+      ufeed: {
+        caption: "How a company’s data moves through UFeed. Its plan decides which modules it sees.",
+        nodes: [
+          { name: "Company and subsidiaries", note: "Departments, positions and employees, with seats set by the company’s plan" },
+          { name: "Job evaluation", note: "Each position scored factor by factor into a grading matrix" },
+          { name: "Engagement surveys", note: "Built in Arabic or English, sent to employees and collected" },
+          { name: "Reports and dashboards", note: "Results per company and per survey, ready to act on" },
+        ],
+      },
+      menuvista: {
+        caption: "How an order travels. Every screen also checks in on its own, so a dropped connection slows an order down but never stops it.",
+        nodes: [
+          { name: "Diner’s phone", note: "Opens the menu from the table’s QR code and sends the order, no account needed" },
+          { name: "Django API", note: "Checks the branch can take orders now, saves the order and issues a 4-digit code" },
+          { name: "Redis + WebSockets", note: "Tells the waiters’ phones at once, with a push notification if a phone is locked" },
+          { name: "Waiter’s phone", note: "The waiter types the code shown on the diner’s phone, which proves they’re at the table" },
+        ],
+      },
       "eg-pricey": {
-        caption: "Prices are pushed, not polled — a tab left open all morning stays correct.",
+        caption: "Prices are pushed to the page as they change, so a tab left open all morning stays correct.",
         nodes: [
           {
             name: "Price sources",
-            note: "Currencies, gold, fuel and food — from sources that rarely agree",
+            note: "Currencies, gold, fuel and food, from sources that rarely agree",
           },
-          { name: "Node.js · Express", note: "The API, with prices kept in MongoDB" },
+          { name: "Node.js + Express", note: "The API, with prices kept in MongoDB" },
           { name: "Socket.IO", note: "Pushes every change to every open tab instead of polling" },
           {
             name: "Angular app",
@@ -606,7 +703,7 @@ const en: Strings = {
         nodes: [
           { name: "Angular app", note: "Accounts and the translation interface" },
           { name: "Cloudflare", note: "Rate limiting and bot filtering at the edge", bought: true },
-          { name: "Node.js API", note: "The translation service — a small origin behind the edge" },
+          { name: "Node.js API", note: "The translation service, a small server behind Cloudflare" },
           {
             name: "Lemon Squeezy",
             note: "Merchant of record: subscriptions, VAT, cross-border compliance",
@@ -621,162 +718,251 @@ const en: Strings = {
 const ar: Strings = {
   dir: "rtl",
   seo: {
-    title: "يوسف طارق — مهندس ويب شامل، القاهرة",
+    title: "يوسف طارق — مهندس برمجيات (MEAN Stack)، القاهرة",
     title_template: "%s | يوسف طارق",
     description:
-      "مهندس ويب شامل من القاهرة يبني منتجات ويب بالعربية والإنجليزية — منصات بيانات حية وتطبيقات اشتراك ولوحات تحكم داخلية باستخدام Angular وNode.js وTypeScript.",
-    og_alt: "يوسف طارق — مهندس ويب شامل، القاهرة",
+      "مهندس برمجيات من القاهرة يبني منتجات ويب متكاملة بتقنيات MEAN، بالعربية والإنجليزية.",
+    og_alt: "يوسف طارق — مهندس برمجيات، القاهرة",
   },
   nav: {
     items: [
       ["الأعمال", "#work"],
+      ["الخدمات", "#skills"],
       ["نبذة", "#about"],
-      ["السيرة الذاتية", "#cv"],
+      ["الخبرة", "#cv"],
     ],
     contact: "تواصل",
-    cta: "لنتحدث",
+    cta: "تواصل معي",
     langLabel: "English",
-    themeLabel: "تبديل الوضع الداكن",
+    themeLabel: "التبديل بين الوضع الفاتح والداكن",
     menuLabel: "القائمة",
     closeLabel: "إغلاق",
   },
   hero: {
-    status_line: "متاح للمشاريع وللوظائف بدوام كامل",
-    headline_pre: "أبني منتجات ويب ",
-    headline_em: "تصمد",
-    headline_post: " في التشغيل الفعلي.",
-    sub: "مهندس ويب شامل من القاهرة، أعمل حاليًا مع The POST. أبني منتجات ويب بالعربية والإنجليزية — منصات بيانات حية، وتطبيقات اشتراك، ولوحات تحكم داخلية.",
-    stack_line: "Angular · Node · TypeScript · Django",
-    cta_project: "ابدأ مشروعًا",
-    cta_hiring: "تبحث عن مطوّر؟ سيرتي الذاتية",
-    recent_label: "أعمال حديثة",
-    recent: [
-      ["EG-Pricey", "eg-pricey"],
-      ["XTranslator", "xtranslator"],
-      ["TileGreen", "tilegreen"],
-      ["Jafy", "jafy"],
-      ["جامعة دمنهور", "nursing"],
+    name: "يوسف طارق",
+    name_alt: "Youseef Tareq",
+    statement:
+      "مهندس برمجيات من القاهرة. أبني منتجات ويب متكاملة، من قاعدة البيانات حتى الشاشة، بالعربية والإنجليزية.",
+    facts: [
+      ["متاح", "للمشاريع وللوظائف بدوام كامل"],
+      ["حاليًا", "مطوّر Full-Stack في The POST"],
+      ["التقنيات", "تقنيات MEAN، أي MongoDB وExpress وAngular وNode.js"],
+      ["أعمل", "بالعربية والإنجليزية، عن بُعد أو في القاهرة"],
     ],
-    alt_suggest: "This site is also in English →",
+    cta_project: "ابدأ مشروعًا",
+    cta_hiring: "اطّلع على سيرتي الذاتية",
+    peek_label: "أعمال حديثة",
+    alt_suggest: "This site is also in English",
   },
   works: {
-    eyebrow: "أعمال مختارة",
-    headline_pre: "ثلاثة مشاريع، ",
-    headline_em: "وقرار واحد",
-    headline_post: " في كلٍّ منها.",
-    intro: "القرار الذي صنع الفارق في كل مشروع. المشكلة وما بنيته وبقية القصة على بُعد نقرة.",
+    title: "الأعمال",
+    intro: "ستة مشاريع حديثة. افتح أيًّا منها لتقرأ القصة كاملة.",
     label_problem: "المشكلة",
-    label_built: "ما بنيته",
+    label_built: "ما هو",
+    label_contribution: "دوري تحديدًا",
     label_decision: "القرار الأهم",
-    label_role: "دوري",
-    outcome_label: "النتيجة",
+    label_role: "الدور",
+    label_stack: "التقنيات المستخدمة",
+    outcome_label: "من يستخدمه",
     case_study: "اقرأ دراسة الحالة",
     featured: [
       {
         n: "٠١",
+        title: "MenuVista",
+        kicker: "قوائم طعام رقمية وطلب من الطاولة للمطاعم في مصر",
+        problem:
+          "قائمة المطعم المطبوعة تتقادم يوم تتغير الأسعار، ورمز QR يفتح ملف PDF لا يستطيع استقبال طلب.",
+        built:
+          "منصة تخدم مطاعم كثيرة في وقت واحد. لكل مطعم قائمته بالعربية والإنجليزية على عنوانه الخاص، تُفتح برمز QR. يطلب الزبون من طاولته دون حساب، وتصل الطلبات إلى النادل على هاتفه، ويدير المالك القوائم والفروع والموظفين واشتراكه من لوحة واحدة.",
+        contribution:
+          "بنيت المنصة كاملة: الواجهة الخلفية بـ Django ونموذج البيانات، ولوحة المالك وتطبيق النادل والقوائم العامة بـ Angular، والتحديثات اللحظية، وخطط الاشتراك، والنشر عبر Docker.",
+        decision:
+          "أي شخص يستطيع فتح رابط القائمة من بيته، لذا يجب أن يُثبت الطلب أن صاحبه على الطاولة. يظهر لكل طلب رمز من ٤ أرقام على هاتف الزبون، يكتبه النادل ليقبل الطلب، وخمس محاولات خاطئة تقفله. والتحديثات اللحظية تمر عبر WebSockets، لكن كل شاشة تتحقق بنفسها كل بضع ثوانٍ عند انقطاع الاتصال، لأن هواتف النُّدُل تقطعه كلما أُقفلت. انقطاع الاتصال يبطئ الطلب، ولا يوقفه أبدًا.",
+        role: "مطوّر Full-Stack، المشروع كاملًا",
+        year: "٢٠٢٦",
+        stack: ["Angular", "Django", "PostgreSQL", "Redis", "WebSockets"],
+      },
+      {
+        n: "٠٢",
+        title: "UFeed",
+        kicker: "تقييم الوظائف واستبيانات الموظفين لفرق الموارد البشرية",
+        outcome: "شركات منها Bosta وBreadfast.",
+        problem:
+          "تُقيّم فرق الموارد البشرية الوظائف وتستطلع آراء الموظفين عبر جداول وأدوات متفرقة، وكان UFeed القديم نفسه عدة تطبيقات منفصلة.",
+        built:
+          "منصة موارد بشرية واحدة للشركات وفروعها: أداة لتقييم الوظائف تُرتّب المناصب في مصفوفة درجات، واستبيانات لقياس رضا الموظفين وتقاريرها، واستبيان للرواتب، بالعربية والإنجليزية. وتحدد خطة كل شركة ما تحصل عليه منها وعدد المقاعد.",
+        contribution:
+          "في The POST طوّرت المنصة في الواجهة الخلفية بـ Django وتطبيق Angular: تقييم الوظائف، واستبيانات الموظفين وتقاريرها، والخطط التي تفعّل الوحدات لكل شركة، وأداة الاستيراد التي نقلت بيانات كل عميل من النظام القديم.",
+        decision:
+          "بدل ترقيع التطبيقات القديمة واحدًا تلو الآخر، أُعيد بناء المنصة كنظام واحد، ونُقلت بيانات كل عميل بأداة استيراد تحوّل ملفات النظام القديم إلى البنية الجديدة. فانتقلت الشركات إلى النظام الجديد دون أن تبدأ تقييماتها من الصفر.",
+        role: "مطوّر Full-Stack، The POST",
+        year: "٢٠٢٥",
+        stack: ["Angular", "Django", "PostgreSQL", "Redis"],
+      },
+      {
+        n: "٠٣",
+        title: "جامعة دمنهور",
+        kicker: "المواقع الرسمية للجامعة وكلياتها",
+        problem:
+          "على الجامعة أن تعرّف بنفسها وبكل كلية وخدماتها للطلاب والعاملين والجمهور، وكثير منهم يفتح المواقع من هواتف قديمة وعلى اتصالات بطيئة.",
+        built:
+          "الموقع الرسمي للجامعة ومواقع جميع كلياتها، بالعربية والإنجليزية. يعرض موقع كل كلية نشأتها وقياداتها، وأقسامها وبرامجها، وخدمات الطلاب والخريجين، وأخبارها، وتعمل المواقع كلها على البنية نفسها.",
+        contribution:
+          "عملت على موقع الجامعة ومواقع الكليات: البنية المشتركة، وربط المواقع بواجهاتها البرمجية (API)، وواجهة الاستخدام وتجربة المستخدم في الخدمات وأجزاء أخرى من المواقع.",
+        decision:
+          "تقوم مواقع الكليات كلها على بنية Angular واحدة وتتصل بالواجهة البرمجية نفسها، فالخدمة أو الإصلاح الذي يُبنى مرة واحدة يمكن أن يصل إلى موقع كل كلية. وكانت السرعة على الأجهزة القديمة والاتصالات البطيئة أولوية في كل ذلك.",
+        role: "مطوّر واجهات أمامية",
+        year: "٢٠٢٥",
+        stack: ["Angular", "REST API", "RTL"],
+      },
+      {
+        n: "٠٤",
         title: "EG-Pricey",
         kicker: "أسعار العملات والذهب والوقود في مصر، لحظة بلحظة",
         problem:
-          "يتابع المصريون سعر الدولار والذهب عدة مرات يوميًا، عبر مصادر متفرقة نادرًا ما تتفق على رقم واحد.",
+          "يتابع الناس في مصر سعر الدولار والذهب عدة مرات في اليوم، عبر مصادر كثيرة نادرًا ما تتفق على رقم واحد.",
         built:
-          "متتبع واحد لأسعار العملات والذهب والوقود والسلع، وفوقه حاسبات للقروض والاستثمار. عربي أولًا، ومن اليمين إلى اليسار بالكامل.",
+          "موقع عربي أولًا يتابع أسعار العملات والذهب والوقود والسلع الغذائية لحظة تغيّرها، ومعه حاسبات للقروض والاستثمار والادخار مبنية على البيانات نفسها.",
+        contribution:
+          "بنيت المنتج كاملًا: الواجهة البرمجية للأسعار وقاعدة البيانات، والتحديث اللحظي، وواجهة Angular من اليمين لليسار، والحاسبات.",
         decision:
-          "الأسعار تُدفع عبر WebSockets بدلًا من الاستعلام المتكرر، فتبقى الصفحة المفتوحة طوال الصباح صحيحة دون إرهاق الخادم. السعر المتقادم أسوأ من غياب السعر، لذا تُعلن الواجهة إعادة الاتصال بدل أن تعرض رقمًا قديمًا بصمت.",
-        role: "مطور رئيسي · المشروع كاملًا",
+          "تصل الأسعار إلى الصفحة فور تغيّرها، بدل أن تسأل الصفحة الخادم كل بضع ثوانٍ (WebSockets بدل الاستعلام المتكرر). فتبقى الصفحة المفتوحة طوال الصباح صحيحة دون إرهاق الخادم. ولأن السعر الخاطئ أسوأ من غياب السعر، تُخبر الصفحة المستخدم عند انقطاع الاتصال بدل أن تعرض رقمًا قديمًا بصمت.",
+        role: "مطوّر Full-Stack، المشروع كاملًا",
         year: "٢٠٢٥",
         stack: ["Angular", "Node.js", "Express", "MongoDB", "Socket.IO"],
       },
       {
-        n: "٠٢",
+        n: "٠٥",
         title: "XTranslator",
-        kicker: "منصة ترجمة بالاشتراك، تُباع حول العالم",
+        kicker: "خدمة ترجمة بالاشتراك، مبنية للبيع دوليًا",
         problem:
-          "بيع اشتراك دوليًا مسألة ضرائب وعملات واحتيال قبل أن يكون مسألة ترجمة.",
+          "بيع اشتراك لعملاء في دول كثيرة مسألة ضرائب وعملات واحتيال، قبل أن يكون مسألة ترجمة.",
         built:
-          "خدمة ترجمة تغطي لغات ومناطق متعددة، مع حسابات وفوترة اشتراكات وحماية من إساءة الاستخدام منذ اليوم الأول.",
+          "خدمة ترجمة للنصوص والمستندات والصور والصوت في ٤١ لغة، فيها حسابات للمستخدمين وفوترة للاشتراكات وحماية من إساءة الاستخدام منذ اليوم الأول.",
+        contribution:
+          "بنيت تهيئة المنصة للغات والمناطق، وربط فوترة الاشتراكات، والحدّ من الطلبات وتصفية الروبوتات لحماية الخدمة.",
         decision:
-          "الفوترة تمر عبر Lemon Squeezy كبائع مسجَّل، فتُشترى مسائل الضريبة والامتثال بدل إعادة بنائها بشكل ناقص. وحركة المرور خلف Cloudflare للحد من الطلبات وتصفية الروبوتات، وهو ما يبقي الخادم الأصلي صغيرًا.",
-        role: "المشروع كاملًا",
-        year: "٢٠٢٥",
+          "بدل بناء نظام دفع داخلي، تمر المدفوعات عبر Lemon Squeezy بصفته البائع المسجَّل (Merchant of Record)، فيتولى ضريبة القيمة المضافة والامتثال الضريبي الدولي، وهي أمور يسهل الخطأ فيها. وتمر حركة الزوار أولًا عبر Cloudflare، الذي يحجب الروبوتات ويحدّ من إساءة الاستخدام قبل وصولها إلى الخادم، فيبقى الخادم نفسه صغيرًا.",
+        role: "مطوّر Full-Stack",
+        year: "٢٠٢٤",
         stack: ["Angular", "Node.js", "Lemon Squeezy", "Cloudflare"],
       },
       {
-        n: "٠٣",
+        n: "٠٦",
         title: "TileGreen",
-        kicker: "تحويل النفايات البلاستيكية إلى مواد بناء",
+        kicker: "موقع شركة ناشئة تحوّل نفايات البلاستيك إلى مواد بناء",
         problem:
-          "شركة ناشئة في تقنيات المناخ احتاجت موقعًا يصمد أمام المستثمرين والمشترين الصناعيين، لا أن يبدو عصريًا فحسب.",
+          "شركة ناشئة في مجال تقنيات المناخ احتاجت موقعًا يقنع المستثمرين والمشترين من المصانع.",
         built:
-          "الموقع الرسمي لشركة مصرية تعيد تدوير البلاستيك إلى بلاط بناء — ثنائي اللغة، غني بالصور، مبني حول التقنية لا حول العلامة.",
+          "الموقع الرسمي ثنائي اللغة لشركة مصرية تحوّل البلاستيك غير القابل لإعادة التدوير إلى أكثر من ٤٠ منتجًا للبناء. يعتمد على الصور، ومبني حول طريقة عمل التقنية لا حول العلامة التجارية.",
+        contribution:
+          "بنيت الواجهة الأمامية بالعربية والإنجليزية، ومعها الحركة التي تنظّم إيقاع القصة على الصفحة.",
         decision:
-          "الإنجليزية والعربية تتشاركان نظام تخطيط واحدًا بدل قالبين، فالنسخة العربية هي الموقع نفسه لا نسخة معكوسة تتباعد مع الوقت. والحركة تنظّم إيقاع السرد ثم تتوقف عند ذلك.",
-        role: "مطور واجهات أمامية",
+          "تتشارك العربية والإنجليزية نظام تخطيط واحدًا بدل قالبين منفصلين. فالموقع العربي هو الموقع نفسه بالاتجاه الصحيح، ولا تبتعد النسختان عن بعضهما مع الوقت. والحركة ترشد القارئ على امتداد الصفحة، ثم تتوقف عند ذلك.",
+        role: "مطوّر واجهات أمامية",
         year: "٢٠٢٤",
         stack: ["Angular", "SCSS", "Motion"],
       },
     ],
-    selected_eyebrow: "أعمال أخرى",
-    selected_headline: "كذلك أطلقت",
-    selected_note: "مشاريع لعملاء ومؤسسات، ٢٠٢٤ — ٢٠٢٥.",
+    selected_headline: "أطلقت أيضًا",
+    selected_note: "مشاريع لعملاء ولجهة عملي ومشاريع شخصية، ٢٠٢٤ – ٢٠٢٥.",
     selected: [
       {
-        n: "٠٤",
-        title: "UFeed",
-        kicker: "تقييم الموظفين، آليًا",
+        n: "٠٧",
+        title: "Contact Management",
+        kicker: "تطبيق مشترك لجهات الاتصال يمنع تعارض التعديلات",
         blurb:
-          "يحوّل دورات تقييم الموظفين إلى لوحات تحكم يمكن للفريق التصرف بناءً عليها، بدل جداول لا يفتحها أحد مرتين.",
-        role: "مطور ويب شامل",
-        year: "٢٠٢٤",
-        stack: ["Angular", "Django", "PostgreSQL"],
+          "تطبيق بتقنيات MEAN فيه واجهة برمجية REST مؤمّنة وواجهة Angular. عندما يفتح شخص جهة اتصال تُقفل فورًا أمام الباقين، ويُفك القفل تلقائيًا إذا انقطع اتصاله أو توقف عن النشاط.",
+        role: "مطوّر Full-Stack",
+        year: "٢٠٢٥",
+        stack: ["Angular", "Node.js", "Express", "MongoDB", "Socket.IO", "JWT"],
       },
       {
-        n: "٠٥",
+        n: "٠٨",
         title: "Jafy",
-        kicker: "أثاث راقٍ، أونلاين",
+        kicker: "متجر أثاث وإضاءة",
         blurb:
-          "متجر أثاث وإضاءة يُتصفَّح كأنه كتالوج — صور كبيرة، وإيقاع هادئ، وإتمام شراء لا يعترض الطريق.",
-        role: "مطور واجهات أمامية",
+          "متجر إلكتروني للأثاث والإضاءة الراقية، مصمَّم ليُتصفَّح كأنه كتالوج مطبوع: صور كبيرة وإيقاع هادئ.",
+        role: "مطوّر واجهات أمامية",
         year: "٢٠٢٤",
         stack: ["Angular", "TypeScript"],
       },
       {
-        n: "٠٦",
-        title: "كلية التمريض — جامعة دمنهور",
-        kicker: "كلية حكومية، أونلاين",
-        blurb:
-          "الموقع الرسمي للكلية: ثنائي اللغة، مقروء على الأجهزة القديمة والاتصالات البطيئة، مبني ليبقى صالحًا لعقد كامل.",
-        role: "مطور واجهات أمامية",
-        year: "٢٠٢٤",
-        stack: ["Angular", "Responsive"],
-      },
-      {
-        n: "٠٧",
+        n: "٠٩",
         title: "Dr. Genedy",
         kicker: "عيادة تبعث على الثقة",
         blurb:
           "موقع لعيادة جراحة وتجميل، مبني حول مساعدة المريض على اختيار الإجراء المناسب والحجز بثقة.",
-        role: "مطور واجهات أمامية",
+        role: "مطوّر واجهات أمامية",
         year: "٢٠٢٤",
         stack: ["Angular", "SCSS"],
       },
     ],
     status: {
-      private: "أداة خاصة · تتطلب تسجيل الدخول",
+      private: "أداة خاصة، تتطلب تسجيل الدخول",
       maintenance: "الموقع قيد الصيانة",
-      offline: "الموقع غير متاح",
+      unreleased: "غير متاح للعامة بعد",
+      offline: "الموقع لم يعد متاحًا",
     },
   },
+  capabilities: {
+    title: "الخدمات",
+    intro: "ولكل مهارة رابط لمشروع يثبتها.",
+    proof_label: "شاهد",
+    items: [
+      {
+        icon: "app",
+        title: "تطبيقات ويب متكاملة",
+        body: "حسابات وبيانات ولوحة إدارة والشاشات التي يستخدمها الناس، مبنية من أولها لآخرها.",
+        proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
+      },
+      {
+        icon: "dashboard",
+        title: "لوحات تحكم وأدوات داخلية",
+        body: "بيانات متفرقة تتحول إلى شاشات يتصرف الفريق بناءً عليها.",
+        proof: [["UFeed", "ufeed"]],
+      },
+      {
+        icon: "realtime",
+        title: "ميزات لحظية",
+        body: "أسعار وتنبيهات وتعديل مشترك يتحدّث دون إعادة تحميل الصفحة.",
+        proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
+      },
+      {
+        icon: "payments",
+        title: "الاشتراكات والمدفوعات",
+        body: "باقات وفوترة تراعي الضرائب والعملاء من دول أخرى.",
+        proof: [["XTranslator", "xtranslator"]],
+      },
+      {
+        icon: "bilingual",
+        title: "منتجات بالعربية والإنجليزية",
+        body: "اتجاه من اليمين لليسار مضبوط: منتج واحد بلغتين.",
+        proof: [["MenuVista", "menuvista"], ["TileGreen", "tilegreen"], ["EG-Pricey", "eg-pricey"]],
+      },
+      {
+        icon: "server",
+        title: "الواجهات البرمجية والاستضافة والحماية",
+        body: "واجهات برمجية آمنة وتسجيل دخول وحماية من الروبوتات، تعمل على خوادم حقيقية.",
+        proof: [["XTranslator", "xtranslator"], ["Contact Management", "contact-management"]],
+      },
+    ],
+    stack_label: "الأدوات التي أستخدمها",
+    stack: [
+      ["الواجهة", "Angular, TypeScript, Tailwind"],
+      ["الخادم", "Node.js, Express, Django"],
+      ["البيانات", "MongoDB, PostgreSQL, Redis"],
+      ["الاستضافة", "Docker, Cloudflare, Linux"],
+    ],
+  },
   testimonials: {
-    eyebrow: "بكلماتهم",
+    title: "ماذا يقول العملاء",
     items: [],
   },
   notes: {
     nav: "ملاحظات",
     title: "ملاحظات",
-    headline_pre: "ملاحظات من ",
-    headline_em: "العمل",
-    headline_post: ".",
-    intro: "نسخ أطول من القرارات المذكورة في هذا الموقع — ما جرّبته، وما تعطّل، وما سأبقي عليه.",
+    intro: "نسخ أطول من القرارات المذكورة في هذا الموقع: ما جرّبته، وما تعطّل، وما سأبقي عليه.",
     empty: "أول ملاحظة في الطريق.",
     latest: "أحدث الملاحظات",
     all: "كل الملاحظات",
@@ -785,127 +971,108 @@ const ar: Strings = {
   },
   case: {
     back: "كل الأعمال",
-    architecture: "البنية",
+    architecture: "كيف تترابط الأجزاء",
     context: "السياق",
     challenges: "ما كان صعبًا",
     differently: "ما كنت سأفعله بشكل مختلف",
-    gallery: "على الشاشة",
-    desktop: "سطح المكتب",
+    gallery: "على الهاتف",
     mobile: "الهاتف",
-    cta_pre: "لديك فكرة ",
-    cta_em: "مشابهة",
-    cta_post: "؟",
-    cta_body: "أخبرني بما تبنيه — أو، إن كنت توظّف، عن الوظيفة.",
+    cta_title: "تريد منتجًا مثل {project}؟",
+    cta_body: "أخبرني بما تبنيه. وإن كنت توظّف، فحدّثني عن الوظيفة.",
     next: "دراسة الحالة التالية",
   },
   principles: {
-    eyebrow: "طريقتي في العمل",
-    headline_pre: "ثلاثة مبادئ ",
-    headline_em: "أؤمن",
-    headline_post: " بها فعلًا.",
+    title: "طريقتي في العمل",
+    intro: "ما أؤمن به في بناء البرمجيات، وكيف يسير العمل معي.",
+    beliefs_label: "ما أؤمن به",
     items: [
       {
-        n: "٠١",
         title: "الصحيح قبل الذكي.",
-        body: "سعر تقادم بصمت أسوأ من غياب السعر تمامًا. أفضّل أن أنفق الأسبوع على حالات الفشل بدل الحركة البصرية.",
-        anchor: "EG-Pricey · البيانات الحية",
+        body: "السعر القديم أسوأ من غياب السعر. أبدأ دائمًا بما يحدث حين يفشل شيء.",
+        anchor: "في التطبيق: الأسعار الحية في EG-Pricey",
       },
       {
-        n: "٠٢",
         title: "العربية ليست ترجمة.",
-        body: "الاتجاه من اليمين لليسار يغيّر التخطيط والطباعة والأرقام، لا النص وحده. أبني الاتجاهين من نظام واحد كي لا يكون أحدهما لاحقًا.",
-        anchor: "TileGreen · هذا الموقع",
+        body: "الاتجاه من اليمين لليسار يغيّر التخطيط والخطوط والأرقام. اللغتان من نظام واحد، فلا تكون إحداهما فكرة لاحقة.",
+        anchor: "في التطبيق: TileGreen، وهذا الموقع",
       },
       {
-        n: "٠٣",
         title: "اشترِ الأجزاء الصعبة.",
-        body: "الضرائب والامتثال وحركة الروبوتات مسائل محلولة يملكها آخرون. ألجأ إلى بائع مسجَّل ووسيط حافة قبل أن أكتب بديلًا بنفسي.",
-        anchor: "XTranslator · الفوترة",
+        body: "الضرائب والمدفوعات والروبوتات مشكلات محلولة. أستخدم خدمات مجرَّبة وأوجّه الوقت لما يميّز المنتج.",
+        anchor: "في التطبيق: الفوترة في XTranslator",
       },
     ],
-    tools_label: "ما أستخدمه",
-    tools: [
-      ["الواجهة الأمامية", "Angular · TypeScript · Tailwind"],
-      ["الواجهة الخلفية", "Node.js · Express · Django"],
-      ["البيانات", "MongoDB · PostgreSQL · Redis"],
-      ["البنية التحتية", "Docker · Cloudflare · Linux VPS"],
-    ],
+
+    process:
+      "كيف يسير المشروع: نتحدث عن المشكلة، ثم أكتب ما سيُبنى ومتى، وتجرّب نسخًا تعمل أثناء البناء، وبعد الإطلاق أبقى متاحًا.",
   },
   about: {
-    eyebrow: "نبذة",
-    headline_pre: "سبعة منتجات ",
-    headline_em: "أطلقتها",
-    headline_post: " من القاهرة.",
-    p1: "أنا يوسف. أبني منتجات ويب من أولها إلى آخرها — حاليًا مع The POST، وبشكل مستقل لعملاء يريدون عملًا مُتقنًا لا سريعًا.",
-    p2: "معظم عملي منصات بيانات حية ومنتجات اشتراك ولوحات تحكم داخلية. Angular وNode افتراضيًا، وDjango وPostgres حين يستحق نموذج البيانات ذلك.",
-    p3: "يهمني ما يشعر به الناس فعلًا: زمن التحميل الأول، ونماذج لا تضيّع ما كتبته، وعربية تتصرف كلغة أصلية لا كانعكاس لاحق.",
+    title: "أحب أن أتولى المشكلة كاملة",
+    p1: "أنا يوسف طارق، مهندس برمجيات من القاهرة. درست علوم الحاسب في معهد القاهرة العالي، وتدرّبت على تقنيات MEAN في المعهد القومي للاتصالات (NTI)، ثم عملت مستقلًا لعملاء من دول مختلفة قبل أن أنضم إلى The POST مطوّرًا Full-Stack.",
+    p2: "علّمني العمل الحر الجزء الذي لا يتعلق بالكود: أن أقدّر نطاق العمل بصدق، وأطرح السؤال المحرج مبكرًا، وأسلّم في الموعد الذي التزمت به. وفي The POST أبني أدوات داخلية ولوحات تحليلات وبوابات للعملاء مع فريق صغير يعمل عن بُعد، ونُطلق تحديثات كل أسبوع.",
+    p3: "أكثر ما يهمني هو ما يشعر به الناس حتى لو لم يروه: صفحات تُحمَّل بسرعة، ونماذج لا تضيّع ما كتبته، وأسعار لا تكون خاطئة بصمت، وعربية تُقرأ كأنها كُتبت أولًا.",
     portrait_alt: "صورة يوسف طارق",
   },
   cv: {
-    eyebrow: "السيرة الذاتية",
-    headline_pre: "على ",
-    headline_em: "الورق",
-    headline_post: ".",
-    download: "تحميل السيرة الذاتية كاملة (PDF)",
-    recruiter_line: "متاح لوظائف بدوام كامل — عن بُعد، أو من المقر في القاهرة.",
+    title: "الخبرة",
+    intro: "أين عملت ودرست، من الأحدث إلى الأقدم.",
+    download: "تحميل السيرة الذاتية (PDF)",
+    recruiter_line: "متاح لوظائف بدوام كامل، عن بُعد أو من المقر في القاهرة.",
     role_cta: "تحدّث معي عن وظيفة",
     rows: [
       {
-        years: "٢٠٢٥ — الآن",
-        role: "مطور ويب شامل",
+        years: "٢٠٢٥–الآن",
+        role: "مطوّر Full-Stack",
         org: "The POST",
         loc: "عن بُعد",
-        tags: ["Angular", "Node", "Mongo", "TS"],
+        tags: ["Angular", "Node.js", "MongoDB", "TypeScript"],
         blurb:
-          "أدوات داخلية ولوحات تحليلات وبوابات للعملاء، تُطلق على دفعات أسبوعية بالعمل مع فريق صغير.",
+          "أدوات داخلية ولوحات تحليلات وبوابات للعملاء، تُطلق على دفعات أسبوعية ضمن فريق منتج صغير يعمل عن بُعد. بنيت فيها UFeed، منصة لتقييم الموظفين.",
       },
       {
-        years: "٢٠٢٤ — ٢٥",
-        role: "مطور مستقل",
-        org: "Upwork · Fiverr · خمسات",
+        years: "٢٠٢٤–٢٥",
+        role: "مطوّر Full-Stack مستقل",
+        org: "Upwork وFiverr وخمسات",
         loc: "عن بُعد",
-        tags: ["Angular", "Django", "Node"],
+        tags: ["MEAN", "Django", "C#", "Lua"],
         blurb:
-          "مشاريع تعاقدية في بلدان وصناعات مختلفة — تعلّمت فيها تقدير النطاق بصدق، وطرح السؤال المحرج مبكرًا، والتسليم في الموعد الذي أعطيته.",
+          "تطبيقات ويب وسطح مكتب لعملاء من دول وقطاعات مختلفة. هنا تعلّمت أن أقدّر النطاق بصدق، وأطرح السؤال المحرج مبكرًا، وأسلّم في الموعد المتفق عليه.",
       },
       {
         years: "٢٠٢٣",
-        role: "تدريب احترافي شامل",
+        role: "تدريب تطوير الويب الشامل (MEAN)",
         org: "المعهد القومي للاتصالات (NTI)",
         loc: "القاهرة",
-        tags: ["JS", "MEAN"],
+        tags: ["MongoDB", "Express", "Angular", "Node.js"],
         blurb:
-          "برنامج مركّز في تطوير الويب الحديث، من الواجهة الأمامية حتى نشر الخوادم وتأمينها.",
+          "برنامج مكثّف يغطي تقنيات MEAN من أولها إلى آخرها، من الواجهة حتى نشر الخادم وتأمينه.",
       },
       {
-        years: "٢٠٢٠ — ٢٥",
+        years: "٢٠٢٠–٢٥",
         role: "بكالوريوس علوم الحاسب",
         org: "معهد القاهرة العالي",
         loc: "القاهرة",
-        tags: ["CS", "Software"],
+        tags: ["Algorithms", "Databases"],
         blurb: "هندسة البرمجيات والخوارزميات وقواعد البيانات وتطوير الويب.",
       },
     ],
   },
   contact: {
-    eyebrow: "تواصل",
-    headline_a: "لنبنِ شيئًا ",
-    headline_em: "جيدًا",
-    headline_b: ".",
-    lead: "مشروع أو وظيفة — في الحالتين تكفي بضعة أسطر للبداية. أقرأ كل رسالة بنفسي وأرد خلال يوم.",
+    title: "التواصل",
+    lead: "أخبرني عن مشروع أو وظيفة أو سؤال. بضعة أسطر تكفي. أقرأ كل رسالة بنفسي وأرد خلال يوم.",
     details_label: "مباشر",
     rows: [
       ["البريد", EMAIL, `mailto:${EMAIL}`],
       ["واتساب", WHATSAPP_DISPLAY, whatsappLink()],
       ["لينكدإن", LINKEDIN_DISPLAY, LINKEDIN_URL],
       ["جيت هب", GITHUB_DISPLAY, GITHUB_URL],
-      ["المقر", "القاهرة · عن بُعد حول العالم", null],
+      ["المقر", "القاهرة، وعن بُعد حول العالم", null],
     ],
-    availability: "متاح للمشاريع والوظائف · أرد خلال ٢٤ ساعة",
+    availability: "متاح للمشاريع والوظائف، وأرد خلال يوم.",
     copy: "نسخ",
     copied: "تم النسخ",
     whatsapp_cta: "راسلني على واتساب",
-    whatsapp_href: whatsappLink("مرحبًا يوسف — وصلت إليك عبر soking.digital."),
+    whatsapp_href: whatsappLink("مرحبًا يوسف، وصلت إليك عبر soking.digital."),
     booking_cta: "احجز مكالمة لمدة ٢٠ دقيقة",
     form_label: "أرسل رسالة",
     intent_label: "أتواصل بخصوص",
@@ -930,45 +1097,63 @@ const ar: Strings = {
     f_msg: {
       project: [
         "ما الذي تبنيه؟",
-        "بضعة أسطر تكفي — ما هو، ولمن، وما الذي بُني منه بالفعل.",
+        "ما هو، ولمن، وما الذي بُني منه بالفعل…",
       ],
       role: [
         "حدّثني عن الوظيفة",
-        "الفريق، والتقنيات، عن بُعد أم من المقر — ورابط الإعلان إن وُجد.",
+        "الفريق، والتقنيات، عن بُعد أم من المقر، ورابط الإعلان…",
       ],
       other: ["رسالتك", "بماذا تفكر؟"],
     },
     f_send: "إرسال الرسالة",
     sending: "جارٍ الإرسال…",
-    e_required: "مطلوب",
+    e_required: "يرجى ملء هذا الحقل",
     e_email: "يرجى إدخال بريد إلكتروني صحيح",
     e_msg: "بضع كلمات أخرى من فضلك",
-    e_submit: "تعذّر الإرسال. حاول مجددًا أو راسلني مباشرة.",
+    e_submit: "تعذّر إرسال رسالتك. حاول مجددًا، أو راسلني مباشرة على البريد.",
     sent_label: "تم إرسال الرسالة",
     sent_title: (name: string) => `شكرًا لك، ${name}.`,
     sent_body: `سأرد من ${EMAIL} خلال يوم. وللأمور العاجلة، واتساب أسرع.`,
     sent_again: "إرسال رسالة أخرى",
   },
   footer: {
-    identity_tagline: "مهندس ويب شامل · القاهرة",
-    index_label: "تصفّح",
-    elsewhere_label: "في أماكن أخرى",
-    direct_label: "مباشر",
+    identity_tagline: "مهندس برمجيات من القاهرة، أعمل بتقنيات MEAN",
     colophon_text:
-      "مصمَّم ومبني بالكامل. ثنائي اللغة، فاتح وداكن — بلا كوكيز ولا نوافذ منبثقة.",
+      "صمّمته وبنيته بنفسي، وبلا كوكيز.",
     copyright: "© ٢٠٢٦ يوسف طارق",
     to_top: "العودة إلى الأعلى",
   },
   misc: {
     skip: "انتقل إلى المحتوى",
+    new_tab: "(يفتح في نافذة جديدة)",
+    next_label: "التالي",
     visit_project: "زيارة الموقع",
+    view_source: "الكود على GitHub",
     screenshot_alt: (title: string) => `لقطة شاشة من موقع ${title}`,
     diagrams: {
-      "eg-pricey": {
-        caption: "الأسعار تُدفع ولا تُستعلم — فتبقى الصفحة المفتوحة طوال الصباح صحيحة.",
+      ufeed: {
+        caption: "رحلة بيانات الشركة داخل UFeed. وتحدد خطتها الوحدات التي تظهر لها.",
         nodes: [
-          { name: "مصادر الأسعار", note: "العملات والذهب والوقود والسلع — من مصادر نادرًا ما تتفق" },
-          { name: "Node.js · Express", note: "الواجهة البرمجية، والأسعار محفوظة في MongoDB" },
+          { name: "الشركة وفروعها", note: "الأقسام والمناصب والموظفون، وعدد المقاعد حسب خطة الشركة" },
+          { name: "تقييم الوظائف", note: "كل منصب يُقيَّم عاملًا عاملًا ليأخذ مكانه في مصفوفة الدرجات" },
+          { name: "استبيانات الموظفين", note: "تُبنى بالعربية أو الإنجليزية، وتُرسل إلى الموظفين وتُجمع ردودها" },
+          { name: "التقارير ولوحات المتابعة", note: "النتائج لكل شركة ولكل استبيان، جاهزة للتصرف بناءً عليها" },
+        ],
+      },
+      menuvista: {
+        caption: "رحلة الطلب. كل شاشة تتحقق بنفسها أيضًا، فانقطاع الاتصال يبطئ الطلب ولا يوقفه.",
+        nodes: [
+          { name: "هاتف الزبون", note: "يفتح القائمة من رمز QR على الطاولة ويرسل الطلب، دون حساب" },
+          { name: "Django API", note: "يتأكد أن الفرع يستقبل الطلبات الآن، ويحفظ الطلب ويُصدر رمزًا من ٤ أرقام" },
+          { name: "Redis + WebSockets", note: "يُبلغ هواتف النُّدُل فورًا، وبإشعار حتى لو كان الهاتف مقفلًا" },
+          { name: "هاتف النادل", note: "يكتب النادل الرمز الظاهر على هاتف الزبون، فيُثبت أنه عند الطاولة" },
+        ],
+      },
+      "eg-pricey": {
+        caption: "تصل الأسعار إلى الصفحة فور تغيّرها، فتبقى الصفحة المفتوحة طوال الصباح صحيحة.",
+        nodes: [
+          { name: "مصادر الأسعار", note: "العملات والذهب والوقود والسلع، من مصادر نادرًا ما تتفق" },
+          { name: "Node.js + Express", note: "الواجهة البرمجية، والأسعار محفوظة في MongoDB" },
           { name: "Socket.IO", note: "يدفع كل تغيير إلى كل صفحة مفتوحة بدل الاستعلام المتكرر" },
           {
             name: "Angular app",
@@ -977,14 +1162,14 @@ const ar: Strings = {
         ],
       },
       xtranslator: {
-        caption: "مسار الطلب. المراحل المميّزة تُشترى ولا يُعاد بناؤها.",
+        caption: "مسار الطلب. المراحل المميّزة خدمات جاهزة، لا أجزاء أُعيد بناؤها.",
         nodes: [
           { name: "Angular app", note: "الحسابات وواجهة الترجمة" },
           { name: "Cloudflare", note: "الحد من الطلبات وتصفية الروبوتات على الحافة", bought: true },
-          { name: "Node.js API", note: "خدمة الترجمة — خادم أصلي صغير خلف الحافة" },
+          { name: "Node.js API", note: "خدمة الترجمة، خادم صغير خلف Cloudflare" },
           {
             name: "Lemon Squeezy",
-            note: "بائع مسجَّل: الاشتراكات والضريبة والامتثال الدولي",
+            note: "البائع المسجَّل: الاشتراكات والضريبة والامتثال الدولي",
             bought: true,
           },
         ],

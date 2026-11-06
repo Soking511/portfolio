@@ -18,7 +18,6 @@ import type { Diagram } from "@/components/lang/strings";
 export function ProjectImage({
   image,
   title,
-  swatch,
   alt,
   priority = false,
   variant = "landscape",
@@ -26,7 +25,6 @@ export function ProjectImage({
 }: {
   image: string | null;
   title: string;
-  swatch: string;
   alt: string;
   priority?: boolean;
   /** "feature" = full-bleed portrait on phones; "landscape" = desktop crop only. */
@@ -35,7 +33,7 @@ export function ProjectImage({
 }) {
   if (!image) {
     if (diagram && variant === "feature") return <FlowDiagram diagram={diagram} />;
-    return <FallbackPanel title={title} swatch={swatch} variant={variant} />;
+    return <FallbackPanel title={title} variant={variant} />;
   }
 
   const common = {
@@ -72,8 +70,7 @@ export function ProjectImage({
           src={`/work/${image}-1440.webp`}
           width={1440}
           height={900}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {...({ fetchpriority: priority ? "high" : undefined } as any)}
+          fetchPriority={priority ? "high" : undefined}
           {...common}
         />
       </picture>
@@ -96,35 +93,33 @@ export function ProjectImage({
  * Not an error state — a deliberate wordmark panel, so a project without a
  * usable screenshot still reads as designed rather than broken.
  */
-function FallbackPanel({
-  title,
-  swatch,
-  variant,
-}: {
-  title: string;
-  swatch: string;
-  variant: "feature" | "landscape";
-}) {
+function FallbackPanel({ title, variant }: { title: string; variant: "feature" | "landscape" }) {
   return (
     <div
       aria-hidden="true"
       style={{
         width: "100%",
         height: "100%",
-        background: swatch,
+        // One gradient for every project without a screenshot, so the tiles
+        // read as part of the site rather than as stray brand colours.
+        background: "var(--grad)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 28,
+        padding: variant === "feature" ? 28 : 12,
         overflow: "hidden",
       }}
     >
       <span
-        className="serif latin"
+        className="latin"
         style={{
-          fontSize: variant === "feature" ? "clamp(30px, 8vw, 62px)" : "clamp(18px, 4vw, 30px)",
-          lineHeight: 1.05,
-          letterSpacing: "-0.03em",
+          // The landscape panel is a 132px thumbnail on desktop: a fixed size
+          // keeps a two-word name ("Contact Management") inside it.
+          fontSize: variant === "feature" ? "clamp(30px, 8vw, 62px)" : 17,
+          fontFamily: "var(--display)",
+          fontWeight: 600,
+          lineHeight: 1.1,
+          letterSpacing: "-0.02em",
           color: "rgba(255,255,255,.92)",
           textAlign: "center",
         }}

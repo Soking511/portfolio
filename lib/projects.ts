@@ -1,9 +1,10 @@
 /**
- * What a visitor finds if they follow the link. Only "live" renders a link —
- * sending someone to a maintenance page or a login wall from a portfolio is a
- * dead end, so the others render an honest label instead.
+ * What a visitor finds if they follow the link. "live" links to the running
+ * site and "source" to its public code — sending someone to a maintenance
+ * page or a login wall from a portfolio is a dead end, so the others render
+ * an honest label instead.
  */
-export type ProjectStatus = "live" | "private" | "maintenance" | "offline";
+export type ProjectStatus = "live" | "source" | "private" | "maintenance" | "offline" | "unreleased";
 
 export type ProjectMeta = {
   /** Anchor id on the home page, and the case-study path segment. */
@@ -14,59 +15,73 @@ export type ProjectMeta = {
   image: string | null;
   /** An architecture diagram: in place of a missing screenshot on the home
    *  page, and as its own section on the case-study page. */
-  diagram?: "xtranslator" | "eg-pricey";
-  /** Brand colour, used for the typographic panel when there is no screenshot. */
-  swatch: string;
+  diagram?: "xtranslator" | "eg-pricey" | "menuvista" | "ufeed";
 };
 
 // Index matches works.featured[] in components/lang/strings.ts.
 //
-// XTranslator is currently serving a maintenance page, so instead of a
-// misleading picture its card shows how the system is put together.
+// XTranslator has no screenshot (its first screen is a consent banner), so
+// its card shows how the system is put together instead.
 export const FEATURED: ProjectMeta[] = [
+  // Its public domain doesn't serve a valid certificate yet, so no link until
+  // it does; then set url and status "live".
+  {
+    slug: "menuvista",
+    url: null,
+    status: "unreleased",
+    image: "menuvista",
+    diagram: "menuvista",
+  },
+  // Behind a login, so its card shows how it works instead of a screenshot.
+  {
+    slug: "ufeed",
+    url: "https://ufeed.thepost.digital/",
+    status: "private",
+    image: null,
+    diagram: "ufeed",
+  },
+  {
+    // The university site and every faculty site. The screenshot is the
+    // Faculty of Nursing's: the main site's icon font returns 404 just now.
+    slug: "damanhour-university",
+    url: "https://www.dmu.edu.eg/",
+    status: "live",
+    image: "nursing",
+  },
   {
     slug: "eg-pricey",
     url: "https://eg-pricey.com/",
     status: "live",
     image: "eg-pricey",
     diagram: "eg-pricey",
-    swatch: "#0B63E5",
   },
   {
     slug: "xtranslator",
     url: "https://xtranslator.app/",
-    status: "maintenance",
+    status: "live",
     image: null,
     diagram: "xtranslator",
-    swatch: "#111318",
   },
   {
     slug: "tilegreen",
     url: "https://tilegreen.org/",
     status: "live",
     image: "tilegreen",
-    swatch: "#0E3A2F",
   },
 ];
 
 // Index matches works.selected[] in components/lang/strings.ts.
 export const SELECTED: ProjectMeta[] = [
-  // UFeed sits behind a login wall and Dr. Genedy no longer resolves, so both
-  // fall back to a wordmark tile rather than a misleading screenshot.
+  // Dr. Genedy no longer resolves, so it falls back to a wordmark tile rather
+  // than a misleading screenshot.
+  // No public deployment, but the code is public and is the clearest look at
+  // the back end: auth, validation and real-time record locking.
   {
-    slug: "ufeed",
-    url: "https://ufeed.thepost.digital/",
-    status: "private",
+    slug: "contact-management",
+    url: "https://github.com/Soking511/ContactManagement",
+    status: "source",
     image: null,
-    swatch: "#3D5A9E",
   },
-  { slug: "jafy", url: "https://jafy.co/", status: "live", image: "jafy", swatch: "#2A1E1A" },
-  {
-    slug: "nursing",
-    url: "https://nursing.dmu.edu.eg/",
-    status: "live",
-    image: "nursing",
-    swatch: "#1E4C8A",
-  },
-  { slug: "dr-genedy", url: null, status: "offline", image: null, swatch: "#8A4A3C" },
+  { slug: "jafy", url: "https://jafy.co/", status: "live", image: "jafy" },
+  { slug: "dr-genedy", url: null, status: "offline", image: null },
 ];
