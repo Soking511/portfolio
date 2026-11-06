@@ -64,7 +64,10 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           </header>
 
           <div className="container">
-            <div className="project__media cs-hero-media" style={{ viewTransitionName: `media-${slug}` }}>
+            <div
+              className={`project__media cs-hero-media${meta.image ? "" : " project__media--diagram"}`}
+              style={{ viewTransitionName: `media-${slug}` }}
+            >
               <ProjectImage
                 image={meta.image}
                 title={project.title}
@@ -121,7 +124,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           )}
 
           {meta.image && (
-            <TextSection label={CS.gallery}>
+            <TextSection label={CS.gallery} className="cs-phone-view">
               <div className="cs-gallery">
                 <img
                   src={`/work/${meta.image}-m780.webp`}
@@ -193,9 +196,17 @@ export function CaseStudyPage({ slug }: { slug: string }) {
   );
 }
 
-function TextSection({ label, children }: { label: string; children: React.ReactNode }) {
+function TextSection({
+  label,
+  children,
+  className = "",
+}: {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <section className="container" aria-label={label}>
+    <section className={`container ${className}`.trim()} aria-label={label}>
       <div className="cs-section cs-text">
         <h2 className="label">{label}</h2>
         <div>{children}</div>

@@ -127,7 +127,9 @@ function ProjectBlock({ project, index }: { project: FeaturedWork; index: number
 
 /**
  * What it is, what I did, and the decision — the three answers every project
- * gives. The case study adds the problem in front of them.
+ * gives. The case study adds the problem in front of them. On a phone the
+ * home page keeps only what it is: the rest is one tap away on the case
+ * study, and six projects at full length made the page a long scroll.
  */
 export function Answers({
   project,
@@ -154,15 +156,15 @@ export function Answers({
           <dd>{project.problem}</dd>
         </div>
       )}
-      <div>
+      <div className="answers__built">
         <dt>{labels.label_built}</dt>
         <dd>{project.built}</dd>
       </div>
-      <div>
+      <div className="answers__more">
         <dt>{labels.label_contribution}</dt>
         <dd>{project.contribution}</dd>
       </div>
-      <div className="answers__key">
+      <div className="answers__key answers__more">
         <dt>{labels.label_decision}</dt>
         <dd>{project.decision}</dd>
       </div>

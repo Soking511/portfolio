@@ -184,7 +184,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 }
 
 @media (max-width: 1080px) { :root { --gutter: 36px; --section: 104px; } }
-@media (max-width: 720px)  { :root { --gutter: 20px; --section: 80px; --header-h: 60px; } }
+@media (max-width: 720px)  { :root { --gutter: 20px; --section: 64px; --header-h: 60px; } }
 
 /* ── type ─────────────────────────────────────────────────────────────── */
 
@@ -528,6 +528,37 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .project__year { font-variant-numeric: tabular-nums; }
 @media (max-width: 719px) { .project__meta { justify-items: start; text-align: start; } }
 
+/* Phones: each project is a short card. The picture, the name, what it is
+   and the way into its case study; "my part" and the decision live there.
+   Diagrams keep their stage names only. Desktop is unchanged. */
+@media (max-width: 720px) {
+  .projects { gap: 56px; }
+  .project { gap: 20px; }
+  .project .answers__more,
+  .project .answers__built dt { display: none; }
+  .project .answers { gap: 16px; }
+  .project .answers__built dd {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+  .project__title { font-size: 28px; }
+  .project__kicker { font-size: 18px; line-height: 1.45; }
+  .project__meta { display: flex; flex-wrap: wrap; gap: 0 .35em; margin-top: 4px; font-size: 15px; }
+  .project__meta span:not(:last-child)::after { content: ","; }
+  [dir="rtl"] .project__meta span:not(:last-child)::after { content: "،"; }
+  .project__foot { padding-top: 16px; }
+  .project__links .link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+  .project .project__media--diagram .flow { padding: 18px; gap: 0; }
+  .project .project__media--diagram .flow-steps { gap: 12px; }
+  .project .project__media--diagram .flow-node { padding: 8px 14px; }
+  .project .project__media--diagram .flow-node + .flow-node::before { top: -12px; height: 11px; }
+  .project .project__media--diagram :is(.flow-note, .flow-cap) { display: none; }
+  .section-head { margin-bottom: 36px; }
+}
+
 .answers { display: grid; gap: 28px; margin: 0; }
 .answers div { display: grid; gap: 8px; align-content: start; }
 .answers dt { font-size: 15px; font-weight: 600; color: var(--ink-soft); }
@@ -567,6 +598,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 /* ── next-section link ───────────────────────────────────────────────── */
 
 .next-link { margin: 64px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+@media (max-width: 720px) { .next-link { margin-top: 40px; padding-top: 12px; } }
 .next-link a {
   display: inline-flex;
   align-items: center;
@@ -741,6 +773,8 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 @media (min-width: 480px) {
   .direct div { grid-template-columns: 110px minmax(0, 1fr); gap: 16px; align-items: baseline; }
 }
+/* Phones: email and WhatsApp before the form; the profiles are in the footer. */
+@media (max-width: 720px) { .direct > div:nth-child(n + 3) { display: none; } }
 .availability { display: inline-flex; align-items: center; gap: 10px; color: var(--band-soft); font-size: 15px; }
 .availability::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--band-accent); flex: none; }
 
@@ -907,6 +941,8 @@ textarea.field-input { resize: vertical; min-height: 128px; }
 .cs-kicker { margin-top: 12px; max-width: 40ch; }
 .cs-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line); }
 .cs-hero-media { aspect-ratio: 16 / 9; }
+/* A diagram in place of a screenshot sizes to its stages, never cropped. */
+.cs-hero-media.project__media--diagram { aspect-ratio: auto; }
 .cs-section { padding-block: 56px; border-top: 1px solid var(--line); }
 .cs-text { display: grid; gap: 16px; }
 .cs-stack { margin-top: 32px; color: var(--ink-soft); }
@@ -921,7 +957,13 @@ textarea.field-input { resize: vertical; min-height: 128px; }
   .cs-answers dt { padding-top: 2px; }
   .cs-stack { padding-inline-start: 268px; }
 }
-/* The desktop view is the picture at the top; this adds the phone view. */
+/* The desktop view is the picture at the top; this adds the phone view. On
+   a phone the picture at the top already is the phone view, so it goes, and
+   that picture gets a taller frame to show more of the screen. */
+@media (max-width: 720px) {
+  .cs-phone-view { display: none; }
+  .cs-hero-media:not(.project__media--diagram) { aspect-ratio: 4 / 3; }
+}
 .cs-gallery { max-width: 320px; }
 .cs-gallery img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
 .cs-next { padding-block: 64px 80px; }
