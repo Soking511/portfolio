@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Arrow } from "@/components/arrow";
 import { useT } from "@/components/lang/provider";
 import { FlowDiagram } from "@/components/flow-diagram";
-import { ProjectImage } from "@/components/project-image";
+import { ProjectPanel } from "@/components/project-panel";
 import { ProjectLink } from "@/components/project-link";
 import { Answers } from "@/components/work-featured";
 import { contactHref } from "@/components/contact-intent";
@@ -64,22 +64,18 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           </header>
 
           <div className="container">
-            <div
-              className={`frame cs-hero-media${meta.image ? "" : " frame--diagram"}`}
+            <ProjectPanel
+              meta={meta}
+              title={project.title}
+              alt={t.misc.screenshot_alt(project.title)}
+              diagram={diagram}
+              priority
+              className="cs-hero-media"
               style={{ viewTransitionName: `media-${slug}` }}
-            >
-              <ProjectImage
-                image={meta.image}
-                title={project.title}
-                alt={t.misc.screenshot_alt(project.title)}
-                priority
-                variant="feature"
-                diagram={diagram}
-              />
-            </div>
+            />
           </div>
 
-          <section className="container" aria-label={project.title}>
+          <section className={`container${meta.tint ? ` tint-${meta.tint}` : ""}`} aria-label={project.title}>
             <div className="cs-section cs-section--first">
               <Answers project={project} labels={W} />
               <div className="cs-stack">
@@ -97,7 +93,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
           {diagram && meta.image && (
             <TextSection label={CS.architecture}>
-              <div className="frame frame--diagram">
+              <div className={`panel panel--diagram panel--free${meta.tint ? ` tint-${meta.tint}` : ""}`}>
                 <FlowDiagram diagram={diagram} />
               </div>
             </TextSection>

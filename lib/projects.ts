@@ -6,6 +6,9 @@
  */
 export type ProjectStatus = "live" | "source" | "private" | "maintenance" | "offline" | "unreleased";
 
+/** The six tints in app/globals.css. Each featured project owns one. */
+export type Tint = "peach" | "lilac" | "sky" | "amber" | "blue" | "mint";
+
 export type ProjectMeta = {
   /** Anchor id on the home page, and the case-study path segment. */
   slug: string;
@@ -16,6 +19,8 @@ export type ProjectMeta = {
   /** An architecture diagram: in place of a missing screenshot on the home
    *  page, and as its own section on the case-study page. */
   diagram?: "xtranslator" | "eg-pricey" | "menuvista" | "ufeed";
+  /** The colour its picture sits on, here and on its case study. */
+  tint?: Tint;
 };
 
 // Index matches works.featured[] in components/lang/strings.ts.
@@ -31,6 +36,7 @@ export const FEATURED: ProjectMeta[] = [
     status: "unreleased",
     image: "menuvista",
     diagram: "menuvista",
+    tint: "peach",
   },
   // Behind a login, so its card shows how it works instead of a screenshot.
   {
@@ -39,6 +45,7 @@ export const FEATURED: ProjectMeta[] = [
     status: "private",
     image: null,
     diagram: "ufeed",
+    tint: "lilac",
   },
   {
     // The university site and every faculty site. The screenshot is the
@@ -47,6 +54,7 @@ export const FEATURED: ProjectMeta[] = [
     url: "https://www.dmu.edu.eg/",
     status: "live",
     image: "nursing",
+    tint: "sky",
   },
   {
     slug: "eg-pricey",
@@ -54,6 +62,7 @@ export const FEATURED: ProjectMeta[] = [
     status: "live",
     image: "eg-pricey",
     diagram: "eg-pricey",
+    tint: "amber",
   },
   {
     slug: "xtranslator",
@@ -61,12 +70,14 @@ export const FEATURED: ProjectMeta[] = [
     status: "live",
     image: null,
     diagram: "xtranslator",
+    tint: "blue",
   },
   {
     slug: "tilegreen",
     url: "https://tilegreen.org/",
     status: "live",
     image: "tilegreen",
+    tint: "mint",
   },
 ];
 

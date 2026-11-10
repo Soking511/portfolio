@@ -21,10 +21,10 @@ export function NotesIndexPage() {
       <main id="main" className="container notes-main">
         <header>
           <h1 className="cs-title">{N.title}</h1>
-          <p className="lead soft" style={{ marginTop: 16, maxWidth: "48ch" }}>
+          <p className="lead soft">
             {N.intro}
           </p>
-          <p style={{ marginTop: 16 }}>
+          <p className="feed">
             <a href={localize(lang, "/notes/feed.xml")} className="link">
               {N.feed}
             </a>
@@ -44,7 +44,7 @@ export function NotesIndexPage() {
             ))}
           </ol>
         ) : (
-          <p className="soft" style={{ marginTop: 56 }}>
+          <p className="soft notes-empty">
             {N.empty}
           </p>
         )}

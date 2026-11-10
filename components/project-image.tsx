@@ -45,7 +45,7 @@ export function ProjectImage({
       height: "100%",
       objectFit: "cover" as const,
       objectPosition: "top center",
-      background: "var(--surface)",
+      background: "var(--paper)",
       display: "block" as const,
     },
   };

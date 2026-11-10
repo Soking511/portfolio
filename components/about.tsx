@@ -4,10 +4,11 @@ import { useT } from "@/components/lang/provider";
 import { PORTRAIT } from "@/lib/site";
 
 /**
- * Who I am, in my own words: the path here, what freelancing taught me, and
- * what I care about. A portrait appears under the heading once lib/site.ts
- * points at one. No stat bar: the numbers that would go in one are not
- * verifiable.
+ * Who I am, in my own words, in two columns so neither side of the page is
+ * empty: the heading and the path here on one side, what freelancing taught
+ * me and what I care about on the other. A portrait appears under the
+ * heading once lib/site.ts points at one. No stat bar: the numbers that
+ * would go in one are not verifiable.
  */
 export function About() {
   const { t } = useT();
@@ -15,11 +16,12 @@ export function About() {
 
   return (
     <section id="about" className="section section--surface" aria-labelledby="about-title">
-      <div className="container split">
-        <div className="split__head">
+      <div className="container about">
+        <div className="about__lead">
           <h2 className="h2" id="about-title">
             {A.title}
           </h2>
+          <p className="lead">{A.p1}</p>
           {PORTRAIT && (
             <img
               src={PORTRAIT}
@@ -34,9 +36,8 @@ export function About() {
         </div>
 
         <div className="about__text">
-          <p className="lead">{A.p1}</p>
-          <p className="soft">{A.p2}</p>
-          <p className="soft">{A.p3}</p>
+          <p>{A.p2}</p>
+          <p>{A.p3}</p>
         </div>
       </div>
     </section>

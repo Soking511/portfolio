@@ -111,7 +111,7 @@ export function Contact() {
       <div className="container">
         <div className="contact">
           <div className="contact__aside">
-            <header className="section-head" style={{ marginBottom: 0 }}>
+            <header className="section-head">
               <h2 className="h2" id="contact-title">
                 {C.title}
               </h2>

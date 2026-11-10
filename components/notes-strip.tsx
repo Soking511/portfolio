@@ -15,10 +15,10 @@ export function NotesStrip() {
   if (!notes.length) return null;
 
   return (
-    <section className="section" aria-labelledby="notes-strip-title">
+    <section className="section notes-strip" aria-labelledby="notes-strip-title">
       <div className="container">
         <SectionHead id="notes-strip-title" title={t.notes.latest} />
-        <ol className="notes-list" style={{ marginTop: 0 }}>
+        <ol className="notes-list">
           {notes.map((note) => (
             <li key={note.slug}>
               <a href={notesPath(lang, note.slug)}>
@@ -29,7 +29,7 @@ export function NotesStrip() {
             </li>
           ))}
         </ol>
-        <p style={{ marginTop: 24 }}>
+        <p className="notes-strip__all">
           <a href={notesPath(lang)} className="link">
             {t.notes.all}
           </a>

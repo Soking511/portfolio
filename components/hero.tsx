@@ -5,18 +5,17 @@ import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
 import { trackAttrs } from "@/lib/analytics";
 
+const FACT_TINTS = ["mint", "lilac", "amber", "sky"] as const;
+
 /**
- * The fold, in the order a stranger needs it: who I am (the name, in both of
- * the scripts I work in), what I do in one sentence, a button per audience,
- * and the facts a recruiter scans for, availability first.
+ * The fold, in the order a stranger needs it: who I am (the name, with its
+ * other script under it), what I do in one sentence, and a button per
+ * audience. Beside it, the four facts a recruiter scans for, availability
+ * first, each on its own tint, so the first screen has colour and nothing
+ * in it is empty.
  *
- * The name is the page's one bold gesture. Each script starts from its own
- * edge, Latin from the left and Arabic from the right, on the English and
- * the Arabic page alike; the page's own script is heavy and the other light.
- * The light one settles in once on load (CSS only, skipped under reduced
+ * The second script settles in once on load (CSS only, skipped under reduced
  * motion); nothing else here moves, so first paint never waits on React.
- *
- * The work follows directly below, so there is no preview row here.
  */
 export function Hero() {
   const { t, lang, altLang, altHref } = useT();
@@ -48,24 +47,22 @@ export function Hero() {
           </p>
         )}
 
-        {/* Each line is placed by its language (see .hero-name in
-            globals.css), so both carry lang explicitly. */}
-        <h1 className="hero-name" id="hero-name">
-          <span className="hero-name__line hero-name__line--primary" lang={lang}>
-            {H.name}
-          </span>
-          <span
-            className="hero-name__line hero-name__line--alt"
-            lang={altLang}
-            dir={altLang === "ar" ? "rtl" : "ltr"}
-            translate="no"
-          >
-            {H.name_alt}
-          </span>
-        </h1>
+        <div className="hero-grid">
+          <div>
+            <h1 className="hero-name" id="hero-name">
+              <span className="hero-name__line hero-name__line--primary" lang={lang}>
+                {H.name}
+              </span>
+              <span
+                className="hero-name__line hero-name__line--alt"
+                lang={altLang}
+                dir={altLang === "ar" ? "rtl" : "ltr"}
+                translate="no"
+              >
+                {H.name_alt}
+              </span>
+            </h1>
 
-        <div className="hero-body">
-          <div className="hero-pitch">
             <p className="hero-statement">{H.statement}</p>
             <div className="actions">
               <a
@@ -83,9 +80,9 @@ export function Hero() {
           </div>
 
           <dl className="facts">
-            {H.facts.map(([label, value]) => (
-              <div key={label}>
-                <dt className="label">{label}</dt>
+            {H.facts.map(([label, value], i) => (
+              <div key={label} className={`fact tint-${FACT_TINTS[i % FACT_TINTS.length]}`}>
+                <dt>{label}</dt>
                 <dd>{value}</dd>
               </div>
             ))}

@@ -5,9 +5,9 @@ import { ProjectLink } from "@/components/project-link";
 import { SELECTED } from "@/lib/projects";
 
 /**
- * The remaining projects, as a short list under the index: a name, what it
- * is in a few lines, its tools and where it lives. No pictures; after six
- * featured projects, more frames would only add length.
+ * The remaining projects as three small tiles under the main grid: a name,
+ * one line, its tools and where it lives. No pictures and no long text;
+ * after six featured projects, more of either would only add length.
  */
 export function WorkSelected() {
   const { t } = useT();
@@ -27,16 +27,11 @@ export function WorkSelected() {
           const meta = SELECTED[i];
           return (
             <li key={meta.slug} id={meta.slug} className="shipped__item">
-              <div>
-                <h4 className="h3 shipped__name">{p.title}</h4>
-                <p className="shipped__kicker">{p.kicker}</p>
-              </div>
-
-              <p>{p.blurb}</p>
-
+              <h4 className="h3">{p.title}</h4>
+              <p className="shipped__kicker">{p.kicker}</p>
               <div className="shipped__meta">
                 <ul className="tags" aria-label={W.label_stack}>
-                  {p.stack.map((s) => (
+                  {p.stack.slice(0, 3).map((s) => (
                     <li key={s} className="tag">
                       <span className="latin">{s}</span>
                     </li>

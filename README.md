@@ -11,7 +11,7 @@ Firebase Hosting by GitHub Actions on push to `main`.
 |---|---|
 | Framework | Next.js 15, React 19, TypeScript, `output: "export"` |
 | Styling | One design system in `app/globals.css` (tokens + component classes). Tailwind is present for preflight only. |
-| Type | Zain (display, Arabic + Latin), IBM Plex Sans / Plex Sans Arabic (text) and IBM Plex Mono (small facts), self-hosted by `next/font` |
+| Type | Rubik (display, Arabic + Latin) and IBM Plex Sans / Plex Sans Arabic (text), self-hosted by `next/font` |
 | Content | One typed bilingual file: `components/lang/strings.ts` |
 | Languages | English at `/`, Arabic at `/ar/` — separate static pages, one root layout each |
 | Contact form | Firestore write → Cloud Function → email |
@@ -26,12 +26,13 @@ the layout. That is deliberate: the whole design system is one CSS file.
 `DESIGN.md` is the contract: direction, tokens and rules. `app/globals.css`
 implements it. Read it before changing any page.
 
-In short: quiet and precise. A sage ground, pine ink and one deeper green
-accent, a deeper sage for alternate sections, and one dark block at the end
-for contact and the footer. Zain sets the name and headings in both scripts;
-IBM Plex sets the reading text and, in mono, the small facts. The home page
-is an index of projects, with the detail on each case study. No cards or
-shadows on content, no bright colours.
+In short: pictures first, short text second, colour from the work. A soft
+neutral ground with near-black type; each featured project owns one of six
+soft tints and its screenshot sits on that tint everywhere. The same tints
+colour the hero's fact tiles, the service icons and the beliefs. One dark
+block at the end holds contact and the footer. Rubik sets the name and
+headings in both scripts; IBM Plex sets the reading text. Flat tiles, no
+shadows, no white ground.
 
 ## Layout
 
@@ -50,17 +51,18 @@ components/
   pages/home.tsx           section order
   pages/case-study.tsx     one featured project on its own URL
   hero.tsx                 the fold: the name in both scripts, one sentence,
-                           two actions, and four facts
-  section-head.tsx         plain section heading + optional intro line
-  work-featured.tsx        the project index: a row per project, and beside
-                           it (pointer and room only) one pane picturing the
-                           row under the pointer; Answers for the case study
-  work-selected.tsx        remaining projects as a shorter list, same section
-  capabilities.tsx         services: plain text, links to the proof,
-                           and a tools table
-  principles.tsx           three beliefs set large, and how a project goes
+                           two actions, and four facts as tinted tiles
+  section-head.tsx         section heading, optional intro line and action
+  work-featured.tsx        the projects as picture tiles, two to a row;
+                           Answers for the case study
+  work-selected.tsx        remaining projects as three small tiles
+  project-panel.tsx        a project's screenshot or diagram on its tint
+  capabilities.tsx         services: six tiles with an icon, one line and
+                           links to the proof; tools as four columns
+  principles.tsx           three beliefs on tints, and how a project goes
   about.tsx                who I am
-  experience.tsx  contact.tsx  footer.tsx  header.tsx
+  experience.tsx           positions as one line through time
+  contact.tsx  footer.tsx  header.tsx
   testimonials.tsx         hidden until strings.ts has a real quote
   project-image.tsx        screenshot, diagram, or a wordmark panel
   flow-diagram.tsx         architecture diagram as an ordered list
@@ -124,15 +126,13 @@ note.
 
 **Content is never hidden waiting for JavaScript.** All motion is CSS (see
 the rules in `DESIGN.md`): no text waits on an animation, and everything is
-skipped under `prefers-reduced-motion`. The one piece of state is which
-project the index pane pictures; without JavaScript it shows the first.
+skipped under `prefers-reduced-motion`.
 
-**The project index has two layouts from one markup.** With a pointer and
-960px of room (`(min-width: 960px) and (hover: hover)`), rows are text and a
-sticky pane beside them shows the hovered or focused project. Everywhere
-else each row carries its own picture. Both sets of images are in the HTML
-and lazy, so the hidden set is never fetched. The row's name is the link and
-covers the whole row; the live-site link sits above it.
+**A project tile is one link with a second link on top.** The project's name
+is the link to its case study and covers the whole tile; the live-site link
+sits above it. Each project's colour is `tint` in `lib/projects.ts`, and
+`ProjectPanel` puts its screenshot on that colour on the home page and at
+the top of its case study.
 
 **Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
 Earlier versions embedded each project as a live `<iframe>`; that was removed
@@ -179,7 +179,8 @@ template, then:
 chrome --headless=new --hide-scrollbars --allow-file-access-from-files   --window-size=1200,630 --virtual-time-budget=12000 --screenshot=og.png   "file:///…/og-template.html?kind=case&title=EG-Pricey&kicker=…&stack=…&img=eg-pricey-1440.webp"
 ```
 
-`kind=home` draws the home image; a case without `img` takes `nodes=A|*B|C`
+`kind=home` draws the home image; a case takes `tint=peach|lilac|sky|amber|blue|mint`
+(its colour in `lib/projects.ts`), and without `img` takes `nodes=A|*B|C`
 (a `*` marks a bought service) and draws its architecture instead.
 Regenerate them when a project's title, kicker or screenshot changes.
 

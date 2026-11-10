@@ -1,12 +1,12 @@
 import type React from "react";
-import { IBM_Plex_Sans_Arabic, Zain } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Rubik } from "next/font/google";
 import { RootShell } from "@/components/shell/root-shell";
 import { layoutMetadata } from "@/lib/seo";
 
 // Self-hosted at build time, so Arabic pages never reach out to Google Fonts
 // at runtime. Plex Sans Arabic is the reading face (its Latin is Plex Sans,
 // so product names inside Arabic sentences match the English site);
-// Zain's Arabic subset is preloaded here because on these pages the Arabic
+// Rubik's Arabic subset is preloaded here because on these pages the Arabic
 // name is the first thing painted.
 const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
@@ -15,9 +15,9 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-const displayArabic = Zain({
+const displayArabic = Rubik({
   subsets: ["arabic"],
-  weight: ["300", "400", "700", "800"],
+  weight: "variable",
   variable: "--font-display-arabic",
   display: "swap",
 });

@@ -6,19 +6,23 @@ invent a one-off value in a component.
 
 ## Direction
 
-Quiet and precise. One hue family: a sage ground, pine ink, and a deeper
-green for anything you can act on. The page ends in one dark block that holds
-the contact form and the footer. Structure comes from hairlines, a two-column
-section grid and a large difference in type size, not from boxes.
+Pictures first, short text second, colour from the work. The page itself is a
+soft neutral with near-black type. Each featured project owns one of six soft
+tints, and its screenshot sits on that tint wherever the project appears. The
+same tints colour the fact tiles in the hero, the service icons and the three
+beliefs, so every screen has colour without any one colour shouting. Rows are
+filled edge to edge; no column is left empty. The page ends in one dark block
+that holds the contact form and the footer.
 
-The home page is an index, not a scroll of case studies: the name, one
-sentence, then every project as a row. The detail lives on each case study.
+The owner's feedback on the version before this one (a sage and pine text
+index): the colours were dull, there was too much text, and the layout felt
+empty. Do not drift back toward any of those.
 
 Directions already tried and set aside: a bank-style corporate look, lapis
-and gold, a dark hero with cards, the original editorial cream, and soft
-paper with lapis ink and teal (the previous version of this file).
+and gold, a dark hero with cards, the original editorial cream, soft paper
+with lapis ink and teal, and the sage and pine index.
 
-What the owner explicitly does not want: bright saturated colours, a bright
+What the owner explicitly does not want: harsh saturated colours, a bright
 white ground, content inside cards with shadows, and many elements competing
 on one screen.
 
@@ -26,55 +30,59 @@ on one screen.
 
 ```yaml
 color:
-  paper:       "#E9ECE6"   # sage ground, never white
-  surface:     "#DDE2DA"   # alternate sections, media frames
-  ink:         "#15211C"   # pine: text and headings
-  ink-soft:    "#4B5A52"   # secondary text, 5.5:1 on surface
-  line:        "#C4CCC3"   # dividers only
-  line-strong: "#74837A"   # control edges, 3:1
-  accent:      "#1F5E48"   # links, primary button, focus. 5.8:1 on surface
-  band:        "#15211C"   # the dark block: contact and footer
+  paper:       "#F5F4F0"   # soft neutral ground, never white
+  surface:     "#ECEAE4"   # alternate sections, small tiles
+  ink:         "#18181B"   # text, headings, primary button
+  ink-soft:    "#5B5B66"   # secondary text, 5.6:1 on surface
+  line:        "#DDDBD4"   # dividers only
+  line-strong: "#84838C"   # control edges, 3:1
+  hot:         "#D9512C"   # the one spark: availability dot, active nav item
+  band:        "#18181B"   # the dark block: contact and footer
+tints:                      # light / dark
+  peach: "#F9D2C2 / #55291B"   # MenuVista
+  lilac: "#E0D4F8 / #35285F"   # UFeed
+  sky:   "#C2E4F0 / #143D4A"   # Damanhour University
+  amber: "#F8E0A6 / #4A3A12"   # EG-Pricey
+  blue:  "#CFDAFB / #1F2C5A"   # XTranslator
+  mint:  "#C8EAD4 / #163F2C"   # TileGreen
 dark:
-  paper: "#101814"  surface: "#17221D"  ink: "#E2E9E1"  ink-soft: "#A0AEA4"
-  accent: "#8CCBAA"  band: "#0A100D"
+  paper: "#121214"  surface: "#1A1A1E"  ink: "#EFEEEA"  ink-soft: "#A7A6B1"
+  hot: "#FF7D56"  band: "#09090B"
 type:
-  display: Zain (300, 400, 700, 800), Arabic + Latin: the name and headings
+  display: Rubik (variable), Arabic + Latin: the name and headings
   text:    IBM Plex Sans / IBM Plex Sans Arabic, 400 and 600
-  mono:    IBM Plex Mono, 400 and 500: years, tools, small labels
   body:    17px EN, 18px AR
 radius:
-  media: 8px   field: 8px   button: pill
+  panel: 20px (16px on phones)   field: 12px   button: pill
 ```
 
 ## Rules
 
-- The name is set in both scripts, each from its own edge: Latin from the
-  left, Arabic from the right, on the English and the Arabic page alike. The
-  page's own script is heavy, the other light. One line from 900px, stacked
-  below.
-- Two loud moments per page, no more: the name, and the three beliefs under
-  "How I work". Everything else is reading size.
-- A section's name sits beside its content and stays in view while the
-  content is read (`.split`). Lists open with an ink hairline and separate
-  their rows with quiet ones.
+- A project is shown before it is described: its screenshot (or the diagram
+  that stands in for one) on its own tint, then a name, a year and one line.
+  The long answers live on the case study.
+- Home-page text is short. A tile gets one or two lines; if something needs a
+  paragraph it belongs on a case study or in a note.
+- Fill the row. Sections use two, three or four columns on desktop and stack
+  on phones; nothing sits beside an empty column.
+- Tints are grounds, not text colours. Text on a tint is `--on-tint`; text is
+  never set in a tint. A project keeps its tint everywhere (`tint` in
+  `lib/projects.ts`).
+- Tiles are flat: a tint or `--surface`, a 20px radius, no border, no shadow.
+- Buttons are ink pills; links are underlined ink. `--hot` is used only for
+  the availability dots, the active nav item and the first stop on the
+  experience line.
 - Headings are plain sentences. No accent word in another colour.
-- Content sits on the page, not in cards. No shadows anywhere. The contact
-  form sits on the dark band itself, not on a panel inside it.
-- One accent, used sparingly: buttons, links, the active nav item, the
-  project under the pointer.
-- Mono is for small facts only (years, tools, labels). Arabic has no mono or
-  capitals, so labels there use the reading face at weight.
 - Numbers only on real sequences (the request diagrams).
-- No badges or chips for information: availability is a fact in the hero
-  list, and tools are a plain comma list. Pills are for controls (buttons,
+- Tools are a plain comma list, not chips. Pills are for controls (buttons,
   the form's choices).
 - Headings name the section the way the menu does ("Work", "Services").
   No generic CTA copy ("Let's talk"); no arrows stapled to link text.
+- The contact form sits on the dark band itself, not on a panel inside it.
 - Motion answers something, and stops there: the name's second script
-  settles once on load; the project under the pointer steps forward and its
-  picture fades into the pane; clicking a project carries its picture and
-  title into its page (cross-document view transitions); buttons answer a
-  press. Nothing moves under reduced motion, and no text is ever hidden
-  waiting for an animation.
+  settles once on load; a project's screenshot rises when its tile is pointed
+  at; clicking a project carries its picture and title into its page
+  (cross-document view transitions); buttons answer a press. Nothing moves
+  under reduced motion, and no text is ever hidden waiting for an animation.
 - Copy is plain and matches `public/youseef-tareq-resume.pdf`.
 - Every text pair passes WCAG AA; visible focus everywhere; 44px touch targets.
