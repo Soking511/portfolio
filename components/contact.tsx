@@ -29,7 +29,7 @@ const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "
  * they can start typing.
  *
  * This is the page's one dark band: the end of the page, where it asks for
- * something. The form itself sits on paper inside it, as the place to act.
+ * something. The form sits on the band itself, not on a panel inside it.
  */
 export function Contact() {
   const { t, lang } = useT();
@@ -118,7 +118,7 @@ export function Contact() {
               <p className="lead">{C.lead}</p>
             </header>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <div className="actions">
               <a
                 href={C.whatsapp_href}
                 target="_blank"
@@ -143,7 +143,7 @@ export function Contact() {
             </div>
 
             <div>
-              <h3 className="label" style={{ color: "var(--band-soft)", marginBottom: 14 }}>
+              <h3 className="label">
                 {C.details_label}
               </h3>
               <dl className="direct">
@@ -162,19 +162,16 @@ export function Contact() {
             <p className="availability">{C.availability}</p>
           </div>
 
-          <form onSubmit={submit} noValidate aria-label={C.form_label} className="form-panel">
+          <form onSubmit={submit} noValidate aria-label={C.form_label} className="form">
             {send === "sent" ? (
-              <div role="status" style={{ display: "grid", gap: 12, padding: "16px 0" }}>
-                <p className="label" style={{ color: "var(--accent)" }}>
-                  {C.sent_label}
-                </p>
+              <div role="status" className="form-sent">
+                <p className="label">{C.sent_label}</p>
                 <h3 className="h3">{C.sent_title(sentName)}</h3>
                 <p className="soft">{C.sent_body}</p>
                 <button
                   type="button"
                   onClick={reset}
                   className="btn btn--secondary"
-                  style={{ justifySelf: "start", marginTop: 8 }}
                 >
                   {C.sent_again}
                 </button>
@@ -259,7 +256,7 @@ export function Contact() {
                   type="submit"
                   disabled={send === "sending"}
                   className="btn btn--primary"
-                  style={{ alignSelf: "flex-start", marginTop: 4 }}
+                  style={{ alignSelf: "flex-start" }}
                 >
                   {send === "sending" ? C.sending : C.f_send}
                 </button>

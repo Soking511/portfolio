@@ -31,15 +31,9 @@ export function NotePage({ note, children }: { note: NoteMeta; children: ReactNo
               <Arrow size={14} back />
               {t.notes.all}
             </a>
-            <time className="soft" dateTime={note.date} style={{ display: "block", marginTop: 32, fontSize: 15 }}>
-              {formatNoteDate(lang, note.date)}
-            </time>
-            <h1 className="h2" style={{ marginTop: 14, maxWidth: "22ch" }}>
-              {note.title}
-            </h1>
-            <p className="lead soft" style={{ marginTop: 18, maxWidth: "52ch" }}>
-              {note.description}
-            </p>
+            <time dateTime={note.date}>{formatNoteDate(lang, note.date)}</time>
+            <h1 className="h2">{note.title}</h1>
+            <p className="lead soft">{note.description}</p>
           </header>
 
           <div className="note-body">{children}</div>
@@ -47,7 +41,7 @@ export function NotePage({ note, children }: { note: NoteMeta; children: ReactNo
 
         <aside className="note-cta">
           <p className="h3">{t.notes.cta}</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 20 }}>
+          <div className="actions">
             <a
               href={contactHref(home, "project")}
               className="btn btn--primary"

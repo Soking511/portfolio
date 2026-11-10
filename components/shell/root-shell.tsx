@@ -1,7 +1,7 @@
 import type React from "react";
 import "@/app/globals.css";
 import Script from "next/script";
-import { Alexandria, IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Zain } from "next/font/google";
 
 import { LangProvider } from "@/components/lang/provider";
 import { STRINGS, type Lang } from "@/components/lang/strings";
@@ -9,18 +9,18 @@ import { ThemeProvider } from "@/components/theme/provider";
 import { PreHydrationScript } from "@/components/theme/pre-hydration-script";
 import { SITE_URL, UMAMI_WEBSITE_ID } from "@/lib/site";
 
-// Two families. Alexandria — by the Egyptian designer Mohamed Gaber, with
-// Arabic and Latin drawn as one design — sets the name and the headings, so
-// the bilingual name in the hero is a single typeface in two scripts. IBM
-// Plex Sans carries the reading text; the Arabic layout adds its Arabic twin.
+// Three families. Zain draws Arabic and Latin as one design, so the name in
+// the hero is a single typeface in two scripts; it sets the name and the
+// headings. IBM Plex Sans carries the reading text (the Arabic layout adds
+// its Arabic twin), and IBM Plex Mono the small facts: years, tools, labels.
 //
 // Only the Latin subset is preloaded here. The Arabic faces are still
 // declared (by unicode-range) and the Arabic layout preloads them, so an
-// English page fetches Alexandria's Arabic only for the two words of the name.
-const alexandria = Alexandria({
+// English page fetches Zain's Arabic only for the two words of the name.
+const display = Zain({
   subsets: ["latin"],
-  weight: "variable",
-  variable: "--font-alexandria",
+  weight: ["300", "400", "700", "800"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -29,6 +29,14 @@ const plexSans = IBM_Plex_Sans({
   weight: ["400", "600"],
   variable: "--font-plex",
   display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+  display: "swap",
+  preload: false,
 });
 
 /**
@@ -46,7 +54,7 @@ export function RootShell({
   fontClassName?: string;
   children: React.ReactNode;
 }) {
-  const fontVariables = [alexandria.variable, plexSans.variable, fontClassName]
+  const fontVariables = [display.variable, plexSans.variable, plexMono.variable, fontClassName]
     .filter(Boolean)
     .join(" ");
 
@@ -60,8 +68,8 @@ export function RootShell({
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#0E1A33" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#E9ECE6" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#101814" media="(prefers-color-scheme: dark)" />
         <PreHydrationScript />
       </head>
       <body>

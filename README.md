@@ -11,7 +11,7 @@ Firebase Hosting by GitHub Actions on push to `main`.
 |---|---|
 | Framework | Next.js 15, React 19, TypeScript, `output: "export"` |
 | Styling | One design system in `app/globals.css` (tokens + component classes). Tailwind is present for preflight only. |
-| Type | Alexandria (display, Arabic + Latin) and IBM Plex Sans / Plex Sans Arabic (text), self-hosted by `next/font` |
+| Type | Zain (display, Arabic + Latin), IBM Plex Sans / Plex Sans Arabic (text) and IBM Plex Mono (small facts), self-hosted by `next/font` |
 | Content | One typed bilingual file: `components/lang/strings.ts` |
 | Languages | English at `/`, Arabic at `/ar/` — separate static pages, one root layout each |
 | Contact form | Firestore write → Cloud Function → email |
@@ -26,10 +26,12 @@ the layout. That is deliberate: the whole design system is one CSS file.
 `DESIGN.md` is the contract: direction, tokens and rules. `app/globals.css`
 implements it. Read it before changing any page.
 
-In short: calm and easy on the eye. A soft paper ground, lapis ink, one muted
-teal accent, limestone for alternate sections, and one dark band for contact.
-Alexandria sets the name and headings in both scripts; IBM Plex sets the
-reading text. No cards or shadows on content, no bright colours.
+In short: quiet and precise. A sage ground, pine ink and one deeper green
+accent, a deeper sage for alternate sections, and one dark block at the end
+for contact and the footer. Zain sets the name and headings in both scripts;
+IBM Plex sets the reading text and, in mono, the small facts. The home page
+is an index of projects, with the detail on each case study. No cards or
+shadows on content, no bright colours.
 
 ## Layout
 
@@ -48,14 +50,15 @@ components/
   pages/home.tsx           section order
   pages/case-study.tsx     one featured project on its own URL
   hero.tsx                 the fold: the name in both scripts, one sentence,
-                           two actions, and three facts
+                           two actions, and four facts
   section-head.tsx         plain section heading + optional intro line
-  work-featured.tsx        3 projects in one shared shape; Answers for the
-                           case-study page
-  work-selected.tsx        remaining projects as a list
+  work-featured.tsx        the project index: a row per project, and beside
+                           it (pointer and room only) one pane picturing the
+                           row under the pointer; Answers for the case study
+  work-selected.tsx        remaining projects as a shorter list, same section
   capabilities.tsx         services: plain text, links to the proof,
                            and a tools table
-  principles.tsx           three beliefs, and how a project goes
+  principles.tsx           three beliefs set large, and how a project goes
   about.tsx                who I am
   experience.tsx  contact.tsx  footer.tsx  header.tsx
   testimonials.tsx         hidden until strings.ts has a real quote
@@ -120,18 +123,26 @@ dynamic route with no params — which is exactly the state before the first
 note.
 
 **Content is never hidden waiting for JavaScript.** All motion is CSS (see
-the rules in `DESIGN.md`): no text waits on an animation, scroll-linked
-effects only run where scroll timelines exist, and everything is skipped
-under `prefers-reduced-motion`.
+the rules in `DESIGN.md`): no text waits on an animation, and everything is
+skipped under `prefers-reduced-motion`. The one piece of state is which
+project the index pane pictures; without JavaScript it shows the first.
+
+**The project index has two layouts from one markup.** With a pointer and
+960px of room (`(min-width: 960px) and (hover: hover)`), rows are text and a
+sticky pane beside them shows the hovered or focused project. Everywhere
+else each row carries its own picture. Both sets of images are in the HTML
+and lazy, so the hidden set is never fetched. The row's name is the link and
+covers the whole row; the live-site link sits above it.
 
 **Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
 Earlier versions embedded each project as a live `<iframe>`; that was removed
 because most of them could not render (`X-Frame-Options: DENY`, auth walls,
 maintenance pages) and it meant loading seven third-party sites.
 
-**A project without an honest screenshot gets a wordmark panel**, not a
-placeholder — set `image: null` in `lib/projects.ts`. Set `url: null` when a
-domain no longer resolves and no link is rendered.
+**A project without an honest screenshot shows its diagram**, or failing
+that a wordmark panel, not a placeholder — set `image: null` in
+`lib/projects.ts`. Set `url: null` when a domain no longer resolves and no
+link is rendered.
 
 ## Scripts
 

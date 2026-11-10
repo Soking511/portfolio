@@ -56,7 +56,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <p className="lead soft cs-kicker">{project.kicker}</p>
 
             <div className="cs-meta">
-              <p className="soft">
+              <p className="cs-meta__role">
                 {project.role}, {project.year}
               </p>
               <ProjectLink meta={meta} />
@@ -65,7 +65,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
           <div className="container">
             <div
-              className={`project__media cs-hero-media${meta.image ? "" : " project__media--diagram"}`}
+              className={`frame cs-hero-media${meta.image ? "" : " frame--diagram"}`}
               style={{ viewTransitionName: `media-${slug}` }}
             >
               <ProjectImage
@@ -80,17 +80,24 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           </div>
 
           <section className="container" aria-label={project.title}>
-            <div className="cs-section" style={{ borderTop: 0 }}>
-              <Answers project={project} labels={W} withProblem className="cs-answers" />
-              <p className="cs-stack">
-                <strong>{W.label_stack}:</strong> <span className="latin">{project.stack.join(", ")}</span>
-              </p>
+            <div className="cs-section cs-section--first">
+              <Answers project={project} labels={W} />
+              <div className="cs-stack">
+                <h2 className="label">{W.label_stack}</h2>
+                <ul className="tags">
+                  {project.stack.map((s) => (
+                    <li key={s} className="tag">
+                      <span className="latin">{s}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </section>
 
           {diagram && meta.image && (
             <TextSection label={CS.architecture}>
-              <div className="project__media" style={{ aspectRatio: "auto" }}>
+              <div className="frame frame--diagram">
                 <FlowDiagram diagram={diagram} />
               </div>
             </TextSection>
@@ -104,11 +111,11 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
           {!!extra?.challenges?.length && (
             <TextSection label={CS.challenges}>
-              <div style={{ display: "grid", gap: 28 }}>
+              <div className="cs-challenges">
                 {extra.challenges.map((c) => (
                   <div key={c.title}>
                     <h3 className="h3">{c.title}</h3>
-                    <p className="soft" style={{ marginTop: 8 }}>
+                    <p className="soft">
                       {c.body}
                     </p>
                   </div>
@@ -143,24 +150,22 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           {quote && (
             <section className="container">
               <figure className="cs-section quote">
-                <blockquote style={{ maxWidth: "36ch" }}>“{quote.quote}”</blockquote>
+                <blockquote>“{quote.quote}”</blockquote>
                 <figcaption>
-                  <strong style={{ fontWeight: 600 }}>{quote.name}</strong>
+                  <strong>{quote.name}</strong>
                   <span className="soft">, {quote.role}</span>
                 </figcaption>
               </figure>
             </section>
           )}
 
-          <section className="section section--surface" style={{ marginTop: 40 }} aria-labelledby="cs-cta">
+          <section className="section section--surface cs-cta" aria-labelledby="cs-cta">
             <div className="container">
               <h2 className="h2" id="cs-cta">
                 {CS.cta_title.replace("{project}", project.title)}
               </h2>
-              <p className="lead soft" style={{ marginTop: 16, maxWidth: "48ch" }}>
-                {CS.cta_body}
-              </p>
-              <div className="hero-actions">
+              <p className="lead soft">{CS.cta_body}</p>
+              <div className="actions">
                 <a
                   href={contactHref(home, "project")}
                   className="btn btn--primary"

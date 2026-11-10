@@ -99,13 +99,10 @@ export type Strings = {
     name_alt: string;
     /** One plain sentence: who and what, before anything else. */
     statement: string;
-    /** Availability, shown in the small pill above the name. */
     /** [label, value] — the facts a recruiter scans for in the first seconds. */
     facts: Array<[string, string]>;
     cta_project: string;
     cta_hiring: string;
-    /** Names the row of project screenshots under the hero text. */
-    peek_label: string;
     /** Written in the *other* language: offered to visitors whose browser prefers it. */
     alt_suggest: string;
   };
@@ -240,8 +237,6 @@ export type Strings = {
     skip: string;
     /** Read by screen readers after a link that opens in a new tab. */
     new_tab: string;
-    /** Before the name of the next section, in the link at a section's end. */
-    next_label: string;
     visit_project: string;
     view_source: string;
     screenshot_alt: (title: string) => string;
@@ -285,7 +280,6 @@ const en: Strings = {
     ],
     cta_project: "Start a project",
     cta_hiring: "See my résumé",
-    peek_label: "Recent work",
     alt_suggest: "هذا الموقع متاح بالعربية",
   },
   works: {
@@ -660,7 +654,6 @@ const en: Strings = {
   misc: {
     skip: "Skip to content",
     new_tab: "(opens in a new tab)",
-    next_label: "Next",
     visit_project: "Visit live site",
     view_source: "View source on GitHub",
     screenshot_alt: (title: string) => `Screenshot of the ${title} website`,
@@ -751,7 +744,6 @@ const ar: Strings = {
     ],
     cta_project: "ابدأ مشروعًا",
     cta_hiring: "اطّلع على سيرتي الذاتية",
-    peek_label: "أعمال حديثة",
     alt_suggest: "This site is also in English",
   },
   works: {
@@ -1126,7 +1118,6 @@ const ar: Strings = {
   misc: {
     skip: "انتقل إلى المحتوى",
     new_tab: "(يفتح في نافذة جديدة)",
-    next_label: "التالي",
     visit_project: "زيارة الموقع",
     view_source: "الكود على GitHub",
     screenshot_alt: (title: string) => `لقطة شاشة من موقع ${title}`,

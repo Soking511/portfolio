@@ -45,7 +45,7 @@ export function ProjectImage({
       height: "100%",
       objectFit: "cover" as const,
       objectPosition: "top center",
-      background: "var(--card)",
+      background: "var(--surface)",
       display: "block" as const,
     },
   };
@@ -100,9 +100,9 @@ function FallbackPanel({ title, variant }: { title: string; variant: "feature" |
       style={{
         width: "100%",
         height: "100%",
-        // One gradient for every project without a screenshot, so the tiles
-        // read as part of the site rather than as stray brand colours.
-        background: "var(--grad)",
+        // One dark ground for every project without a screenshot, so the
+        // panels read as part of the site rather than as stray brand colours.
+        background: "var(--band)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -117,10 +117,10 @@ function FallbackPanel({ title, variant }: { title: string; variant: "feature" |
           // keeps a two-word name ("Contact Management") inside it.
           fontSize: variant === "feature" ? "clamp(30px, 8vw, 62px)" : 17,
           fontFamily: "var(--display)",
-          fontWeight: 600,
+          fontWeight: 700,
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
-          color: "rgba(255,255,255,.92)",
+          color: "var(--band-ink)",
           textAlign: "center",
         }}
       >

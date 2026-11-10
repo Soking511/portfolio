@@ -25,12 +25,8 @@ export function Footer() {
       <div className="container">
         <div className="footer-main">
           <div>
-            <p className="wordmark" style={{ minHeight: 0 }}>
-              {t.hero.name}
-            </p>
-            <p className="soft" style={{ marginTop: 6 }}>
-              {F.identity_tagline}
-            </p>
+            <p className="wordmark">{t.hero.name}</p>
+            <p className="soft">{F.identity_tagline}</p>
           </div>
           <a href={`mailto:${EMAIL}`} className="footer-email latin">
             {EMAIL}

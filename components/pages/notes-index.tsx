@@ -20,9 +20,7 @@ export function NotesIndexPage() {
       <Header />
       <main id="main" className="container notes-main">
         <header>
-          <h1 className="cs-title" style={{ marginTop: 0 }}>
-            {N.title}
-          </h1>
+          <h1 className="cs-title">{N.title}</h1>
           <p className="lead soft" style={{ marginTop: 16, maxWidth: "48ch" }}>
             {N.intro}
           </p>

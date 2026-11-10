@@ -22,7 +22,7 @@ export function Testimonials() {
             <figure key={q.name} className="quote">
               <blockquote>“{q.quote}”</blockquote>
               <figcaption>
-                <strong style={{ fontWeight: 600 }}>{q.name}</strong>
+                <strong>{q.name}</strong>
                 <span className="soft">, {q.role}</span>
               </figcaption>
             </figure>
