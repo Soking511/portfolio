@@ -5,9 +5,9 @@ import type { Diagram } from "@/components/lang/strings";
 import type { ProjectMeta } from "@/lib/projects";
 
 /**
- * A project's picture on the project's own tint: its screenshot rising from
- * the panel's bottom edge, or, when there is no honest screenshot, the
- * diagram of how it works. The same panel is used on the home page and at
+ * A project's picture on a neutral panel: its screenshot rising from the
+ * panel's bottom edge, or, when there is no honest screenshot, the diagram
+ * of how it works. The same panel is used on the home page and at
  * the top of the case study, so a click carries it from one to the other.
  */
 export function ProjectPanel({
@@ -30,10 +30,9 @@ export function ProjectPanel({
   className?: string;
   style?: CSSProperties;
 }) {
-  const tint = meta.tint ? ` tint-${meta.tint}` : "";
   const kind = meta.image ? "" : " panel--diagram";
   return (
-    <div className={`panel${tint}${kind} ${className}`.trim()} style={style}>
+    <div className={`panel${kind} ${className}`.trim()} style={style}>
       {meta.image ? (
         <div className="panel__shot">
           <ProjectImage image={meta.image} title={title} alt={alt} variant="feature" priority={priority} />

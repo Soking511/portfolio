@@ -4,11 +4,9 @@ import { useT } from "@/components/lang/provider";
 import { SectionHead } from "@/components/section-head";
 import type { Capability } from "@/components/lang/strings";
 
-const TINTS = ["peach", "lilac", "sky", "amber", "blue", "mint"] as const;
-
 /**
  * What I can build, in words a non-engineer can follow: six tiles, each an
- * icon on a tint, a name, one line, and the projects that show it as plain
+ * icon, a name, one line, and the projects that show it as plain
  * links, so the claim is never more than a click from its proof. The tools
  * follow as four short columns.
  */
@@ -22,9 +20,9 @@ export function Capabilities() {
         <SectionHead id="skills-title" title={C.title} intro={C.intro} />
 
         <ul className="services">
-          {C.items.map((it, i) => (
+          {C.items.map((it) => (
             <li key={it.title} className="service">
-              <span className={`service__icon tint-${TINTS[i % TINTS.length]}`} aria-hidden="true">
+              <span className="service__icon" aria-hidden="true">
                 <Icon name={it.icon} />
               </span>
               <h3 className="h3">{it.title}</h3>

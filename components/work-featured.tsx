@@ -12,10 +12,10 @@ import type { FeaturedWork } from "@/components/lang/strings";
 
 /**
  * The featured projects as picture tiles, two to a row: the screenshot (or
- * the diagram that stands in for one) on the project's own colour, then its
- * name, the year, one line saying what it is, and where it lives now. The
- * whole tile opens the case study, which holds the problem, my part and the
- * decision. Nothing here needs JavaScript.
+ * the diagram that stands in for one), then its name, the year, one line
+ * saying what it is, and two ways on: the case study, which the whole tile
+ * opens and which holds the problem, my part and the decision, and the live
+ * site where there is one. Nothing here needs JavaScript.
  *
  * The remaining projects follow as three small tiles.
  */
@@ -40,7 +40,7 @@ export function WorkFeatured() {
                   title={project.title}
                   diagram={diagram}
                   compact
-                  priority={i < 2}
+                  priority={i === 0}
                   style={{ viewTransitionName: `media-${meta.slug}` }}
                 />
                 <h3 className="h3 tile__title" style={{ viewTransitionName: `title-${meta.slug}` }}>
@@ -54,9 +54,14 @@ export function WorkFeatured() {
                 </h3>
                 <span className="tile__year">{project.year}</span>
                 <p className="tile__kicker">{project.kicker}</p>
-                <span className="tile__link">
-                  <ProjectLink meta={meta} />
-                </span>
+                <p className="tile__foot">
+                  <span className="tile__more" aria-hidden="true">
+                    {W.case_study}
+                  </span>
+                  <span className="tile__link">
+                    <ProjectLink meta={meta} />
+                  </span>
+                </p>
               </li>
             );
           })}

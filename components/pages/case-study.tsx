@@ -75,7 +75,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             />
           </div>
 
-          <section className={`container${meta.tint ? ` tint-${meta.tint}` : ""}`} aria-label={project.title}>
+          <section className="container" aria-label={project.title}>
             <div className="cs-section cs-section--first">
               <Answers project={project} labels={W} />
               <div className="cs-stack">
@@ -93,7 +93,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
           {diagram && meta.image && (
             <TextSection label={CS.architecture}>
-              <div className={`panel panel--diagram panel--free${meta.tint ? ` tint-${meta.tint}` : ""}`}>
+              <div className="panel panel--diagram panel--free">
                 <FlowDiagram diagram={diagram} />
               </div>
             </TextSection>

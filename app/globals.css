@@ -5,12 +5,12 @@
 /* ────────────────────────────────────────────────────────────────────────────
    Design system. The contract is DESIGN.md at the repository root.
 
-   Colour comes from the work, not from the chrome. The page itself is a soft
-   neutral with near-black type; each project sits on its own soft tint
-   (peach, lilac, sky, amber, blue, mint), and the same six tints colour the
-   fact tiles, the service icons and the beliefs. Pictures first, short text
-   second; every row of the layout is filled. The page ends in one dark block
-   that holds the contact form and the footer. No shadows anywhere.
+   One colour. The page is a soft neutral with near-black type and a single
+   orange accent, and the accent always means "this is live or you can act on
+   it": the primary button, links, the current section, the project on show.
+   Everything else is neutral, so the screenshots carry the variety. Pictures
+   first, short text second; every row of the layout is filled. The page ends
+   in one dark block that holds the contact form and the footer. No shadows.
 
    Rubik (Arabic and Latin drawn as one design) sets the name and headings in
    both scripts; IBM Plex Sans sets the reading text.
@@ -22,29 +22,23 @@
 :root {
   color-scheme: light;
 
-  --paper: #F5F4F0;        /* soft neutral ground, never white */
-  --surface: #ECEAE4;      /* alternate sections */
-  --ink: #18181B;          /* text, headings, primary button */
-  --ink-soft: #5B5B66;     /* secondary text, 5.6:1 on --surface */
-  --line: #DDDBD4;         /* dividers only */
-  --line-strong: #84838C;  /* control edges: 3:1 on both grounds */
-  --hot: #D9512C;          /* the one small spark: the availability dot, the active nav item */
+  --paper: #F4F4F1;        /* soft neutral ground, never white */
+  --surface: #EAEAE5;      /* alternate sections, picture panels, small tiles */
+  --ink: #17171A;          /* text and headings */
+  --ink-soft: #5A5A63;     /* secondary text, 5.7:1 on --surface */
+  --line: #DCDCD6;         /* dividers only */
+  --line-strong: #83838B;  /* control edges: 3:1 on both grounds */
+  --accent: #CF4318;       /* the one colour: fills. White text on it is 4.7:1 */
+  --accent-ink: #FFFFFF;
+  --accent-text: #B5380F;  /* the accent as text on the neutral grounds, 5.6:1 */
+  --accent-soft: #FBE3D8;  /* the accent as a quiet ground */
   --danger: #B3261E;
 
-  /* Six tints. Each project owns one; the rest of the page borrows them. */
-  --tint-peach: #F9D2C2;
-  --tint-lilac: #E0D4F8;
-  --tint-sky:   #C2E4F0;
-  --tint-amber: #F8E0A6;
-  --tint-blue:  #CFDAFB;
-  --tint-mint:  #C8EAD4;
-  --on-tint: #18181B;
-  --on-tint-soft: #44444E;
-
   /* The dark block that ends the page: contact form and footer. */
-  --band: #18181B;
+  --band: #17171A;
   --band-ink: #F1F0EC;
   --band-soft: #A9A8B3;
+  --band-accent: #FF8A5F;
   --band-line: #2E2E35;
   --band-edge: #77767F;    /* control edges on the band, 3.9:1 */
   --band-field: #212126;
@@ -68,23 +62,17 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --paper: #121214;
-  --surface: #1A1A1E;
-  --ink: #EFEEEA;
-  --ink-soft: #A7A6B1;
+  --paper: #111113;
+  --surface: #1B1B1F;
+  --ink: #F0EFEB;
+  --ink-soft: #A6A6B0;
   --line: #2A2A30;
   --line-strong: #6C6B76;
-  --hot: #FF7D56;
+  --accent: #FF7A4D;
+  --accent-ink: #17171A;
+  --accent-text: #FF8F69;
+  --accent-soft: #3A1E14;
   --danger: #FFA194;
-
-  --tint-peach: #55291B;
-  --tint-lilac: #35285F;
-  --tint-sky:   #143D4A;
-  --tint-amber: #4A3A12;
-  --tint-blue:  #1F2C5A;
-  --tint-mint:  #163F2C;
-  --on-tint: #F1F0EC;
-  --on-tint-soft: #C9C8D0;
 
   --band: #09090B;
   --band-line: #232328;
@@ -101,13 +89,6 @@
   --display: var(--font-display-arabic), var(--font-display), "Segoe UI", system-ui, sans-serif;
   --text: var(--font-plex-arabic), var(--font-plex), "Segoe UI", system-ui, sans-serif;
 }
-
-.tint-peach { --tint: var(--tint-peach); }
-.tint-lilac { --tint: var(--tint-lilac); }
-.tint-sky   { --tint: var(--tint-sky); }
-.tint-amber { --tint: var(--tint-amber); }
-.tint-blue  { --tint: var(--tint-blue); }
-.tint-mint  { --tint: var(--tint-mint); }
 
 /* ── base ─────────────────────────────────────────────────────────────── */
 
@@ -138,15 +119,15 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 img { max-width: 100%; display: block; }
 p { margin: 0; }
-::selection { background: var(--ink); color: var(--paper); }
+::selection { background: var(--accent); color: var(--accent-ink); }
 body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 6px;
 }
-:is(.section--band, .site-footer) :focus-visible { outline-color: var(--band-ink); }
+:is(.section--band, .site-footer) :focus-visible { outline-color: var(--band-accent); }
 
 .skip-link {
   position: fixed;
@@ -155,8 +136,8 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   z-index: 100;
   padding: 12px 18px;
   border-radius: var(--r-pill);
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--accent-ink);
   transform: translateY(-200%);
   transition: transform .15s ease;
 }
@@ -259,13 +240,14 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .link {
   text-decoration: underline;
   text-decoration-thickness: 1.5px;
-  text-decoration-color: var(--line-strong);
+  text-decoration-color: var(--accent);
   text-underline-offset: 4px;
   font-weight: 600;
-  transition: text-decoration-color .15s ease;
+  transition: color .15s ease;
 }
-.link:hover { text-decoration-color: currentColor; }
-.section--band .link { text-decoration-color: var(--band-edge); }
+.link:hover { color: var(--accent-text); }
+.section--band .link { text-decoration-color: var(--band-accent); }
+.section--band .link:hover { color: var(--band-accent); }
 
 /* ── buttons & tags ───────────────────────────────────────────────────── */
 
@@ -284,13 +266,11 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .12s ease;
 }
 .btn:active { transform: translateY(1px) scale(.985); }
-.btn--primary { background: var(--ink); color: var(--paper); }
-.btn--primary:hover { background: color-mix(in oklab, var(--ink) 82%, var(--paper)); }
+.btn--primary { background: var(--accent); color: var(--accent-ink); }
+.btn--primary:hover { background: color-mix(in oklab, var(--accent) 86%, var(--ink)); }
 .btn--secondary { border: 1.5px solid var(--line-strong); color: var(--ink); }
 .btn--secondary:hover { border-color: var(--ink); }
 .btn[disabled] { opacity: .7; cursor: progress; }
-.section--band .btn--primary { background: var(--band-ink); color: var(--band); }
-.section--band .btn--primary:hover { background: #fff; }
 .section--band .btn--secondary { border-color: var(--band-edge); color: var(--band-ink); }
 .section--band .btn--secondary:hover { border-color: var(--band-ink); }
 
@@ -322,6 +302,24 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: border-color .2s ease;
 }
 .site-header[data-scrolled="true"] { border-bottom-color: var(--line); }
+/* How far down the page you are, drawn along the bar's lower edge. Only
+   where the browser can tie an animation to the scroll position. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 -1px;
+      height: 3px;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      animation: progress linear both;
+      animation-timeline: scroll(root);
+    }
+    [dir="rtl"] .site-header::after { transform-origin: 100% 50%; }
+  }
+}
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .site-header__row {
   width: 100%;
   display: flex;
@@ -363,7 +361,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--hot);
+  background: var(--accent);
 }
 .nav-actions { display: flex; align-items: center; gap: 8px; }
 .nav-desktop { display: none; }
@@ -430,35 +428,25 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .nav-panel__tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 
 /* ── hero ─────────────────────────────────────────────────────────────
-   Who and what on one side; on the other, the four facts a visitor scans
-   for, each on its own tint. Nothing in the fold is empty.              */
+   Who and what on one side; on the other, the work itself, one project at a
+   time. Under both, the four facts a visitor scans for.                 */
 
 .hero {
   position: relative;
-  padding-top: calc(var(--header-h) + clamp(36px, 6vw, 72px));
+  padding-top: calc(var(--header-h) + clamp(32px, 5vw, 64px));
   padding-bottom: clamp(8px, 2vw, 24px);
 }
-.hero-grid { display: grid; gap: 40px; align-items: center; }
+.hero-grid { display: grid; gap: 36px; align-items: center; }
 
 /* The other-language offer appears after hydration, so it sits out of flow:
    showing up late never moves the fold. */
 .hero-alt {
   position: absolute;
-  top: calc(var(--header-h) + 6px);
+  top: calc(var(--header-h) + 4px);
   margin: 0;
   font-size: 15px;
 }
-.hero-alt a { display: inline-block; padding-block: 4px; text-decoration: underline; text-underline-offset: 4px; }
-
-.hero-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  font-size: 15.5px;
-  font-weight: 600;
-}
-.hero-status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--hot); flex: none; }
+.hero-alt a { display: inline-block; padding-block: 4px; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 
 .hero-name { margin: 0; font-family: var(--display); color: var(--ink); }
 .hero-name__line { display: block; white-space: nowrap; }
@@ -470,7 +458,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 }
 .hero-name__line--alt {
   margin-top: .35em;
-  font-size: clamp(24px, 3vw, 38px);
+  font-size: clamp(22px, 2.6vw, 32px);
   font-weight: 400;
   line-height: 1.3;
   color: var(--ink-soft);
@@ -488,40 +476,73 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   to   { opacity: 1; transform: none; }
 }
 
-.hero-statement { margin-top: 24px; max-width: 30ch; font-size: clamp(19px, 2vw, 24px); line-height: 1.45; text-wrap: pretty; }
+.hero-statement { margin-top: 22px; max-width: 30ch; font-size: clamp(19px, 1.9vw, 23px); line-height: 1.45; text-wrap: pretty; }
 [dir="rtl"] .hero-statement { line-height: 1.75; }
 .hero .actions { margin-top: 28px; }
 
-.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
-.fact {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 132px;
-  padding: 20px;
-  border-radius: var(--r-panel);
-  background: var(--tint);
-  color: var(--on-tint);
-}
-/* Availability is the first fact, and carries the page's one spark. */
-.fact:first-child dt::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-inline-end: 8px; border-radius: 50%; background: var(--hot); }
-.fact dt { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--on-tint-soft); }
-[dir="rtl"] .fact dt { font-size: 15px; letter-spacing: 0; }
-.fact dd { margin: 0; font-family: var(--display); font-size: clamp(17px, 1.7vw, 21px); font-weight: 500; line-height: 1.25; text-wrap: balance; }
-[dir="rtl"] .fact dd { line-height: 1.5; }
-
 @media (min-width: 960px) {
-  .hero-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; }
-  .hero-name__line--primary { font-size: clamp(56px, 6.6vw, 92px); }
-  .fact { min-height: 156px; padding: 22px; }
+  .hero-grid { grid-template-columns: minmax(0, 6.5fr) minmax(0, 5.5fr); gap: 56px; }
+  .hero-name__line--primary { font-size: clamp(52px, 5.5vw, 78px); }
 }
-@media (max-width: 420px) {
-  .fact { min-height: 0; padding: 16px; gap: 12px; }
+
+/* The work, one project at a time: a picture, its name, and a row of marks
+   that both show which project is up and let you pick another. The mark of
+   the project on show fills as its turn runs; pointing at the showcase or
+   focusing it holds the turn. Under reduced motion nothing advances.    */
+
+.showcase { display: grid; gap: 14px; }
+/* Phones skip the showcase: the projects themselves are one swipe row away,
+   and the same picture twice in two screens is noise. */
+@media (max-width: 719px) { .showcase { display: none; } }
+.showcase__item {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .45s ease, visibility 0s linear .45s;
 }
+.showcase__item[data-active="true"] { opacity: 1; visibility: visible; transition: opacity .45s ease; }
+.showcase__item .panel__shot { transform: translateY(18px); transition: transform .6s var(--ease); }
+.showcase__item[data-active="true"] .panel__shot { transform: none; }
+.showcase__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 20px; }
+.showcase__caption { display: grid; min-width: 0; }
+.showcase__name { font-family: var(--display); font-size: 19px; font-weight: 600; }
+.showcase__kicker { font-size: 15px; color: var(--ink-soft); }
+.showcase__marks { display: flex; gap: 6px; direction: ltr; }
+.showcase__mark { display: grid; align-items: center; width: 30px; height: 32px; border-radius: 4px; }
+.showcase__mark span { position: relative; display: block; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line-strong); transition: background-color .2s ease; }
+.showcase__mark:hover span { background: var(--ink); }
+.showcase__mark i { position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
+.showcase__mark[aria-current="true"] i { transform: none; }
+@media (pointer: coarse) { .showcase__mark { height: 44px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .showcase[data-auto="true"] .showcase__mark[aria-current="true"] i { animation: turn 5s linear both; }
+  .showcase[data-auto="true"]:is(:hover, :focus-within) .showcase__mark i { animation-play-state: paused; }
+}
+/* The global reduced-motion rule shortens animations rather than removing
+   them; this one must not run at all, or its end would turn the showcase. */
+@media (prefers-reduced-motion: reduce) { .showcase__mark i { animation: none !important; } }
+@keyframes turn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: clamp(36px, 5vw, 56px) 0 0; }
+.fact { display: grid; gap: 6px; align-content: start; padding-top: 14px; border-top: 1.5px solid var(--ink); }
+.fact dd { margin: 0; font-weight: 600; text-wrap: balance; }
+/* Availability is the first fact, and carries the live dot. */
+.fact:first-child dt::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@media (min-width: 900px) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* ── panel ────────────────────────────────────────────────────────────
-   Anything pictured sits on a tinted panel: a screenshot rising from its
+   Anything pictured sits on a neutral panel: a screenshot rising from its
    bottom edge, or the diagram that stands in for one.                   */
 
 .panel {
@@ -530,9 +551,10 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   aspect-ratio: 5 / 3;
   overflow: hidden;
   border-radius: var(--r-panel);
-  background: var(--tint, var(--surface));
-  color: var(--on-tint);
+  background: var(--surface);
+  transition: background-color .3s ease;
 }
+.section--surface .panel { background: var(--paper); }
 /* The inset gives the shot the screenshot's own 16:10, so nothing is cut
    from its sides. */
 .panel__shot {
@@ -553,9 +575,9 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 }
 
 /* ── work ─────────────────────────────────────────────────────────────
-   Every project is a picture first: a tile with its screenshot on its own
-   colour, then its name, one line and where it lives. The tile opens the
-   case study, which holds the rest.                                     */
+   Every project is a picture first: a tile with its screenshot, then its
+   name, one line, and two ways on: its case study and, where there is one,
+   the live site. The tile opens the case study.                         */
 
 .work-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px 24px; }
 @media (min-width: 720px) { .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 28px; } }
@@ -563,23 +585,47 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .tile { position: relative; display: grid; gap: 4px 16px; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; align-content: start; }
 .tile > * { grid-column: 1 / -1; }
 .tile .panel { margin-bottom: 14px; }
-.tile__title { grid-column: 1; font-size: clamp(23px, 2.4vw, 30px); letter-spacing: -0.02em; }
+.tile__title { grid-column: 1; font-size: clamp(23px, 2.4vw, 30px); letter-spacing: -0.02em; transition: color .2s ease; }
 [dir="rtl"] .tile__title { letter-spacing: 0; }
 /* The name is the link; it covers the tile, so the whole tile opens the case
    study. The live-site link sits above it. */
 .tile__title a::after { content: ""; position: absolute; inset: 0; border-radius: var(--r-panel); }
 .tile__title a:focus-visible { outline: none; }
-.tile:has(.tile__title a:focus-visible) { outline: 2px solid var(--ink); outline-offset: 6px; border-radius: var(--r-panel); }
+.tile:has(.tile__title a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: var(--r-panel); }
 .tile__year { grid-column: 2; font-size: 15px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .tile__kicker { color: var(--ink-soft); text-wrap: pretty; }
-.tile__link { position: relative; z-index: 1; justify-self: start; margin-top: 6px; font-size: 15px; }
+.tile__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 20px; margin-top: 8px; font-size: 15px; }
+/* Says what a click on the tile does. Not a second link: the name is. */
+.tile__more { font-weight: 600; color: var(--accent-text); }
+.tile__link { position: relative; z-index: 1; }
 .tile__link .link { display: inline-flex; align-items: center; }
 @media (pointer: coarse) { .tile__link .link { min-height: 44px; } }
 @media (hover: hover) {
+  .tile:hover .panel { background: var(--accent-soft); }
   .tile:hover .panel__shot { transform: translateY(-10px); }
-  .tile:hover .tile__title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .tile:hover .tile__title { color: var(--accent-text); }
+  .tile:hover .tile__more { text-decoration: underline; text-underline-offset: 4px; }
 }
-.tile:target .panel { outline: 3px solid var(--ink); outline-offset: 4px; }
+.tile:target .panel { background: var(--accent-soft); outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* Phones: the projects become one row to swipe through, the next one always
+   peeking in from the side, instead of six screens stacked. */
+@media (max-width: 719px) {
+  .work-grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 84%;
+    gap: 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 8px var(--gutter);
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .work-grid::-webkit-scrollbar { display: none; }
+  .tile { scroll-snap-align: start; }
+}
 
 /* ── also shipped ─────────────────────────────────────────────────────── */
 
@@ -594,7 +640,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   border-radius: var(--r-panel);
   background: var(--surface);
 }
-.shipped__item:target { outline: 3px solid var(--ink); outline-offset: 4px; }
+.shipped__item:target { outline: 2px solid var(--accent); outline-offset: 4px; }
 .shipped__kicker { color: var(--ink-soft); }
 .shipped__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin-top: auto; padding-top: 14px; font-size: 15px; }
 @media (min-width: 900px) { .shipped__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
@@ -603,27 +649,36 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 .services { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .service {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 24px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 16px;
+  align-content: start;
+  padding: 20px;
   border-radius: var(--r-panel);
   background: var(--paper);
 }
 .service__icon {
+  grid-row: span 3;
   display: grid;
   place-items: center;
   width: 48px;
   height: 48px;
-  margin-bottom: 10px;
   border-radius: 14px;
-  background: var(--tint);
-  color: var(--on-tint);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  transition: background-color .25s ease, color .25s ease;
 }
-.service__proof { margin-top: auto; padding-top: 10px; font-size: 15px; color: var(--ink-soft); }
-.service__proof a { display: inline-block; padding-block: 3px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
-.service__proof a:hover { text-decoration-color: currentColor; }
-@media (min-width: 640px) { .services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+.service > :not(.service__icon) { grid-column: 2; }
+.service__proof { margin-top: 4px; font-size: 15px; color: var(--ink-soft); }
+.service__proof a { display: inline-block; padding-block: 3px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.service__proof a:hover { color: var(--accent-text); }
+@media (hover: hover) { .service:hover .service__icon { background: var(--accent); color: var(--accent-ink); } }
+@media (min-width: 640px) {
+  .services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .service { display: flex; flex-direction: column; gap: 8px; padding: 24px; }
+  .service__icon { margin-bottom: 10px; }
+  .service__proof { margin-top: auto; padding-top: 10px; }
+}
 @media (min-width: 1000px) { .services { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .stack-table { display: grid; gap: 12px 16px; margin: clamp(28px, 4vw, 40px) 0 0; }
@@ -632,19 +687,22 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 @media (min-width: 640px) { .stack-table { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1000px) { .stack-table { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-/* ── how I work ───────────────────────────────────────────────────────── */
+/* ── how I work ───────────────────────────────────────────────────────
+   Three beliefs as three tiles: the first in the accent, the second in ink,
+   the third neutral. Then how a project goes, as the four steps it is.  */
 
 .beliefs { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .belief {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 260px;
+  min-height: 250px;
   padding: 28px;
   border-radius: var(--r-panel);
-  background: var(--tint);
-  color: var(--on-tint);
+  background: var(--surface);
 }
+.belief:nth-child(1) { background: var(--accent); color: var(--accent-ink); }
+.belief:nth-child(2) { background: var(--ink); color: var(--paper); }
 .belief__title {
   margin: 0;
   font-family: var(--display);
@@ -655,12 +713,20 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   text-wrap: balance;
 }
 [dir="rtl"] .belief__title { line-height: 1.4; letter-spacing: 0; }
-.belief__anchor { margin-top: auto; padding-top: 12px; font-size: 15px; font-weight: 600; color: var(--on-tint-soft); }
+.belief__anchor { margin-top: auto; padding-top: 12px; font-size: 15px; font-weight: 600; }
 @media (min-width: 900px) { .beliefs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
 @media (max-width: 899px) { .belief { min-height: 0; } }
 
-.process-line { max-width: 72ch; margin-top: 32px; font-size: clamp(17px, 1.5vw, 19px); }
-.process-line strong { font-weight: 600; }
+.process { margin-top: clamp(40px, 5vw, 64px); }
+.steps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 20px 24px; }
+.step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; align-content: start; padding-top: 14px; border-top: 1.5px solid var(--ink); }
+.step__n { font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1; color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.step p { font-weight: 600; text-wrap: balance; }
+@media (min-width: 560px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) {
+  .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .step { grid-template-columns: 1fr; gap: 10px; }
+}
 
 /* ── about ────────────────────────────────────────────────────────────── */
 
@@ -702,7 +768,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   background: var(--paper);
   border: 2px solid var(--ink);
 }
-.cv-row:first-child::before { background: var(--hot); border-color: var(--hot); }
+.cv-row:first-child::before { background: var(--accent); border-color: var(--accent); }
 .cv-row::after {
   content: "";
   position: absolute;
@@ -738,14 +804,14 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .direct dt { font-size: 15px; color: var(--band-soft); }
 .direct dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-width: 0; overflow-wrap: anywhere; }
 .direct a { text-decoration: underline; text-decoration-color: var(--band-edge); text-underline-offset: 5px; }
-.direct a:hover { text-decoration-color: currentColor; }
+.direct a:hover { text-decoration-color: var(--band-accent); }
 @media (min-width: 480px) {
   .direct div { grid-template-columns: 110px minmax(0, 1fr); gap: 16px; align-items: baseline; }
 }
 /* Phones: email and WhatsApp before the form; the profiles are in the footer. */
 @media (max-width: 720px) { .direct > div:nth-child(n + 3) { display: none; } }
 .availability { display: inline-flex; align-items: center; gap: 10px; color: var(--band-soft); font-size: 15px; }
-.availability::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--hot); flex: none; }
+.availability::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--band-accent); flex: none; }
 
 .copy-btn {
   min-height: 32px;
@@ -780,7 +846,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: border-color .15s ease, box-shadow .15s ease;
 }
 .field-input:hover { border-color: var(--band-soft); }
-.field-input:focus-visible { outline: none; border-color: var(--band-ink); box-shadow: 0 0 0 3px color-mix(in oklab, var(--band-ink) 25%, transparent); }
+.field-input:focus-visible { outline: none; border-color: var(--band-accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--band-accent) 30%, transparent); }
 .field-input[aria-invalid="true"] { border-color: var(--band-danger); }
 .field-input::placeholder { color: var(--band-soft); opacity: .85; }
 textarea.field-input { resize: vertical; min-height: 132px; }
@@ -802,10 +868,11 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 }
 .choice:hover span { border-color: var(--band-ink); }
 .choice input:checked + span { background: var(--band-ink); border-color: var(--band-ink); color: var(--band); }
-.choice input:focus-visible + span { outline: 2px solid var(--band-ink); outline-offset: 2px; }
+.choice input:focus-visible + span { outline: 2px solid var(--band-accent); outline-offset: 2px; }
 
 .form-error { font-size: 15px; color: var(--band-danger); }
 .form-sent { display: grid; gap: 12px; justify-items: start; }
+.form-sent .label { color: var(--band-accent); }
 
 /* ── footer ───────────────────────────────────────────────────────────
    The same dark ground as the contact band above it, so the page ends in
@@ -827,12 +894,12 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
   text-decoration: underline;
-  text-decoration-color: var(--band-edge);
+  text-decoration-color: var(--band-accent);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 6px;
   transition: text-decoration-color .2s ease;
 }
-.footer-email:hover { text-decoration-color: currentColor; }
+.footer-email:hover { text-decoration-color: var(--band-accent); }
 .footer-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -881,7 +948,8 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   background: var(--paper);
   color: var(--ink);
 }
-.flow-node--bought { outline: 1.5px dashed var(--ink); outline-offset: -1.5px; }
+.section--surface .flow-node { background: var(--surface); }
+.flow-node--bought { outline: 1.5px dashed var(--accent); outline-offset: -1.5px; }
 .flow-node + .flow-node::before {
   content: "";
   position: absolute;
@@ -889,12 +957,13 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   inset-inline-start: 24px;
   width: 1.5px;
   height: 20px;
-  background: var(--on-tint-soft);
+  background: var(--line-strong);
 }
 .flow-n { font-size: 14px; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.flow-node--bought .flow-n { color: var(--accent-text); }
 .flow-name { display: block; font-size: 16px; font-weight: 600; }
 .flow-note { display: block; margin-top: 2px; font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); }
-.flow-cap { max-width: 480px; width: 100%; margin-inline: auto; font-size: 14.5px; color: var(--on-tint-soft); }
+.flow-cap { max-width: 480px; width: 100%; margin-inline: auto; font-size: 14.5px; color: var(--ink-soft); }
 .flow--compact { padding: 18px; gap: 0; }
 .flow--compact .flow-steps { gap: 10px; max-width: 340px; }
 .flow--compact .flow-node { padding: 8px 14px; }
@@ -931,14 +1000,15 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .cs-stack .tags { margin-top: 4px; font-size: 16px; }
 
 /* What it is, my part and the decision: one per row, label beside the text.
-   The decision is the answer worth reading, so it sits on the project's tint. */
+   The decision is the answer worth reading, so it sits on the accent's quiet
+   ground. */
 .answers { display: grid; gap: 32px; margin: 0; }
 .answers div { display: grid; gap: 8px; align-content: start; }
 .answers dt { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
 [dir="rtl"] .answers dt { font-size: 15px; letter-spacing: 0; }
 .answers dd { margin: 0; max-width: 64ch; }
-.answers .answers__key { padding: 24px; margin-inline: -24px; border-radius: var(--r-panel); background: var(--tint, var(--surface)); color: var(--on-tint); }
-.answers .answers__key dt { color: var(--on-tint-soft); }
+.answers .answers__key { padding: 24px; margin-inline: -24px; border-radius: var(--r-panel); background: var(--accent-soft); }
+.answers .answers__key dt { color: var(--accent-text); }
 @media (min-width: 900px) {
   .cs-text { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
   .answers > div { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
@@ -978,7 +1048,8 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .notes-list a { display: grid; gap: 6px; padding-block: 24px; }
 .notes-list time { font-size: 15px; color: var(--ink-soft); }
 .notes-list-title { font-family: var(--display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; line-height: 1.2; }
-.notes-list a:hover .notes-list-title { text-decoration: underline; text-underline-offset: 5px; }
+.notes-list-title { transition: color .2s ease; }
+.notes-list a:hover .notes-list-title { color: var(--accent-text); }
 
 .note-head { padding-bottom: 32px; border-bottom: 1.5px solid var(--ink); }
 .note-head time { display: block; margin-top: 32px; font-size: 15px; color: var(--ink-soft); }
@@ -988,12 +1059,12 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .note-body > * + * { margin-top: 1.1em; }
 .note-body h2 { margin: 2em 0 0; font-family: var(--display); font-size: clamp(24px, 2.8vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
 .note-body h3 { margin: 1.6em 0 0; font-family: var(--display); font-size: 22px; font-weight: 600; }
-.note-body a { text-decoration: underline; text-underline-offset: 4px; }
+.note-body a { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 .note-body ul, .note-body ol { padding-inline-start: 1.3em; }
 .note-body ul { list-style: disc; }
 .note-body ol { list-style: decimal; }
 .note-body li + li { margin-top: 0.4em; }
-.note-body blockquote { margin-inline: 0; padding: 16px 20px; border-radius: 14px; background: var(--tint-amber); color: var(--on-tint); }
+.note-body blockquote { margin-inline: 0; padding: 16px 20px; border-radius: 14px; background: var(--accent-soft); }
 .note-body code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.88em; padding: 0.1em 0.35em; background: var(--surface); border-radius: 6px; }
 .note-body pre { direction: ltr; overflow-x: auto; padding: 18px 20px; background: var(--surface); border-radius: 14px; font-size: 14.5px; line-height: 1.6; }
 .note-body pre code { padding: 0; background: none; font-size: inherit; }
@@ -1006,31 +1077,46 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 /* ── quotes ───────────────────────────────────────────────────────────── */
 
 .quotes { display: grid; gap: 16px; }
-.quote { margin: 0; display: grid; gap: 16px; align-content: start; padding: 28px; border-radius: var(--r-panel); background: var(--tint-blue); color: var(--on-tint); }
+.quote { margin: 0; display: grid; gap: 16px; align-content: start; padding: 28px; border-radius: var(--r-panel); background: var(--surface); }
 .quote blockquote { margin: 0; max-width: 36ch; font-family: var(--display); font-size: clamp(21px, 2.4vw, 28px); font-weight: 500; line-height: 1.3; }
 .quote figcaption strong { font-weight: 600; }
-.quote .soft { color: var(--on-tint-soft); }
 @media (min-width: 900px) { .quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* ── motion ────────────────────────────────────────────────────────────
-   A few movements, each answering something: the name's second script
-   settles once on load; a project's screenshot rises when its tile is
-   pointed at; a click carries the picture and name into the project's page;
-   controls answer a press. All of it is off under reduced motion, and no
-   text ever waits on an animation.                                      */
+   Each movement answers something: the hero's showcase takes turns through
+   the projects; tiles rise into place as you reach them; a project's picture
+   lifts when its tile is pointed at; a click carries the picture and name
+   into the project's page; the bar's edge shows how far down you are;
+   controls answer a press. All of it is off under reduced motion. The
+   scroll-linked parts only exist where the browser supports them, and
+   nothing is ever left hidden waiting for one.                          */
 
 .cs-next__title {
-  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 3px;
-  transition: background-size .35s var(--ease);
+  background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / 0 3px;
+  transition: background-size .35s var(--ease), color .2s ease;
 }
 [dir="rtl"] .cs-next__title { background-position: 100% 100%; }
-.cs-next a:hover .cs-next__title { background-size: 100% 3px; }
+.cs-next a:hover .cs-next__title { background-size: 100% 3px; color: var(--accent-text); }
 
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
   ::view-transition-group(*) { animation-duration: .45s; animation-timing-function: var(--ease); }
   ::view-transition-old(root),
   ::view-transition-new(root) { animation-duration: .25s; }
+
+  @supports (animation-timeline: view()) {
+    :is(.tile, .shipped__item, .service, .belief, .step, .cv-row) {
+      animation: arrive linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+    /* In the phone's swipe row the tiles move sideways, not into view. */
+    @media (max-width: 719px) { .tile { animation: none; } }
+  }
+}
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ── touch targets ─────────────────────────────────────────────────────── */

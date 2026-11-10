@@ -164,8 +164,9 @@ export type Strings = {
     intro: string;
     beliefs_label: string;
     items: Array<{ title: string; body: string; anchor: string }>;
-    /** How a project goes, as one sentence rather than a numbered diagram. */
-    process: string;
+    /** How a project goes: a real sequence, so it is shown as numbered steps. */
+    process_title: string;
+    steps: string[];
   };
   about: {
     title: string;
@@ -531,8 +532,13 @@ const en: Strings = {
       },
     ],
 
-    process:
-      "How a project goes: we talk through the problem, I write down what gets built and when, you try working versions as I go, and after launch I stay reachable.",
+    process_title: "How a project goes",
+    steps: [
+      "We talk through the problem.",
+      "I write down what gets built and when.",
+      "You try working versions as I go.",
+      "After launch I stay reachable.",
+    ],
   },
   about: {
     title: "I like owning the whole problem",
@@ -995,8 +1001,13 @@ const ar: Strings = {
       },
     ],
 
-    process:
-      "كيف يسير المشروع: نتحدث عن المشكلة، ثم أكتب ما سيُبنى ومتى، وتجرّب نسخًا تعمل أثناء البناء، وبعد الإطلاق أبقى متاحًا.",
+    process_title: "كيف يسير المشروع",
+    steps: [
+      "نتحدث عن المشكلة.",
+      "أكتب ما سيُبنى ومتى.",
+      "تجرّب نسخًا تعمل أثناء البناء.",
+      "بعد الإطلاق أبقى متاحًا.",
+    ],
   },
   about: {
     title: "أحب أن أتولى المشكلة كاملة",

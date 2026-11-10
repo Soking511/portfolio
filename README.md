@@ -26,13 +26,12 @@ the layout. That is deliberate: the whole design system is one CSS file.
 `DESIGN.md` is the contract: direction, tokens and rules. `app/globals.css`
 implements it. Read it before changing any page.
 
-In short: pictures first, short text second, colour from the work. A soft
-neutral ground with near-black type; each featured project owns one of six
-soft tints and its screenshot sits on that tint everywhere. The same tints
-colour the hero's fact tiles, the service icons and the beliefs. One dark
-block at the end holds contact and the footer. Rubik sets the name and
-headings in both scripts; IBM Plex sets the reading text. Flat tiles, no
-shadows, no white ground.
+In short: one colour, pictures first, short text second. A soft neutral
+ground with near-black type and a single orange accent that always means
+"live, or you can act on this". Screenshots sit on neutral panels and carry
+the variety. One dark block at the end holds contact and the footer. Rubik
+sets the name and headings in both scripts; IBM Plex sets the reading text.
+Flat tiles, no shadows, no white ground.
 
 ## Layout
 
@@ -51,15 +50,18 @@ components/
   pages/home.tsx           section order
   pages/case-study.tsx     one featured project on its own URL
   hero.tsx                 the fold: the name in both scripts, one sentence,
-                           two actions, and four facts as tinted tiles
+                           two actions, the showcase, and four facts
+  hero-showcase.tsx        the projects one at a time, taking turns (desktop
+                           and tablet; phones go straight to the work row)
   section-head.tsx         section heading, optional intro line and action
-  work-featured.tsx        the projects as picture tiles, two to a row;
-                           Answers for the case study
+  work-featured.tsx        the projects as picture tiles, two to a row, and
+                           one swipe row on phones; Answers for the case study
   work-selected.tsx        remaining projects as three small tiles
-  project-panel.tsx        a project's screenshot or diagram on its tint
+  project-panel.tsx        a project's screenshot or diagram on a panel
   capabilities.tsx         services: six tiles with an icon, one line and
                            links to the proof; tools as four columns
-  principles.tsx           three beliefs on tints, and how a project goes
+  principles.tsx           three beliefs as tiles, and how a project goes
+                           as four numbered steps
   about.tsx                who I am
   experience.tsx           positions as one line through time
   contact.tsx  footer.tsx  header.tsx
@@ -130,9 +132,15 @@ skipped under `prefers-reduced-motion`.
 
 **A project tile is one link with a second link on top.** The project's name
 is the link to its case study and covers the whole tile; the live-site link
-sits above it. Each project's colour is `tint` in `lib/projects.ts`, and
-`ProjectPanel` puts its screenshot on that colour on the home page and at
-the top of its case study.
+sits above it. "Read the case study" under it is a label for that click, not
+a third link. `ProjectPanel` draws the same picture on the home page and at
+the top of the case study, so a click carries it across.
+
+**The hero showcase is driven by its own CSS animation.** The mark of the
+project on show fills over five seconds, and the end of that animation is
+what advances the showcase. Hover or focus pauses the animation and so holds
+the turn; picking a project ends the turns; under reduced motion the
+animation does not exist, so nothing advances.
 
 **Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
 Earlier versions embedded each project as a live `<iframe>`; that was removed
@@ -179,8 +187,7 @@ template, then:
 chrome --headless=new --hide-scrollbars --allow-file-access-from-files   --window-size=1200,630 --virtual-time-budget=12000 --screenshot=og.png   "file:///…/og-template.html?kind=case&title=EG-Pricey&kicker=…&stack=…&img=eg-pricey-1440.webp"
 ```
 
-`kind=home` draws the home image; a case takes `tint=peach|lilac|sky|amber|blue|mint`
-(its colour in `lib/projects.ts`), and without `img` takes `nodes=A|*B|C`
+`kind=home` draws the home image; a case without `img` takes `nodes=A|*B|C`
 (a `*` marks a bought service) and draws its architecture instead.
 Regenerate them when a project's title, kicker or screenshot changes.
 
