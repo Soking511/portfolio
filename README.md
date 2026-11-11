@@ -55,7 +55,8 @@ components/
                            and tablet; phones go straight to the work row)
   section-head.tsx         section heading, optional intro line and action
   work-featured.tsx        the projects as picture tiles, two to a row, and
-                           one swipe row on phones; Answers for the case study
+                           one swipe row with position marks on phones;
+                           Answers for the case study
   work-selected.tsx        remaining projects as three small tiles
   project-panel.tsx        a project's screenshot or diagram on a panel
   capabilities.tsx         services: six tiles with an icon, one line and
@@ -135,6 +136,13 @@ is the link to its case study and covers the whole tile; the live-site link
 sits above it. "Read the case study" under it is a label for that click, not
 a third link. `ProjectPanel` draws the same picture on the home page and at
 the top of the case study, so a click carries it across.
+
+**Phones have their own composition.** It lives in one block of
+`app/globals.css` ("phones", under 720px) plus three pieces of markup that
+only show there: the availability line in `hero.tsx`, the position marks in
+`work-featured.tsx`, and the contact bar in `header.tsx` (WhatsApp and "Start
+a project", shown after the hero and hidden at the contact section, the end
+of the page and under the open menu). Check any change at 320px and 390px.
 
 **The hero showcase is driven by its own CSS animation.** The mark of the
 project on show fills over five seconds, and the end of that animation is

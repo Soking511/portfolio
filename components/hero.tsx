@@ -12,6 +12,10 @@ import { trackAttrs } from "@/lib/analytics";
  * audience. Beside it, the work itself, one project at a time. Under both,
  * the four facts a recruiter scans for, availability first.
  *
+ * Phones keep the first screen for the pitch and the start of the project
+ * row, which follows directly: availability becomes one line above the name,
+ * and the showcase and the other facts step aside.
+ *
  * The second script settles in once on load (CSS only, skipped under reduced
  * motion), so first paint never waits on React.
  */
@@ -47,6 +51,10 @@ export function Hero() {
 
         <div className="hero-grid">
           <div>
+            {/* Phones show availability as one line here and skip the facts
+                row below; wider screens do the opposite. Never both. */}
+            <p className="hero-status">{H.status}</p>
+
             <h1 className="hero-name" id="hero-name">
               <span className="hero-name__line hero-name__line--primary" lang={lang}>
                 {H.name}

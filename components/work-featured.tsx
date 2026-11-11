@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { ProjectLink } from "@/components/project-link";
 import { ProjectPanel } from "@/components/project-panel";
@@ -17,18 +18,38 @@ import type { FeaturedWork } from "@/components/lang/strings";
  * opens and which holds the problem, my part and the decision, and the live
  * site where there is one. Nothing here needs JavaScript.
  *
+ * On phones the tiles are one row to swipe, the next always peeking in, with
+ * a row of marks under it that show where you are and jump to any project.
+ *
  * The remaining projects follow as three small tiles.
  */
 export function WorkFeatured() {
   const { t, lang } = useT();
   const W = t.works;
 
+  // Phones show the tiles as one row to swipe. These two follow that row:
+  // which tile is at its start, for the marks under it, and a way to bring
+  // any tile there. Elsewhere the list does not scroll and neither is used.
+  const listRef = useRef<HTMLUListElement>(null);
+  const [inView, setInView] = useState(0);
+  const onScroll = () => {
+    const list = listRef.current;
+    const first = list?.firstElementChild as HTMLElement | null;
+    if (!list || !first) return;
+    const step = first.offsetWidth + parseFloat(getComputedStyle(list).columnGap || "0");
+    // Right-to-left rows scroll into negative numbers.
+    const i = Math.round(Math.abs(list.scrollLeft) / step);
+    setInView(Math.max(0, Math.min(W.featured.length - 1, i)));
+  };
+  const show = (i: number) =>
+    listRef.current?.children[i]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+
   return (
     <section id="work" className="section" aria-labelledby="work-title">
       <div className="container">
         <SectionHead id="work-title" title={W.title} intro={W.intro} />
 
-        <ul className="work-grid">
+        <ul className="work-grid" ref={listRef} onScroll={onScroll}>
           {W.featured.map((project, i) => {
             const meta = FEATURED[i];
             const caseHref = workPath(lang, meta.slug);
@@ -66,6 +87,21 @@ export function WorkFeatured() {
             );
           })}
         </ul>
+
+        <div className="work-marks" role="group" aria-label={W.title}>
+          {W.featured.map((project, i) => (
+            <button
+              key={FEATURED[i].slug}
+              type="button"
+              className="work-mark"
+              aria-label={project.title}
+              aria-current={i === inView ? "true" : undefined}
+              onClick={() => show(i)}
+            >
+              <span />
+            </button>
+          ))}
+        </div>
 
         <WorkSelected />
       </div>

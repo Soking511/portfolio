@@ -88,6 +88,8 @@ export type Strings = {
     contact: string;
     /** Contact as the header's call to action. */
     cta: string;
+    /** The WhatsApp button in the phone's contact bar. */
+    whatsapp: string;
     langLabel: string;
     themeLabel: string;
     menuLabel: string;
@@ -97,6 +99,8 @@ export type Strings = {
     /** The name in this page's script; the other script is set beneath it. */
     name: string;
     name_alt: string;
+    /** Availability as one line, shown above the name on phones. */
+    status: string;
     /** One plain sentence: who and what, before anything else. */
     statement: string;
     /** [label, value] — the facts a recruiter scans for in the first seconds. */
@@ -263,6 +267,7 @@ const en: Strings = {
     ],
     contact: "Contact",
     cta: "Contact me",
+    whatsapp: "WhatsApp",
     langLabel: "العربية",
     themeLabel: "Switch between light and dark",
     menuLabel: "Menu",
@@ -271,6 +276,7 @@ const en: Strings = {
   hero: {
     name: "Youseef Tareq",
     name_alt: "يوسف طارق",
+    status: "Open to projects and full-time roles",
     statement:
       "Software engineer in Cairo. I build complete web products, from the database to the screen, in Arabic and English.",
     facts: [
@@ -732,6 +738,7 @@ const ar: Strings = {
     ],
     contact: "تواصل",
     cta: "تواصل معي",
+    whatsapp: "واتساب",
     langLabel: "English",
     themeLabel: "التبديل بين الوضع الفاتح والداكن",
     menuLabel: "القائمة",
@@ -740,6 +747,7 @@ const ar: Strings = {
   hero: {
     name: "يوسف طارق",
     name_alt: "Youseef Tareq",
+    status: "متاح للمشاريع وللوظائف بدوام كامل",
     statement:
       "مهندس برمجيات من القاهرة. أبني منتجات ويب متكاملة، من قاعدة البيانات حتى الشاشة، بالعربية والإنجليزية.",
     facts: [

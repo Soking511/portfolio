@@ -72,9 +72,23 @@ radius:
   a paragraph it belongs on a case study or in a note.
 - Fill the row. Sections use two, three or four columns on desktop and stack
   on phones; nothing sits beside an empty column.
-- Phones get their own composition where stacking would be long: the
-  projects are one swipe row with the next always peeking in, and the hero
-  showcase is dropped because that row follows directly.
+- Phones come first for clients, and get their own composition rather than
+  the desktop one stacked:
+  - The first screen is availability in one line, the name, the pitch, two
+    buttons, and the start of the project row. A picture of the work is
+    always on it. The showcase and the facts row stay on wider screens.
+  - The projects are one swipe row with the next always peeking in, and a
+    row of marks under it that show the position and jump to any project.
+  - Sections are cut to what a thumb can scan: services are one row each
+    without proof links, earlier jobs show name and years only, the working
+    history paragraph in About is left to Experience.
+  - The language link is in the bar itself, not inside the menu.
+  - A contact bar (WhatsApp, "Start a project") sits at the bottom of the
+    screen once the hero's buttons have scrolled away. It steps aside at the
+    contact section, at the end of the page and under the open menu.
+  - In the contact section WhatsApp is the first, full-width action.
+  - Every target is at least 44px tall; body text is 17px or more; nothing
+    scrolls sideways except the project row.
 - Tiles are flat: `--surface` (or the accent or ink, once each, for the
   three beliefs), a 20px radius, no border, no shadow.
 - Headings are plain sentences. No accent word in another colour.

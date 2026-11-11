@@ -36,7 +36,8 @@ export function About() {
         </div>
 
         <div className="about__text">
-          <p>{A.p2}</p>
+          {/* The working history; phones leave it to Experience, just below. */}
+          <p className="about__history">{A.p2}</p>
           <p>{A.p3}</p>
         </div>
       </div>

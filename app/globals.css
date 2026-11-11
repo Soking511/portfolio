@@ -614,7 +614,9 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   .work-grid {
     grid-auto-flow: column;
     grid-auto-columns: 84%;
-    gap: 16px;
+    /* The gutter's own width, so the tile before the one in view ends
+       exactly at the screen's edge instead of showing a sliver. */
+    gap: var(--gutter);
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -823,7 +825,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: background-color .15s ease;
 }
 .copy-btn:hover { background: var(--band-line); }
-@media (pointer: coarse) { .copy-btn { min-height: 40px; padding: 0 16px; } }
+@media (pointer: coarse) { .copy-btn { min-height: 44px; padding: 0 18px; font-size: 15px; } }
 
 /* The form sits on the band itself: fields are a shade lighter than the
    ground, with an edge that can be found. */
@@ -888,6 +890,9 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .site-footer .wordmark { min-height: 0; font-size: 22px; }
 .footer-main { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px 48px; }
 .footer-email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--display);
   font-size: clamp(20px, 2.6vw, 30px);
   font-weight: 600;
@@ -1081,6 +1086,113 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .quote blockquote { margin: 0; max-width: 36ch; font-family: var(--display); font-size: clamp(21px, 2.4vw, 28px); font-weight: 500; line-height: 1.3; }
 .quote figcaption strong { font-weight: 600; }
 @media (min-width: 900px) { .quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ── phones ────────────────────────────────────────────────────────────
+   Most clients arrive on a phone, so the phone gets its own composition
+   rather than the desktop one stacked. The first screen is the pitch and the
+   start of the project row. Sections that would be a long stack of text are
+   cut to what a thumb can scan. A contact bar sits within reach.        */
+
+.hero-status { display: none; }
+.nav-phone { display: none; }
+.work-marks { display: none; }
+.mobile-bar { display: none; }
+
+@media (max-width: 719px) {
+  :root { --section: 56px; }
+  .label, .fact dt, .answers dt { font-size: 13px; }
+
+  /* Bar: the language out in the open; the contact action moves below. */
+  .nav-phone { display: inline-flex; }
+  .nav-cta { display: none; }
+
+  /* Hero: availability as one line, then the pitch. */
+  .hero { padding-top: calc(var(--header-h) + 20px); padding-bottom: 0; }
+  .hero-alt { display: none; }
+  .hero-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .hero-status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+  .hero-statement { margin-top: 16px; font-size: 18px; }
+  .hero .actions { margin-top: 20px; }
+  .hero .actions .btn { flex: 1 1 auto; padding-inline: 18px; }
+  .facts { display: none; }
+
+  /* Work: straight after the pitch, so a project is on the first screen. */
+  #work { padding-top: 36px; }
+  #work .section-head { margin-bottom: 8px; }
+  #work .section-head .lead { display: none; }
+  .tile { align-content: stretch; grid-template-rows: auto auto auto 1fr; }
+  .tile__foot { align-self: end; }
+  .tile:active .panel { background: var(--accent-soft); }
+  .work-marks { display: flex; justify-content: center; direction: ltr; margin-top: 4px; }
+  [dir="rtl"] .work-marks { flex-direction: row-reverse; }
+  .work-mark { display: grid; place-items: center; width: 28px; height: 44px; }
+  .work-mark span { width: 8px; height: 8px; border-radius: 4px; background: var(--line-strong); transition: width .25s var(--ease), background-color .25s ease; }
+  .work-mark[aria-current="true"] span { width: 22px; background: var(--accent); }
+
+  .shipped { margin-top: 40px; }
+  .shipped__head { margin-bottom: 14px; }
+  .shipped__item { padding: 16px 18px; gap: 4px; }
+  .shipped__item .tags { display: none; }
+  .shipped__meta { padding-top: 6px; }
+
+  /* Services: one scannable row each. The proof links jump up the page,
+     which is disorienting on a phone, so they stay on wider screens. */
+  #skills .section-head .lead, .service__proof { display: none; }
+  .services { gap: 8px; }
+  .service { padding: 16px; gap: 2px 14px; align-items: start; }
+  .service__icon { grid-row: span 2; width: 44px; height: 44px; }
+  .stack-table { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+
+  .belief { padding: 22px; gap: 10px; }
+  .process { margin-top: 36px; }
+  .step { padding-top: 12px; }
+  .steps { gap: 12px; }
+
+  .about { gap: 20px; }
+  .about__history { display: none; }
+  .about .lead { font-size: 18px; }
+
+  /* Experience: the current job in full; earlier ones by name. The résumé
+     has the rest. */
+  #cv .section-head .btn { width: 100%; }
+  .cv-row { padding-bottom: 24px; }
+  .cv-row:not(:first-child) .cv-row__blurb { display: none; }
+  .recruiter__links { margin-top: 8px; }
+
+  /* Contact: WhatsApp first and full width, then the form. */
+  .contact { gap: 36px; }
+  .contact__aside { gap: 22px; }
+  .contact__aside .actions .btn { width: 100%; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .form .btn--primary { align-self: stretch !important; }
+
+  /* The contact bar, within reach of a thumb. */
+  .mobile-bar {
+    display: flex;
+    gap: 10px;
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 48;
+    padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in oklab, var(--paper) 92%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition: transform .3s var(--ease), visibility 0s linear .3s;
+  }
+  .mobile-bar[data-show="true"] { transform: none; visibility: visible; transition: transform .3s var(--ease); }
+  .mobile-bar .btn { min-height: 48px; padding-inline: 18px; }
+  .mobile-bar .btn--secondary { background: var(--paper); }
+  .mobile-bar .btn--primary { flex: 1; }
+}
 
 /* ── motion ────────────────────────────────────────────────────────────
    Each movement answers something: the hero's showcase takes turns through
