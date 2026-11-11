@@ -59,8 +59,9 @@ components/
                            Answers for the case study
   work-selected.tsx        remaining projects as three small tiles
   project-panel.tsx        a project's screenshot or diagram on a panel
-  capabilities.tsx         services: six tiles with an icon, one line and
-                           links to the proof; tools as four columns
+  capabilities.tsx         services: a list opened one item at a time
+                           (native <details>), each with its proof projects;
+                           tools as four columns
   principles.tsx           three beliefs as tiles, and how a project goes
                            as four numbered steps
   about.tsx                who I am

@@ -67,7 +67,6 @@ export type SelectedWork = {
 
 /** Something I can build, said plainly, with the projects that show it. */
 export type Capability = {
-  icon: "app" | "dashboard" | "realtime" | "payments" | "bilingual" | "server";
   title: string;
   body: string;
   /** [project name, anchor id on the home page] — each one a link. */
@@ -446,37 +445,31 @@ const en: Strings = {
     proof_label: "See",
     items: [
       {
-        icon: "app",
         title: "Complete web apps",
         body: "Accounts, data, an admin side and the screens people use, built end to end.",
         proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
       },
       {
-        icon: "dashboard",
         title: "Dashboards and internal tools",
         body: "Scattered data turned into screens a team can act on.",
         proof: [["UFeed", "ufeed"]],
       },
       {
-        icon: "realtime",
         title: "Live, real-time features",
         body: "Prices, alerts and shared editing that update without a refresh.",
         proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
       },
       {
-        icon: "payments",
         title: "Subscriptions and payments",
         body: "Plans and billing that handle tax and customers abroad.",
         proof: [["XTranslator", "xtranslator"]],
       },
       {
-        icon: "bilingual",
         title: "Arabic and English products",
         body: "Right-to-left done properly: one product in two languages.",
         proof: [["MenuVista", "menuvista"], ["TileGreen", "tilegreen"], ["EG-Pricey", "eg-pricey"]],
       },
       {
-        icon: "server",
         title: "APIs, hosting and security",
         body: "Secure APIs, sign-in and bot protection, running on real servers.",
         proof: [["XTranslator", "xtranslator"], ["Contact Management", "contact-management"]],
@@ -917,37 +910,31 @@ const ar: Strings = {
     proof_label: "شاهد",
     items: [
       {
-        icon: "app",
         title: "تطبيقات ويب متكاملة",
         body: "حسابات وبيانات ولوحة إدارة والشاشات التي يستخدمها الناس، مبنية من أولها لآخرها.",
         proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
       },
       {
-        icon: "dashboard",
         title: "لوحات تحكم وأدوات داخلية",
         body: "بيانات متفرقة تتحول إلى شاشات يتصرف الفريق بناءً عليها.",
         proof: [["UFeed", "ufeed"]],
       },
       {
-        icon: "realtime",
         title: "ميزات لحظية",
         body: "أسعار وتنبيهات وتعديل مشترك يتحدّث دون إعادة تحميل الصفحة.",
         proof: [["MenuVista", "menuvista"], ["EG-Pricey", "eg-pricey"], ["Contact Management", "contact-management"]],
       },
       {
-        icon: "payments",
         title: "الاشتراكات والمدفوعات",
         body: "باقات وفوترة تراعي الضرائب والعملاء من دول أخرى.",
         proof: [["XTranslator", "xtranslator"]],
       },
       {
-        icon: "bilingual",
         title: "منتجات بالعربية والإنجليزية",
         body: "اتجاه من اليمين لليسار مضبوط: منتج واحد بلغتين.",
         proof: [["MenuVista", "menuvista"], ["TileGreen", "tilegreen"], ["EG-Pricey", "eg-pricey"]],
       },
       {
-        icon: "server",
         title: "الواجهات البرمجية والاستضافة والحماية",
         body: "واجهات برمجية آمنة وتسجيل دخول وحماية من الروبوتات، تعمل على خوادم حقيقية.",
         proof: [["XTranslator", "xtranslator"], ["Contact Management", "contact-management"]],

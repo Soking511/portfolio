@@ -30,6 +30,36 @@ What the owner explicitly does not want: many colours, harsh saturated
 colours, a bright white ground, content inside cards with shadows, and many
 elements competing on one screen.
 
+## Not looking generated
+
+Models drift to the most common look, and banning one default tends to land
+on the next most common one. These are the tells this site has removed or
+never had. Check a change against the list before shipping it.
+
+- No grid of identical rounded cards with an icon tile above each heading.
+  Services are a typographic list opened one item at a time, and each shows
+  the projects that prove it.
+- No capital-letter, letter-spaced labels. Labels are small sentence-case
+  text.
+- No pill buttons. Buttons are 12px rounded rectangles; pills are only the
+  form's choices.
+- No fade-and-slide entrance on every section. There is one arrival, in the
+  hero, and after that motion only answers the visitor.
+- No hover effect on things that are not links.
+- No gradients, gradient text, glass panels, shadows or bouncy easing.
+- No accent word in a headline, no arrows on buttons, no middle-dot strings.
+- No stock default face (Inter, Roboto, Space Grotesk) and no stock palette
+  (purple on white, cream with terracotta, near-black with one neon).
+- Weight carries the hierarchy: 800 for the name and headings against 300
+  for the second script and 400 for text, with headings about three times
+  the text size.
+- Every structural device says something true: numbers only on sequences,
+  a dot only for "live", the accent only for what can be acted on.
+
+Sources for the list: Anthropic's "Improving frontend design through
+Skills" and its `frontend-design` skill, and the `impeccable` skill's
+catalogue of tells.
+
 ## Tokens
 
 ```yaml
@@ -48,11 +78,13 @@ dark:
   paper: "#111113"  surface: "#1B1B1F"  ink: "#F0EFEB"  ink-soft: "#A6A6B0"
   accent: "#FF7A4D"  accent-text: "#FF8F69"  accent-soft: "#3A1E14"  band: "#09090B"
 type:
-  display: Rubik (variable), Arabic + Latin: the name and headings
+  display: Rubik (variable), Arabic + Latin: the name and headings at 800,
+           the second script at 300
   text:    IBM Plex Sans / IBM Plex Sans Arabic, 400 and 600
   body:    17px EN, 18px AR
 radius:
-  panel: 20px (16px on phones)   field: 12px   button: pill
+  panel: 20px (16px on phones)   field: 12px   button: 12px
+  pill: the form's choices only
 ```
 
 ## Rules
@@ -79,9 +111,9 @@ radius:
     always on it. The showcase and the facts row stay on wider screens.
   - The projects are one swipe row with the next always peeking in, and a
     row of marks under it that show the position and jump to any project.
-  - Sections are cut to what a thumb can scan: services are one row each
-    without proof links, earlier jobs show name and years only, the working
-    history paragraph in About is left to Experience.
+  - Sections are cut to what a thumb can scan: services open one at a time,
+    earlier jobs show name and years only, the working history paragraph in
+    About is left to Experience.
   - The language link is in the bar itself, not inside the menu.
   - A contact bar (WhatsApp, "Start a project") sits at the bottom of the
     screen once the hero's buttons have scrolled away. It steps aside at the
@@ -94,17 +126,15 @@ radius:
 - Headings are plain sentences. No accent word in another colour.
 - Numbers only on real sequences: the request diagrams and "How a project
   goes". Step numbers follow the page's language.
-- Tools are a plain comma list, not chips. Pills are for controls (buttons,
-  the form's choices).
+- Tools are a plain comma list, not chips.
 - Headings name the section the way the menu does ("Work", "Services").
   No generic CTA copy ("Let's talk"); no arrows stapled to link text.
 - The contact form sits on the dark band itself, not on a panel inside it.
-- Motion answers something: the hero's showcase takes turns through the
-  projects and holds while pointed at; tiles rise into place as you reach
-  them; a project's picture lifts when its tile is pointed at; a click
-  carries the picture and title into the project's page; the header's edge
-  shows how far down you are; buttons answer a press. Nothing moves under
-  reduced motion, scroll-linked parts exist only where the browser supports
-  them, and no text is ever hidden waiting for an animation.
+- Motion is little and answers something. One arrival: the first screen
+  settles in order, once; the name itself never waits. After that: the
+  showcase takes turns and holds while pointed at; a project's picture lifts
+  under the pointer; a click carries the picture and title into the
+  project's page; the header's edge shows how far down you are; buttons
+  answer a press. Nothing moves under reduced motion.
 - Copy is plain and matches `public/youseef-tareq-resume.pdf`.
 - Every text pair passes WCAG AA; visible focus everywhere; 44px touch targets.
