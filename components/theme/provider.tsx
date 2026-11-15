@@ -51,6 +51,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  // The browser's own chrome (the address bar on a phone) takes its colour
+  // from the theme-color tags, which follow the system setting. Once the
+  // visitor picks a theme here, it follows the page instead. Read from the
+  // token, so there is no second copy of the colour to keep in step.
+  useEffect(() => {
+    const paper = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
+    if (!paper) return;
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", paper));
+  }, [theme]);
+
   const value = useMemo<ThemeContextValue>(() => ({ theme, toggleTheme }), [theme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

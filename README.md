@@ -188,9 +188,21 @@ of the page and under the open menu). Check any change at 320px and 390px.
 
 **The hero showcase is driven by its own CSS animation.** The mark of the
 project on show fills over five seconds, and the end of that animation is
-what advances the showcase. Hover or focus pauses the animation and so holds
-the turn; picking a project ends the turns; under reduced motion the
-animation does not exist, so nothing advances.
+what advances the showcase. Pointing at the picture or the marks, or tabbing
+to them, pauses the animation and so holds the turn; picking a project or
+pressing the pause button at the end of the marks stops the turns, and the
+same button starts them again; under reduced motion the animation does not
+exist, so nothing advances and the button is not shown.
+
+**The contact form keeps what is typed and never hangs.** The draft lives in
+`localStorage` (`portfolio:contact-draft`) until the message is sent, and
+never leaves the device that way. Firestore queues a write it cannot deliver
+instead of failing, so the send is raced against a fifteen-second timer;
+after that, or at once when the browser reports no connection, the form
+says so and offers the same message as a `mailto:` link. Validation is one
+pure function (`check`) run on submit and then on every change. Do not test
+a real send against production: block `googleapis.com` in the browser test,
+as the form then shows its timeout path.
 
 **Project screenshots are static WebP** in `public/work`, at 1440w and 720w.
 Earlier versions embedded each project as a live `<iframe>`; that was removed

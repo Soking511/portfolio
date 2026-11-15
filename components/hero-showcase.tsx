@@ -20,6 +20,10 @@ import { EASE, MOTION, gsap, useGSAP } from "@/lib/gsap";
  * project by hand ends the turns for good. Under reduced motion the
  * animation does not exist, so nothing advances.
  *
+ * Anything that moves by itself needs a way to be stopped that does not
+ * depend on a pointer, so the row of marks ends in a pause button; it turns
+ * into play once the turns are held, by it or by picking a project.
+ *
  * When the project changes, its name and line rise into place from behind
  * their own edge, so the caption is seen to change with the picture.
  */
@@ -94,24 +98,41 @@ export function HeroShowcase() {
             <span>{current.kicker}</span>
           </span>
         </p>
-        <div className="showcase__marks" role="group" aria-label={W.title}>
-          {W.featured.map((project, i) => (
-            <button
-              key={FEATURED[i].slug}
-              type="button"
-              className="showcase__mark"
-              aria-label={project.title}
-              aria-current={i === active ? "true" : undefined}
-              onClick={() => {
-                setActive(i);
-                setAuto(false);
-              }}
-            >
-              <span>
-                <i onAnimationEnd={() => setActive((n) => (n + 1) % W.featured.length)} />
-              </span>
-            </button>
-          ))}
+        <div className="showcase__controls">
+          <div className="showcase__marks" role="group" aria-label={W.title}>
+            {W.featured.map((project, i) => (
+              <button
+                key={FEATURED[i].slug}
+                type="button"
+                className="showcase__mark"
+                aria-label={project.title}
+                aria-current={i === active ? "true" : undefined}
+                onClick={() => {
+                  setActive(i);
+                  setAuto(false);
+                }}
+              >
+                <span>
+                  <i onAnimationEnd={() => setActive((n) => (n + 1) % W.featured.length)} />
+                </span>
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="showcase__pause"
+            aria-label={auto ? W.showcase_pause : W.showcase_play}
+            onClick={() => setAuto((v) => !v)}
+            {...trackAttrs(auto ? "showcase_pause" : "showcase_play")}
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              {auto ? (
+                <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" fill="currentColor" />
+              ) : (
+                <path d="M3 1.2v9.6l7.5-4.8z" fill="currentColor" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
-import { BOOKING_URL } from "@/lib/site";
-import { BUDGETS, INTENTS, TIMELINES, type Budget, type Timeline } from "@/lib/contact";
+import { BOOKING_URL, EMAIL } from "@/lib/site";
+import { BUDGETS, INTENTS, TIMELINES, isIntent, type Budget, type Timeline } from "@/lib/contact";
 import { track, trackAttrs } from "@/lib/analytics";
 import { MOTION, gsap, useGSAP } from "@/lib/gsap";
 
@@ -16,10 +16,58 @@ type FormState = {
   timeline: Timeline | "";
   company: string;
 };
-type SendState = "idle" | "sending" | "sent" | "error";
+type SendState = "idle" | "sending" | "sent" | "error" | "offline";
+type Errors = Partial<Record<"name" | "email" | "msg", "required" | "email" | "msg">>;
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "", company: "" };
+
+/** What is wrong with the form as it stands, if anything. */
+function check(form: FormState): Errors {
+  const e: Errors = {};
+  if (!form.name.trim()) e.name = "required";
+  if (!EMAIL_RE.test(form.email)) e.email = "email";
+  if (form.msg.trim().length < 10) e.msg = "msg";
+  return e;
+}
+
+// What is being written is kept in this browser until it is sent, so a
+// refresh, a closed tab or a detour through a case study does not cost the
+// visitor their message. It never leaves the device this way.
+const DRAFT_KEY = "portfolio:contact-draft";
+const SEND_TIMEOUT = 15000;
+
+function readDraft(): { form: FormState; intent: unknown } | null {
+  try {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw) as Record<string, unknown>;
+    const text = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
+    const oneOf = <T extends string>(v: unknown, list: readonly T[]) =>
+      (list as readonly unknown[]).includes(v) ? (v as T) : "";
+    const form: FormState = {
+      name: text(d.name, 200),
+      email: text(d.email, 320),
+      msg: text(d.msg, 5000),
+      company: text(d.company, 200),
+      budget: oneOf(d.budget, BUDGETS),
+      timeline: oneOf(d.timeline, TIMELINES),
+    };
+    if (!form.name && !form.email && !form.msg && !form.company) return null;
+    return { form, intent: d.intent };
+  } catch {
+    return null; // private mode, or a draft this version cannot read
+  }
+}
+
+function writeDraft(form: FormState, intent: string) {
+  try {
+    if (!form.name && !form.email && !form.msg && !form.company) window.localStorage.removeItem(DRAFT_KEY);
+    else window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...form, intent }));
+  } catch {
+    /* storage unavailable: the form still works, it just does not remember */
+  }
+}
 
 /**
  * One form for both audiences. The first question — a project, a role, or
@@ -28,6 +76,13 @@ const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "
  * extra field is optional so qualifying a lead never costs the lead — and the
  * optional ones come after the message, so nobody has to answer them before
  * they can start typing.
+ *
+ * The form is built not to lose anyone's words or leave them waiting: what
+ * is typed is kept on the device until it is sent; an error goes away the
+ * moment its field is right; a send that gets no answer gives up after
+ * fifteen seconds and says so, with the same message offered as an email;
+ * and the confirmation is brought into view and given focus, because on a
+ * phone the form it replaces is several screens taller.
  *
  * This is the page's one dark band: the end of the page, where it asks for
  * something. The form sits on the band itself, not on a panel inside it.
@@ -43,18 +98,55 @@ export function Contact() {
   const isAR = lang === "ar";
 
   const [form, setForm] = useState<FormState>(EMPTY);
-  const [errors, setErrors] = useState<Partial<Record<"name" | "email" | "msg", string>>>({});
+  const [errors, setErrors] = useState<Errors>({});
+  // Nothing is marked wrong until the visitor has tried to send. From then
+  // on each field is checked as it changes, so a fixed field clears at once.
+  const [attempted, setAttempted] = useState(false);
   const [send, setSend] = useState<SendState>("idle");
   const [sentName, setSentName] = useState("");
+  const [restored, setRestored] = useState(false);
+  const sentRef = useRef<HTMLDivElement>(null);
+  const errorText = { required: C.e_required, email: C.e_email, msg: C.e_msg };
 
-  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
-    setForm((f) => ({ ...f, [key]: value }));
+  const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+    const next = { ...form, [key]: value };
+    setForm(next);
+    if (attempted) setErrors(check(next));
+  };
+
+  // Bring back a draft from an earlier visit. After mount, since the server
+  // rendered an empty form. A call to action that names an intent, on this
+  // page or in the URL, is applied after this and so still wins.
+  useEffect(() => {
+    const draft = readDraft();
+    if (!draft) return;
+    setForm(draft.form);
+    if (isIntent(draft.intent)) setIntent(draft.intent);
+    setRestored(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep the draft as it is typed, a moment after the last keystroke.
+  useEffect(() => {
+    if (send === "sent") return;
+    const id = window.setTimeout(() => writeDraft(form, intent), 400);
+    return () => window.clearTimeout(id);
+  }, [form, intent, send]);
+
+  // The confirmation replaces a form that is far taller than it is, so on a
+  // phone the visitor would be left looking at the footer. Bring it to them.
+  useEffect(() => {
+    if (send !== "sent") return;
+    const el = sentRef.current;
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    const box = el.getBoundingClientRect();
+    if (box.top < 80 || box.bottom > window.innerHeight) el.scrollIntoView({ block: "center" });
+  }, [send]);
 
   const validate = () => {
-    const e: Partial<Record<"name" | "email" | "msg", string>> = {};
-    if (!form.name.trim()) e.name = C.e_required;
-    if (!EMAIL_RE.test(form.email)) e.email = C.e_email;
-    if (form.msg.trim().length < 10) e.msg = C.e_msg;
+    const e = check(form);
+    setAttempted(true);
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -66,6 +158,11 @@ export function Contact() {
       requestAnimationFrame(() =>
         document.querySelector<HTMLElement>("#contact [aria-invalid='true']")?.focus(),
       );
+      return;
+    }
+    // No connection: say so now, not after a wait.
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setSend("offline");
       return;
     }
     setSend("sending");
@@ -92,7 +189,20 @@ export function Contact() {
         import("firebase/firestore"),
       ]);
       if (!db) throw new Error("Firestore not initialized");
-      await addDoc(collection(db, "messages"), doc);
+      // Firestore queues a write it cannot deliver and waits for the network
+      // without ever failing, which would leave "Sending…" up for good.
+      let timer = 0;
+      await Promise.race([
+        addDoc(collection(db, "messages"), doc),
+        new Promise<never>((_, reject) => {
+          timer = window.setTimeout(() => reject(new Error("timed out")), SEND_TIMEOUT);
+        }),
+      ]).finally(() => window.clearTimeout(timer));
+      try {
+        window.localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* nothing was stored */
+      }
       track("contact_sent", { intent });
       setSentName(form.name.split(" ")[0] || (isAR ? "صديقي" : "friend"));
       setSend("sent");
@@ -105,9 +215,16 @@ export function Contact() {
   const reset = () => {
     setForm(EMPTY);
     setErrors({});
+    setAttempted(false);
+    setRestored(false);
     setSend("idle");
     setSentName("");
   };
+
+  // The same message as an email, for when the form cannot deliver it.
+  const asEmail = `mailto:${EMAIL}?subject=${encodeURIComponent(
+    `${C.intents[intent]}${form.name.trim() ? `: ${form.name.trim()}` : ""}`,
+  )}&body=${encodeURIComponent(form.msg)}`;
 
   const [msgLabel, msgPlaceholder] = C.f_msg[intent];
 
@@ -207,7 +324,7 @@ export function Contact() {
 
           <form onSubmit={submit} noValidate aria-label={C.form_label} className="form">
             {send === "sent" ? (
-              <div role="status" className="form-sent">
+              <div role="status" className="form-sent" ref={sentRef} tabIndex={-1}>
                 <p className="label">{C.sent_label}</p>
                 <h3 className="h3">{C.sent_title(sentName)}</h3>
                 <p className="soft">{C.sent_body}</p>
@@ -221,6 +338,14 @@ export function Contact() {
               </div>
             ) : (
               <>
+                {restored && (
+                  <p className="form-note">
+                    <span>{C.draft_restored}</span>
+                    <button type="button" className="link" onClick={reset}>
+                      {C.draft_clear}
+                    </button>
+                  </p>
+                )}
                 <Choices
                   legend={C.intent_label}
                   options={INTENTS.map((v) => [v, C.intents[v]] as const)}
@@ -234,7 +359,7 @@ export function Contact() {
                   label={C.f_name}
                   placeholder={C.f_name_p}
                   value={form.name}
-                  error={errors.name}
+                  error={errors.name && errorText[errors.name]}
                   autoComplete="name"
                   onChange={(v) => set("name", v)}
                 />
@@ -244,7 +369,7 @@ export function Contact() {
                   label={C.f_email}
                   placeholder={C.f_email_p}
                   value={form.email}
-                  error={errors.email}
+                  error={errors.email && errorText[errors.email]}
                   autoComplete="email"
                   onChange={(v) => set("email", v)}
                 />
@@ -266,7 +391,7 @@ export function Contact() {
                   label={msgLabel}
                   placeholder={msgPlaceholder}
                   value={form.msg}
-                  error={errors.msg}
+                  error={errors.msg && errorText[errors.msg]}
                   onChange={(v) => set("msg", v)}
                 />
 
@@ -289,9 +414,12 @@ export function Contact() {
                   </>
                 )}
 
-                {send === "error" && (
+                {(send === "error" || send === "offline") && (
                   <p className="form-error" role="alert">
-                    {C.e_submit}
+                    {send === "offline" ? C.e_offline : C.e_submit}{" "}
+                    <a href={asEmail} className="link" {...trackAttrs("contact_email_fallback")}>
+                      {C.e_fallback}
+                    </a>
                   </p>
                 )}
 

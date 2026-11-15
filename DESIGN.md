@@ -116,7 +116,8 @@ radius:
   - Sections are cut to what a thumb can scan: services open one at a time,
     earlier jobs show name and years only, the working history paragraph in
     About is left to Experience.
-  - The language link is in the bar itself, not inside the menu.
+  - The language link is in the bar itself, not inside the menu. That holds
+    wherever the links fold into a menu, so on tablets too (under 900px).
   - A contact bar (WhatsApp, "Start a project") sits at the bottom of the
     screen once the hero's buttons have scrolled away. It steps aside at the
     contact section, at the end of the page and under the open menu.
@@ -159,5 +160,19 @@ radius:
   - The page is whole without it: the stylesheet draws every finished state,
     GSAP only departs from it and returns. Nothing moves under reduced
     motion.
+- The form does not lose words or leave anyone waiting. What is typed is
+  kept on the device until it is sent, and says so when it comes back, with
+  a way to start over. Nothing is marked wrong before the first try to send;
+  after that an error goes the moment its field is right. A send with no
+  answer gives up after fifteen seconds; being offline is said at once. Both
+  offer the same message as an email. The confirmation is brought into view.
+- Anything that moves by itself can be stopped without a pointer: the
+  showcase ends its row of marks in a pause button.
+- The menu's mark always has an answer once the page is scrolled: it stays
+  on the last section the menu names until the next one begins.
+- While the phone menu is open the page under it is out of reach (inert),
+  and Escape puts the focus back on the menu button.
+- The browser's chrome follows the theme the visitor picked, not only the
+  system's (`theme-color` is set from `--paper`).
 - Copy is plain and matches `public/youseef-tareq-resume.pdf`.
 - Every text pair passes WCAG AA; visible focus everywhere; 44px touch targets.

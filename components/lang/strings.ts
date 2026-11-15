@@ -120,6 +120,9 @@ export type Strings = {
     label_stack: string;
     outcome_label: string;
     case_study: string;
+    /** The hero showcase's control: hold the turns, or let them run again. */
+    showcase_pause: string;
+    showcase_play: string;
     featured: FeaturedWork[];
     selected_headline: string;
     selected_note: string;
@@ -226,6 +229,13 @@ export type Strings = {
     e_email: string;
     e_msg: string;
     e_submit: string;
+    /** Shown instead of e_submit when the browser says it has no connection. */
+    e_offline: string;
+    /** A link after either error: the same message, as an email. */
+    e_fallback: string;
+    /** Shown when the form opens with what was typed on an earlier visit. */
+    draft_restored: string;
+    draft_clear: string;
     sent_label: string;
     sent_title: (name: string) => string;
     sent_body: string;
@@ -299,6 +309,8 @@ const en: Strings = {
     label_stack: "Built with",
     outcome_label: "Used by",
     case_study: "Read the case study",
+    showcase_pause: "Pause the projects",
+    showcase_play: "Play the projects",
     featured: [
       {
         n: "01",
@@ -643,7 +655,11 @@ const en: Strings = {
     e_required: "Please fill this in",
     e_email: "Please enter a valid email address",
     e_msg: "A few more words, please",
-    e_submit: "Your message couldn’t be sent. Please try again, or email me directly.",
+    e_submit: "Your message couldn’t be sent. It is still here, so you can try again.",
+    e_offline: "You seem to be offline. Your message is still here; send it again when you are back online.",
+    e_fallback: "Or send it by email",
+    draft_restored: "Picked up where you left off.",
+    draft_clear: "Start over",
     sent_label: "Message sent",
     sent_title: (name: string) => `Thanks, ${name}.`,
     sent_body: `I’ll reply from ${EMAIL} within a day. For anything urgent, WhatsApp is fastest.`,
@@ -764,6 +780,8 @@ const ar: Strings = {
     label_stack: "التقنيات المستخدمة",
     outcome_label: "من يستخدمه",
     case_study: "اقرأ دراسة الحالة",
+    showcase_pause: "إيقاف عرض المشاريع مؤقتًا",
+    showcase_play: "تشغيل عرض المشاريع",
     featured: [
       {
         n: "٠١",
@@ -1108,7 +1126,11 @@ const ar: Strings = {
     e_required: "يرجى ملء هذا الحقل",
     e_email: "يرجى إدخال بريد إلكتروني صحيح",
     e_msg: "بضع كلمات أخرى من فضلك",
-    e_submit: "تعذّر إرسال رسالتك. حاول مجددًا، أو راسلني مباشرة على البريد.",
+    e_submit: "تعذّر إرسال رسالتك. ما كتبته ما زال هنا، فحاول مجددًا.",
+    e_offline: "يبدو أنك غير متصل بالإنترنت. رسالتك ما زالت هنا؛ أرسلها عند عودة الاتصال.",
+    e_fallback: "أو أرسلها بالبريد الإلكتروني",
+    draft_restored: "استعدنا ما كتبته في المرة السابقة.",
+    draft_clear: "ابدأ من جديد",
     sent_label: "تم إرسال الرسالة",
     sent_title: (name: string) => `شكرًا لك، ${name}.`,
     sent_body: `سأرد من ${EMAIL} خلال يوم. وللأمور العاجلة، واتساب أسرع.`,

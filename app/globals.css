@@ -512,7 +512,22 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
    into it from below the edge. */
 .showcase__caption > span { display: block; overflow: clip; }
 .showcase__caption > span > span { display: block; }
+.showcase__controls { display: flex; align-items: center; gap: 4px; }
 .showcase__marks { display: flex; gap: 6px; direction: ltr; }
+/* Holds the turns, or lets them run again. Quiet until wanted. */
+.showcase__pause {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-btn);
+  color: var(--ink-soft);
+  transition: color .15s ease, background-color .15s ease;
+}
+.showcase__pause:hover { color: var(--ink); background: var(--surface); }
+@media (pointer: coarse) { .showcase__pause { width: 44px; height: 44px; } }
+/* Nothing turns under reduced motion, so there is nothing to pause. */
+@media (prefers-reduced-motion: reduce) { .showcase__pause { display: none; } }
 .showcase__mark { display: grid; align-items: center; width: 30px; height: 32px; border-radius: 4px; }
 .showcase__mark span { position: relative; display: block; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line-strong); transition: background-color .2s ease; }
 .showcase__mark:hover span { background: var(--ink); }
@@ -521,7 +536,10 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 @media (pointer: coarse) { .showcase__mark { height: 44px; } }
 @media (prefers-reduced-motion: no-preference) {
   .showcase[data-auto="true"] .showcase__mark[aria-current="true"] i { animation: turn 5s linear both; }
-  .showcase[data-auto="true"]:is(:hover, :focus-within) .showcase__mark i { animation-play-state: paused; }
+  /* Pointing at the picture or the marks, or tabbing to them, holds the
+     turn. The pause button is left out: pressing play has to play, even
+     while the pointer or the focus is still on it. */
+  .showcase[data-auto="true"]:has(:is(.showcase__panel, .showcase__mark):is(:hover, :focus-visible)) .showcase__mark i { animation-play-state: paused; }
 }
 /* The global reduced-motion rule shortens animations rather than removing
    them; this one must not run at all, or its end would turn the showcase. */
@@ -915,6 +933,14 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .choice input:focus-visible + span { outline: 2px solid var(--band-accent); outline-offset: 2px; }
 
 .form-error { font-size: 15px; color: var(--band-danger); }
+.form-error .link { color: var(--band-ink); white-space: nowrap; }
+/* A line above the fields when a draft from an earlier visit is back. */
+.form-note { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 15px; color: var(--band-soft); }
+.form-note .link { color: var(--band-ink); }
+@media (pointer: coarse) { .form-note .link { min-height: 44px; } }
+/* Given focus by the script so a screen reader lands on it; no ring, since
+   it is a message, not a control. */
+.form-sent:focus { outline: none; }
 .form-sent { display: grid; gap: 12px; justify-items: start; }
 .form-sent .label { color: var(--band-accent); }
 
@@ -1137,14 +1163,16 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 
 .hero-status { display: none; }
 .nav-phone { display: none; }
+/* Wherever the links are folded into the menu, the language stays out in
+   the bar: tablets as well as phones. */
+@media (max-width: 899px) { .nav-phone { display: inline-flex; } }
 .work-marks { display: none; }
 .mobile-bar { display: none; }
 
 @media (max-width: 719px) {
   :root { --section: 56px; }
 
-  /* Bar: the language out in the open; the contact action moves below. */
-  .nav-phone { display: inline-flex; }
+  /* Bar: the contact action moves to the bar at the bottom of the screen. */
   .nav-cta { display: none; }
 
   /* Hero: availability as one line, then the pitch. */

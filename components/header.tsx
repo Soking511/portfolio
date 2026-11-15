@@ -12,9 +12,9 @@ import { EASE, MOTION, ScrollTrigger, gsap, motionAllowed, useGSAP } from "@/lib
  * From 900px the links sit inline, with the language, the theme and the
  * contact button beside them.
  *
- * Phones get the name, the language and a menu in the bar. The language is
- * out in the open there because a visitor who reads Arabic should not have
- * to open a menu to find it. The contact action moves to a bar at the
+ * Under 900px the bar holds the name, the language and a menu. The language
+ * is out in the open there because a visitor who reads Arabic should not
+ * have to open a menu to find it. The contact action moves to a bar at the
  * bottom of the screen, under the thumb: WhatsApp and "Start a project".
  * It appears once the hero's own buttons have scrolled away, and steps
  * aside wherever it would only repeat the page (the contact section) or
@@ -38,6 +38,7 @@ export function Header() {
   const navRef = useRef<HTMLElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLElement>(null);
+  const burgerRef = useRef<HTMLButtonElement>(null);
   const dotShown = useRef(false);
 
   // How far down the page you are, drawn along the bar's lower edge. The
@@ -140,14 +141,15 @@ export function Header() {
       const atContact = contact ? contact.getBoundingClientRect().top < window.innerHeight - 96 : false;
       const atEnd = window.scrollY + window.innerHeight > document.documentElement.scrollHeight - 200;
       setBar(pastHero && !atContact && !atEnd);
-      // The section crossing a line just above the middle of the screen is
-      // the one being read. Measured, not inferred from observer events, so
-      // a jump (an anchor link, the End key) lands on the right answer.
+      // The last of the menu's sections to have crossed a line just above
+      // the middle of the screen is the one being read. "Last crossed", not
+      // "the one under the line", so the mark stays put through a section
+      // the menu does not name (How I work) instead of vanishing. Measured,
+      // not inferred from observer events, so a jump (an anchor link, the
+      // End key) lands on the right answer.
       const line = window.innerHeight * 0.45;
-      const current = sections.find((s) => {
-        const r = s.getBoundingClientRect();
-        return r.top <= line && r.bottom > line;
-      });
+      let current: HTMLElement | undefined;
+      for (const s of sections) if (s.getBoundingClientRect().top <= line) current = s;
       setActive(current?.id ?? null);
     };
     const onScroll = () => {
@@ -166,8 +168,17 @@ export function Header() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      // Back to the button that opened it, not lost on a link now hidden.
+      burgerRef.current?.focus();
     };
+    // The menu covers the page, so the page under it is out of reach for the
+    // keyboard and screen readers too, not only for the eye.
+    const behind = [document.getElementById("main"), document.querySelector(".site-footer")].filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    behind.forEach((el) => el.setAttribute("inert", ""));
     const onResize = () => {
       if (window.innerWidth >= 900) setOpen(false);
     };
@@ -178,6 +189,7 @@ export function Header() {
       document.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", onResize);
       document.body.style.overflow = "";
+      behind.forEach((el) => el.removeAttribute("inert"));
     };
   }, [open]);
 
@@ -220,6 +232,7 @@ export function Header() {
             <button
               type="button"
               className="icon-btn nav-burger"
+              ref={burgerRef}
               aria-expanded={open}
               aria-controls="nav-panel"
               onClick={() => setOpen((v) => !v)}
