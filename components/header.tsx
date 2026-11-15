@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { useTheme } from "@/components/theme/provider";
 import { contactHref, useContactIntent } from "@/components/contact-intent";
 import { homePath } from "@/lib/i18n";
 import { trackAttrs } from "@/lib/analytics";
+import { EASE, MOTION, ScrollTrigger, gsap, motionAllowed, useGSAP } from "@/lib/gsap";
 
 /**
  * From 900px the links sit inline, with the language, the theme and the
@@ -18,6 +19,11 @@ import { trackAttrs } from "@/lib/analytics";
  * It appears once the hero's own buttons have scrolled away, and steps
  * aside wherever it would only repeat the page (the contact section) or
  * cover it (the footer, the open menu).
+ *
+ * Three things here move, each answering the visitor: the bar's lower edge
+ * fills as the page is scrolled, the mark under the menu slides to the
+ * section being read, and the phone menu's links arrive in order when it is
+ * opened.
  */
 export function Header() {
   const { t, lang, altLang, altHref, homeAnchor, nav } = useT();
@@ -27,6 +33,85 @@ export function Header() {
   const [bar, setBar] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const dotRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const dotShown = useRef(false);
+
+  // How far down the page you are, drawn along the bar's lower edge. The
+  // page's length changes after load (a service opens, a font lands), and
+  // every scroll position on the site is measured from it, so they are all
+  // measured again whenever it does. This header is on every page, which
+  // makes it the one place to do that.
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add(MOTION, () => {
+      gsap.fromTo(
+        progressRef.current,
+        { scaleX: 0 },
+        { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.25 } },
+      );
+
+      let timer = 0;
+      let height = document.body.offsetHeight;
+      const observer = new ResizeObserver(() => {
+        if (document.body.offsetHeight === height) return;
+        height = document.body.offsetHeight;
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => ScrollTrigger.refresh(), 200);
+      });
+      observer.observe(document.body);
+      return () => {
+        observer.disconnect();
+        window.clearTimeout(timer);
+      };
+    });
+  }, []);
+
+  // The mark under the menu: one dot that slides to the section in view,
+  // rather than one per link that blinks on and off.
+  const placeDot = (slide: boolean) => {
+    const dot = dotRef.current;
+    const link = navRef.current?.querySelector<HTMLElement>('a[aria-current="true"]');
+    if (!dot) return;
+    if (!link) {
+      gsap.to(dot, { autoAlpha: 0, duration: motionAllowed() ? 0.2 : 0, overwrite: true });
+      dotShown.current = false;
+      return;
+    }
+    const x = link.offsetLeft + link.offsetWidth / 2;
+    if (slide && dotShown.current && motionAllowed()) {
+      gsap.to(dot, { x, autoAlpha: 1, duration: 0.5, ease: EASE, overwrite: true });
+    } else {
+      gsap.set(dot, { x });
+      gsap.to(dot, { autoAlpha: 1, duration: motionAllowed() ? 0.2 : 0, overwrite: "auto" });
+    }
+    dotShown.current = true;
+  };
+  useGSAP(() => placeDot(true), { dependencies: [active] });
+  useEffect(() => {
+    // The links move when the window does, and once more when the font lands.
+    const onResize = () => placeDot(false);
+    window.addEventListener("resize", onResize, { passive: true });
+    document.fonts?.ready.then(onResize);
+    return () => window.removeEventListener("resize", onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // The phone menu: its links arrive in order when it opens.
+  useGSAP(
+    () => {
+      if (!open || !panelRef.current) return;
+      const rows = panelRef.current.querySelectorAll(".nav-panel__link, .nav-panel__tools");
+      const mm = gsap.matchMedia();
+      mm.add(MOTION, () => {
+        gsap.from(rows, { y: 18, autoAlpha: 0, duration: 0.45, ease: EASE, stagger: 0.04, clearProps: "all" });
+      });
+    },
+    { dependencies: [open], revertOnUpdate: true },
+  );
 
   // Read from the page as it scrolls: whether to show the header's edge, and
   // which section is in view (the menu marks it; home page only).
@@ -97,12 +182,13 @@ export function Header() {
             {t.hero.name}
           </a>
 
-          <nav className="nav-items" aria-label={t.nav.menuLabel}>
+          <nav className="nav-items" aria-label={t.nav.menuLabel} ref={navRef}>
             {nav.map(([label, href]) => (
               <a key={href} href={href} aria-current={href === `#${active}` ? "true" : undefined}>
                 {label}
               </a>
             ))}
+            <span className="nav-dot" ref={dotRef} aria-hidden="true" />
           </nav>
 
           <div className="nav-actions">
@@ -141,11 +227,17 @@ export function Header() {
             </button>
           </div>
         </div>
+        <span className="site-header__progress" ref={progressRef} aria-hidden="true" />
       </header>
 
       {/* A sibling, not a child: backdrop-filter on the header would make it
           the containing block for this fixed panel. */}
-      <nav id="nav-panel" className={`nav-panel${open ? " open" : ""}`} aria-label={t.nav.menuLabel}>
+      <nav
+        id="nav-panel"
+        className={`nav-panel${open ? " open" : ""}`}
+        aria-label={t.nav.menuLabel}
+        ref={panelRef}
+      >
         {[...nav, [t.nav.contact, homeAnchor("#contact")]].map(([label, href]) => (
           <a key={href} href={href} className="nav-panel__link" onClick={close}>
             {label}

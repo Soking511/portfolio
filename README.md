@@ -15,11 +15,13 @@ Firebase Hosting by GitHub Actions on push to `main`.
 | Content | One typed bilingual file: `components/lang/strings.ts` |
 | Languages | English at `/`, Arabic at `/ar/` — separate static pages, one root layout each |
 | Contact form | Firestore write → Cloud Function → email |
+| Motion | GSAP 3 with ScrollTrigger, through `@gsap/react`. One arrival in CSS; everything after follows the scroll or a click |
 | Analytics | Umami (cookie-free), off until `UMAMI_WEBSITE_ID` is set in `lib/site.ts` |
 | Hosting | Firebase Hosting (`out/`) |
 
-There is no animation library, no component library and no CSS framework doing
-the layout. That is deliberate: the whole design system is one CSS file.
+There is no component library and no CSS framework doing the layout. That is
+deliberate: the whole design system is one CSS file. GSAP is the one library
+added on top of it, and only for motion.
 
 ## Design system
 
@@ -85,6 +87,8 @@ lib/
   seo.ts          per-page metadata and JSON-LD
   contact.ts      form enums (mirrored in firestore.rules)
   analytics.ts    Umami event helpers
+  gsap.ts         GSAP set up once: plugins, the motion media queries, and
+                  the "draw in order" helper. Import GSAP from here only
   firebase.ts     client init
 ```
 
@@ -128,9 +132,37 @@ The notes route is an optional catch-all because static export rejects a
 dynamic route with no params — which is exactly the state before the first
 note.
 
-**Content is never hidden waiting for JavaScript.** All motion is CSS (see
-the rules in `DESIGN.md`): no text waits on an animation, and everything is
-skipped under `prefers-reduced-motion`.
+**Content is never hidden waiting for JavaScript.** The stylesheet draws
+every element in its finished state, and the first screen's arrival is CSS,
+so the page is whole before any script runs. No text waits on an animation,
+and everything is skipped under `prefers-reduced-motion`.
+
+**Motion after the first screen is GSAP, and follows the visitor** (the
+rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
+
+- Scroll motion is scrubbed, never triggered: it moves as far as the page
+  has moved and goes back with it. The header's edge fills, a project's
+  picture rises into its panel (`work-featured.tsx`), the three beliefs land
+  in turn and the steps are drawn in order (`principles.tsx`), the line
+  through the jobs is drawn (`experience.tsx`), and the dark band widens
+  into place (`contact.tsx`).
+- Click motion: a service slides open while the last one closes
+  (`capabilities.tsx`), the menu's mark slides to the section in view and the
+  phone menu's links arrive in order (`header.tsx`), the showcase caption
+  rises in when the project changes (`hero-showcase.tsx`).
+- Every tween is created in `useGSAP`, inside `gsap.matchMedia()` under the
+  `MOTION` query, so it is undone when the component leaves or the visitor
+  turns motion off.
+- The lines are drawn through a `--draw` custom property (0 to 1) that the
+  stylesheet reads; it is 1 unless GSAP is driving it.
+- `header.tsx` re-measures every scroll position when the page's height
+  changes (a service opens, a font lands). Anything new that changes the
+  page's height needs nothing more.
+
+**The services list is native `<details>` with GSAP on top.** Without
+script, or under reduced motion, the shared `name` keeps one item open, as
+the browser does it. With motion on, the name comes off so the item being
+left can be seen closing, and the component keeps the one-open rule itself.
 
 **A project tile is one link with a second link on top.** The project's name
 is the link to its case study and covers the whole tile; the live-site link

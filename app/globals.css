@@ -301,24 +301,19 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: border-color .2s ease;
 }
 .site-header[data-scrolled="true"] { border-bottom-color: var(--line); }
-/* How far down the page you are, drawn along the bar's lower edge. Only
-   where the browser can tie an animation to the scroll position. */
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .site-header::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 -1px;
-      height: 3px;
-      background: var(--accent);
-      transform-origin: 0 50%;
-      animation: progress linear both;
-      animation-timeline: scroll(root);
-    }
-    [dir="rtl"] .site-header::after { transform-origin: 100% 50%; }
-  }
+/* How far down the page you are, drawn along the bar's lower edge. Empty
+   until GSAP ties it to the scroll position (components/header.tsx), so it
+   stays empty under reduced motion. */
+.site-header__progress {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
 }
-@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+[dir="rtl"] .site-header__progress { transform-origin: 100% 50%; }
 .site-header__row {
   width: 100%;
   display: flex;
@@ -350,17 +345,21 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: color .15s ease;
 }
 .nav-items a:hover { color: var(--ink); }
-/* The section in view: its name darkens and gets the page's one spark. */
+/* The section in view: its name darkens and gets the page's one spark. The
+   spark is a single dot that slides from one name to the next; the header
+   places it (left is physical on purpose: it is measured, not laid out). */
 .nav-items a[aria-current="true"] { color: var(--ink); }
-.nav-items a[aria-current="true"]::after {
-  content: "";
+.nav-dot {
   position: absolute;
   bottom: 6px;
-  inset-inline-start: calc(50% - 2.5px);
+  left: -2.5px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--accent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .nav-actions { display: flex; align-items: center; gap: 8px; }
 .nav-desktop { display: none; }
@@ -387,7 +386,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .nav-desktop .icon-btn:hover { border-color: transparent; background: var(--surface); }
 
 @media (min-width: 900px) {
-  .nav-items { display: flex; align-items: center; gap: 2px; margin-inline-start: auto; }
+  .nav-items { position: relative; display: flex; align-items: center; gap: 2px; margin-inline-start: auto; }
   .nav-desktop { display: flex; align-items: center; gap: 2px; margin-inline-start: 8px; }
   .nav-burger { display: none; }
 }
@@ -509,6 +508,10 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .showcase__caption { display: grid; min-width: 0; }
 .showcase__name { font-family: var(--display); font-size: 19px; font-weight: 600; }
 .showcase__kicker { font-size: 15px; color: var(--ink-soft); }
+/* Each line is its own window: when the project changes, the new text rises
+   into it from below the edge. */
+.showcase__caption > span { display: block; overflow: clip; }
+.showcase__caption > span > span { display: block; }
 .showcase__marks { display: flex; gap: 6px; direction: ltr; }
 .showcase__mark { display: grid; align-items: center; width: 30px; height: 32px; border-radius: 4px; }
 .showcase__mark span { position: relative; display: block; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line-strong); transition: background-color .2s ease; }
@@ -564,6 +567,10 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   background: var(--paper);
   transition: transform .45s var(--ease);
 }
+/* The box the scroll moves: on the home page the shot rises into its panel as
+   the tile comes into view. The pointer lifts .panel__shot inside it, so the
+   two add up. */
+.panel__rise { position: absolute; inset: 0; }
 .panel--diagram { display: grid; place-items: center; }
 /* Sized by its stages rather than by a ratio, where it must show them all. */
 .panel--free { aspect-ratio: auto; }
@@ -665,7 +672,9 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .svc__name::-webkit-details-marker { display: none; }
 .svc__name .h3 { font-size: clamp(22px, 2.7vw, 34px); letter-spacing: -0.02em; transition: color .2s ease; }
 [dir="rtl"] .svc__name .h3 { letter-spacing: 0; }
-.svc[open] .svc__name .h3 { color: var(--accent-text); }
+/* An item on its way shut already reads as closed: the name and the mark
+   answer the click at once and the body follows. */
+.svc[open]:not([data-closing]) .svc__name .h3 { color: var(--accent-text); }
 @media (hover: hover) { .svc__name:hover .h3 { color: var(--accent-text); } }
 /* A plus that becomes a minus: the upright bar lies down when open. */
 .svc__mark { position: relative; flex: none; width: 18px; height: 18px; }
@@ -678,7 +687,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   transition: transform .3s var(--ease);
 }
 .svc__mark::after { transform: rotate(90deg); }
-.svc[open] .svc__mark::after { transform: none; }
+.svc[open]:not([data-closing]) .svc__mark::after { transform: none; }
 
 .svc__body { display: grid; gap: 18px; padding-bottom: 28px; }
 .svc__body .lead { max-width: 30ch; }
@@ -736,8 +745,21 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 .process { margin-top: clamp(40px, 5vw, 64px); }
 .steps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 20px 24px; }
-.step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; align-content: start; padding-top: 14px; border-top: 1.5px solid var(--ink); }
-.step__n { font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1; color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.step { --draw: 1; position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; align-content: start; padding-top: 14px; border-top: 1.5px solid var(--line-strong); }
+/* The rule over each step, drawn in order as the steps are scrolled through.
+   --draw runs 0 to 1 per step; it is 1 unless GSAP is driving it, so the
+   rules are whole without it. The number lights as its rule arrives. */
+.step::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px 0 auto;
+  height: 1.5px;
+  background: var(--ink);
+  transform: scaleX(var(--draw));
+  transform-origin: 0 50%;
+}
+[dir="rtl"] .step::before { transform-origin: 100% 50%; }
+.step__n { font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1; color: var(--accent-text); font-variant-numeric: tabular-nums; opacity: calc(.3 + .7 * var(--draw)); }
 .step p { font-weight: 600; text-wrap: balance; }
 @media (min-width: 560px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1000px) {
@@ -765,6 +787,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 .cv-rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .cv-row {
+  --draw: 1;
   position: relative;
   display: grid;
   gap: 6px;
@@ -794,6 +817,9 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   inset-inline-start: 5px;
   width: 1.5px;
   background: var(--line-strong);
+  /* Drawn from one stop to the next as the line is scrolled through. */
+  transform: scaleY(var(--draw));
+  transform-origin: 50% 0;
 }
 .cv-row:last-child::after { display: none; }
 .cv-row__years { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -804,7 +830,8 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   .cv-row { padding: 34px 24px 0 0; }
   [dir="rtl"] .cv-row { padding: 34px 0 0 24px; }
   .cv-row::before { top: 0; }
-  .cv-row::after { top: 5px; bottom: auto; inset-inline: 16px 0; width: auto; height: 1.5px; }
+  .cv-row::after { top: 5px; bottom: auto; inset-inline: 16px 0; width: auto; height: 1.5px; transform: scaleX(var(--draw)); transform-origin: 0 50%; }
+  [dir="rtl"] .cv-row::after { transform-origin: 100% 50%; }
 }
 
 /* ── contact (the dark band) ──────────────────────────────────────────── */
@@ -1204,13 +1231,24 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 }
 
 /* ── motion ────────────────────────────────────────────────────────────
-   Little of it, each piece answering something. One arrival: the first
-   screen settles in order, once. After that, motion only answers the
-   visitor: the showcase takes turns and holds when pointed at; a project's
-   picture lifts under the pointer; a click carries the picture and name into
-   the project's page; the bar's edge shows how far down you are; controls
-   answer a press. Sections do not fade in as you scroll. All of it is off
-   under reduced motion, and the name never waits on an animation.       */
+   Each piece answers something. One arrival: the first screen settles in
+   order, once, in this file, so it never waits on JavaScript. After that
+   motion answers the visitor, and there are two ways it can.
+
+   The scroll (GSAP, scrubbed; see lib/gsap.ts): the bar's edge fills, a
+   project's picture rises into its panel, the three beliefs land in turn,
+   the steps and the line through the jobs are drawn in order, the dark band
+   widens into place. Each moves as far as the page has moved and goes back
+   with it. Sections do not fade in on a timer as you scroll.
+
+   The pointer and the click: the showcase takes turns and holds when pointed
+   at; a picture lifts under the pointer; a service slides open; the menu's
+   mark slides to the section being read; a click carries the picture and
+   name into the project's page; controls answer a press.
+
+   This file draws everything in its finished state, so the page is whole
+   with no script. All of it is off under reduced motion, and the name never
+   waits on an animation.                                                */
 
 .cs-next__title {
   background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / 0 3px;

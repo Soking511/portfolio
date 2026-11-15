@@ -44,7 +44,9 @@ never had. Check a change against the list before shipping it.
 - No pill buttons. Buttons are 12px rounded rectangles; pills are only the
   form's choices.
 - No fade-and-slide entrance on every section. There is one arrival, in the
-  hero, and after that motion only answers the visitor.
+  hero, and after that motion only answers the visitor: the scroll, the
+  pointer or a click. Nothing plays on a timer because a section came into
+  view.
 - No hover effect on things that are not links.
 - No gradients, gradient text, glass panels, shadows or bouncy easing.
 - No accent word in a headline, no arrows on buttons, no middle-dot strings.
@@ -130,11 +132,26 @@ radius:
 - Headings name the section the way the menu does ("Work", "Services").
   No generic CTA copy ("Let's talk"); no arrows stapled to link text.
 - The contact form sits on the dark band itself, not on a panel inside it.
-- Motion is little and answers something. One arrival: the first screen
-  settles in order, once; the name itself never waits. After that: the
-  showcase takes turns and holds while pointed at; a project's picture lifts
-  under the pointer; a click carries the picture and title into the
-  project's page; the header's edge shows how far down you are; buttons
-  answer a press. Nothing moves under reduced motion.
+- Motion answers something. One arrival: the first screen settles in order,
+  once, in CSS; the name itself never waits. After that there are two kinds,
+  both built with GSAP (`lib/gsap.ts`):
+  - The scroll. Scroll motion is scrubbed, not triggered: it moves exactly
+    as far as the page has moved and goes back with it. The header's edge
+    fills; a project's picture rises into its panel; the three beliefs land
+    one after another; the steps and the line through the jobs are drawn in
+    order; the dark band comes up as a sheet and widens into place.
+  - The pointer and the click. The showcase takes turns and holds while
+    pointed at, and its caption rises in with each project; a picture lifts
+    under the pointer; a service slides open as the last one closes; the
+    menu's mark slides to the section being read; the phone menu's links
+    arrive in order; a click carries the picture and title into the
+    project's page; buttons answer a press.
+  - The limits. Reading text never waits on an animation; what the scroll
+    moves is pictures, rules, whole tiles and outlines. One easing
+    (`--ease`, `power3.out` in GSAP), no bounce, no overshoot. Durations stay
+    under 0.6s. A line that draws must be a real sequence, like a number.
+  - The page is whole without it: the stylesheet draws every finished state,
+    GSAP only departs from it and returns. Nothing moves under reduced
+    motion.
 - Copy is plain and matches `public/youseef-tareq-resume.pdf`.
 - Every text pair passes WCAG AA; visible focus everywhere; 44px touch targets.

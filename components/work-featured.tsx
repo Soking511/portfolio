@@ -10,6 +10,7 @@ import { FEATURED } from "@/lib/projects";
 import { workPath } from "@/lib/i18n";
 import { trackAttrs } from "@/lib/analytics";
 import type { FeaturedWork } from "@/components/lang/strings";
+import { MOTION_WIDE, gsap, useGSAP } from "@/lib/gsap";
 
 /**
  * The featured projects as picture tiles, two to a row: the screenshot (or
@@ -17,6 +18,11 @@ import type { FeaturedWork } from "@/components/lang/strings";
  * saying what it is, and two ways on: the case study, which the whole tile
  * opens and which holds the problem, my part and the decision, and the live
  * site where there is one. Nothing here needs JavaScript.
+ *
+ * In the grid, each picture rises into its panel as the tile is scrolled
+ * into view, and sinks back if the page is scrolled away again: the panel's
+ * own idea (a screenshot rising from its bottom edge), followed by the
+ * scroll. The second column lands a little after the first.
  *
  * On phones the tiles are one row to swipe, the next always peeking in, with
  * a row of marks under it that show where you are and jump to any project.
@@ -43,6 +49,33 @@ export function WorkFeatured() {
   };
   const show = (i: number) =>
     listRef.current?.children[i]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+
+  useGSAP(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const mm = gsap.matchMedia();
+    // Not on phones: there the tiles are one row swiped sideways.
+    mm.add(MOTION_WIDE, () => {
+      Array.from(list.children).forEach((tile, i) => {
+        const picture = tile.querySelector(".panel__rise, .flow");
+        if (!picture) return;
+        gsap.fromTo(
+          picture,
+          { yPercent: 30 },
+          {
+            yPercent: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: tile,
+              start: "top bottom",
+              end: i % 2 ? "top 46%" : "top 58%",
+              scrub: 0.5,
+            },
+          },
+        );
+      });
+    });
+  }, []);
 
   return (
     <section id="work" className="section" aria-labelledby="work-title">

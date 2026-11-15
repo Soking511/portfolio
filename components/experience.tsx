@@ -1,21 +1,36 @@
 "use client";
 
+import { useRef } from "react";
 import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
 import { SectionHead } from "@/components/section-head";
 import { GITHUB_URL, LINKEDIN_URL, RESUME_PATH } from "@/lib/site";
 import { trackAttrs } from "@/lib/analytics";
+import { MOTION, drawInOrder, gsap, useGSAP } from "@/lib/gsap";
 
 /**
  * Where the hero's "See my résumé" lands. The heading's row holds the PDF;
  * under it, the positions run as one line through time, newest first, each
  * a stop on the line. Below that, the rest of a recruiter's kit: a way to
  * open the form already set to "a role", LinkedIn and GitHub.
+ *
+ * The line is drawn from the newest position to the oldest as it is
+ * scrolled through, and undrawn on the way back. The text never waits on it.
  */
 export function Experience() {
   const { t } = useT();
   const { setIntent } = useContactIntent();
   const E = t.cv;
+
+  const rowsRef = useRef<HTMLOListElement>(null);
+  useGSAP(() => {
+    const rows = rowsRef.current;
+    if (!rows) return;
+    const mm = gsap.matchMedia();
+    mm.add(MOTION, () => {
+      drawInOrder(rows, Array.from(rows.children) as HTMLElement[]);
+    });
+  }, []);
 
   return (
     <section id="cv" className="section" aria-labelledby="cv-title">
@@ -31,7 +46,7 @@ export function Experience() {
           </a>
         </SectionHead>
 
-        <ol className="cv-rows">
+        <ol className="cv-rows" ref={rowsRef}>
           {E.rows.map((r) => (
             <li key={`${r.years}-${r.role}`} className="cv-row">
               <p className="cv-row__years">{r.years}</p>

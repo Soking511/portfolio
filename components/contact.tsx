@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { useContactIntent } from "@/components/contact-intent";
 import { BOOKING_URL } from "@/lib/site";
 import { BUDGETS, INTENTS, TIMELINES, type Budget, type Timeline } from "@/lib/contact";
 import { track, trackAttrs } from "@/lib/analytics";
+import { MOTION, gsap, useGSAP } from "@/lib/gsap";
 
 type FormState = {
   name: string;
@@ -30,6 +31,10 @@ const EMPTY: FormState = { name: "", email: "", msg: "", budget: "", timeline: "
  *
  * This is the page's one dark band: the end of the page, where it asks for
  * something. The form sits on the band itself, not on a panel inside it.
+ *
+ * The band comes up as a sheet: it starts a little narrower than the screen,
+ * with round top corners, and widens to the full screen as it is scrolled
+ * into place. Only its outline moves (a clip), so the form inside never does.
  */
 export function Contact() {
   const { t, lang } = useT();
@@ -106,8 +111,40 @@ export function Contact() {
 
   const [msgLabel, msgPlaceholder] = C.f_msg[intent];
 
+  const bandRef = useRef<HTMLElement>(null);
+  useGSAP(() => {
+    const band = bandRef.current;
+    if (!band) return;
+    const mm = gsap.matchMedia();
+    mm.add(MOTION, () => {
+      // How far in the sheet starts: as far as it can while its text keeps
+      // room inside it. Measured from where the text sits, and again on
+      // resize, since that changes with the width.
+      const text = band.querySelector<HTMLElement>(".contact");
+      const inset = () => {
+        const room = text ? text.getBoundingClientRect().left - band.getBoundingClientRect().left : 20;
+        return gsap.utils.clamp(8, 64, Math.round(room - 20));
+      };
+      gsap.fromTo(
+        band,
+        { clipPath: () => `inset(0px ${inset()}px 0px ${inset()}px round 28px 28px 0px 0px)` },
+        {
+          clipPath: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)",
+          ease: "none",
+          scrollTrigger: {
+            trigger: band,
+            start: "top bottom",
+            end: "top 38%",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        },
+      );
+    });
+  }, []);
+
   return (
-    <section id="contact" className="section section--band" aria-labelledby="contact-title">
+    <section id="contact" className="section section--band" aria-labelledby="contact-title" ref={bandRef}>
       <div className="container">
         <div className="contact">
           <div className="contact__aside">

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
 import { FlowDiagram } from "@/components/flow-diagram";
 import { FEATURED } from "@/lib/projects";
 import { workPath } from "@/lib/i18n";
 import { trackAttrs } from "@/lib/analytics";
+import { EASE, MOTION, gsap, useGSAP } from "@/lib/gsap";
 
 /**
  * The work on the first screen, one project at a time: its picture, its
@@ -18,6 +19,9 @@ import { trackAttrs } from "@/lib/analytics";
  * focusing it pauses that animation and so holds the turn; choosing a
  * project by hand ends the turns for good. Under reduced motion the
  * animation does not exist, so nothing advances.
+ *
+ * When the project changes, its name and line rise into place from behind
+ * their own edge, so the caption is seen to change with the picture.
  */
 export function HeroShowcase() {
   const { t, lang } = useT();
@@ -27,6 +31,22 @@ export function HeroShowcase() {
 
   const current = W.featured[active];
   const currentMeta = FEATURED[active];
+
+  const captionRef = useRef<HTMLParagraphElement>(null);
+  const shown = useRef(active);
+  useGSAP(
+    () => {
+      // Not on arrival: the first screen settles as one, in the stylesheet.
+      if (shown.current === active || !captionRef.current) return;
+      shown.current = active;
+      const lines = captionRef.current.querySelectorAll(":scope > span > span");
+      const mm = gsap.matchMedia();
+      mm.add(MOTION, () => {
+        gsap.from(lines, { yPercent: 105, duration: 0.55, ease: EASE, stagger: 0.07 });
+      });
+    },
+    { dependencies: [active], revertOnUpdate: true },
+  );
 
   return (
     <div className="showcase" data-auto={auto}>
@@ -66,9 +86,13 @@ export function HeroShowcase() {
       </a>
 
       <div className="showcase__bar">
-        <p className="showcase__caption">
-          <span className="showcase__name latin">{current.title}</span>
-          <span className="showcase__kicker">{current.kicker}</span>
+        <p className="showcase__caption" ref={captionRef}>
+          <span className="showcase__name latin">
+            <span>{current.title}</span>
+          </span>
+          <span className="showcase__kicker">
+            <span>{current.kicker}</span>
+          </span>
         </p>
         <div className="showcase__marks" role="group" aria-label={W.title}>
           {W.featured.map((project, i) => (

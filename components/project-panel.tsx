@@ -34,8 +34,13 @@ export function ProjectPanel({
   return (
     <div className={`panel${kind} ${className}`.trim()} style={style}>
       {meta.image ? (
-        <div className="panel__shot">
-          <ProjectImage image={meta.image} title={title} alt={alt} variant="feature" priority={priority} />
+        // The outer box is the one scroll moves (the shot rises into its
+        // panel); the inner one is the one the pointer lifts. Two boxes, so
+        // the two movements add up instead of overwriting each other.
+        <div className="panel__rise">
+          <div className="panel__shot">
+            <ProjectImage image={meta.image} title={title} alt={alt} variant="feature" priority={priority} />
+          </div>
         </div>
       ) : diagram ? (
         <FlowDiagram diagram={diagram} compact={compact} />
