@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useT } from "@/components/lang/provider";
 import { SectionHead } from "@/components/section-head";
-import { MOTION, MOTION_DESKTOP, drawInOrder, gsap, useGSAP } from "@/lib/gsap";
+import { MOTION, MOTION_DESKTOP, MOTION_PHONE, drawInOrder, gsap, landEach, useGSAP } from "@/lib/gsap";
 
 /**
  * How I work: three beliefs as three tiles, each with the project that shows
@@ -11,7 +11,7 @@ import { MOTION, MOTION_DESKTOP, drawInOrder, gsap, useGSAP } from "@/lib/gsap";
  * numbers follow the page's language.
  *
  * Both follow the scroll. The three tiles land one after another as the row
- * comes up, and the rule over each step is drawn in order as the steps are
+ * comes up (on a phone, each as it arrives), and the rule over each step is drawn in order as the steps are
  * scrolled through, each number lighting as its rule reaches it. Scroll back
  * and they undo.
  */
@@ -27,7 +27,9 @@ export function Principles() {
     const steps = stepsRef.current;
     if (!beliefs || !steps) return;
     const mm = gsap.matchMedia();
-    // Only where the tiles are a row; stacked, they would just drift.
+    // As a row, the three land in turn off one trigger. Stacked on a phone,
+    // each lands as it arrives. In between (two columns) they stay put.
+    mm.add(MOTION_PHONE, () => landEach(Array.from(beliefs.children)));
     mm.add(MOTION_DESKTOP, () => {
       gsap.fromTo(
         beliefs.children,

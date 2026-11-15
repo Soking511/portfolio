@@ -10,7 +10,7 @@ import { FEATURED } from "@/lib/projects";
 import { workPath } from "@/lib/i18n";
 import { trackAttrs } from "@/lib/analytics";
 import type { FeaturedWork } from "@/components/lang/strings";
-import { MOTION_WIDE, gsap, useGSAP } from "@/lib/gsap";
+import { MOTION_PHONE, MOTION_WIDE, gsap, useGSAP } from "@/lib/gsap";
 
 /**
  * The featured projects as picture tiles, two to a row: the screenshot (or
@@ -23,6 +23,10 @@ import { MOTION_WIDE, gsap, useGSAP } from "@/lib/gsap";
  * into view, and sinks back if the page is scrolled away again: the panel's
  * own idea (a screenshot rising from its bottom edge), followed by the
  * scroll. The second column lands a little after the first.
+ *
+ * On phones the same idea follows the thumb instead: the picture of the
+ * tile in view is up, the one peeking in from the side sits lower, and it
+ * rises as it is swiped into place.
  *
  * On phones the tiles are one row to swipe, the next always peeking in, with
  * a row of marks under it that show where you are and jump to any project.
@@ -54,7 +58,43 @@ export function WorkFeatured() {
     const list = listRef.current;
     if (!list) return;
     const mm = gsap.matchMedia();
-    // Not on phones: there the tiles are one row swiped sideways.
+
+    // Phones: the tiles are one row swiped sideways, so the picture follows
+    // the swipe. Each sits lower the further its tile is from the middle of
+    // the row. Measured from where the tiles are on screen rather than from
+    // the scroll offset, which runs negative in Arabic.
+    mm.add(MOTION_PHONE, () => {
+      const tiles = Array.from(list.children) as HTMLElement[];
+      const pictures = tiles.map((tile) => tile.querySelector<HTMLElement>(".panel__rise, .flow"));
+      const lower = pictures.map((picture) => (picture ? gsap.quickSetter(picture, "yPercent") : null));
+      let frame = 0;
+      const place = () => {
+        frame = 0;
+        const row = list.getBoundingClientRect();
+        const middle = row.left + row.width / 2;
+        tiles.forEach((tile, i) => {
+          const box = tile.getBoundingClientRect();
+          const away = Math.abs(box.left + box.width / 2 - middle) / box.width;
+          // The tile in view rests a little off the middle (it lines up with
+          // the page's gutter, not the centre); that still counts as "up".
+          lower[i]?.(gsap.utils.clamp(0, 1, (away - 0.12) / 0.8) * 28);
+        });
+      };
+      const onMove = () => {
+        if (!frame) frame = requestAnimationFrame(place);
+      };
+      place();
+      list.addEventListener("scroll", onMove, { passive: true });
+      window.addEventListener("resize", onMove, { passive: true });
+      return () => {
+        list.removeEventListener("scroll", onMove);
+        window.removeEventListener("resize", onMove);
+        if (frame) cancelAnimationFrame(frame);
+        gsap.set(pictures.filter(Boolean), { clearProps: "transform" });
+      };
+    });
+
+    // Wider: the tiles are a grid, so the picture follows the page's scroll.
     mm.add(MOTION_WIDE, () => {
       Array.from(list.children).forEach((tile, i) => {
         const picture = tile.querySelector(".panel__rise, .flow");

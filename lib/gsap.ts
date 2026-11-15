@@ -21,10 +21,17 @@ import { useGSAP } from "@gsap/react";
  */
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+// A phone's address bar slides away as the page is scrolled, which changes
+// the window's height mid-scroll. Measuring everything again each time would
+// make scrubbed motion jump under the thumb, so those resizes are ignored.
+if (typeof window !== "undefined") ScrollTrigger.config({ ignoreMobileResize: true });
+
 /** The condition every tween runs under. */
 export const MOTION = "(prefers-reduced-motion: no-preference)";
 /** Tablet and up: the layouts that are not a single phone column. */
 export const MOTION_WIDE = `(min-width: 720px) and ${MOTION}`;
+/** Phones: one column, and the projects as a row to swipe. */
+export const MOTION_PHONE = `(max-width: 719px) and ${MOTION}`;
 /** Three and four columns. */
 export const MOTION_DESKTOP = `(min-width: 900px) and ${MOTION}`;
 
@@ -62,6 +69,21 @@ export function drawInOrder(list: HTMLElement, items: HTMLElement[]) {
       },
     },
   );
+}
+
+/**
+ * Stacked tiles on a phone: each one lands as it arrives, a short way behind
+ * the scroll and caught up by the time it is clear of the screen's lower
+ * edge (and of the contact bar that sits there).
+ */
+export function landEach(items: Element[]) {
+  items.forEach((item) => {
+    gsap.fromTo(
+      item,
+      { y: 48 },
+      { y: 0, ease: "none", scrollTrigger: { trigger: item, start: "top 100%", end: "top 62%", scrub: 0.4 } },
+    );
+  });
 }
 
 export { gsap, ScrollTrigger, useGSAP };

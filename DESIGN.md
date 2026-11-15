@@ -140,6 +140,12 @@ radius:
     fills; a project's picture rises into its panel; the three beliefs land
     one after another; the steps and the line through the jobs are drawn in
     order; the dark band comes up as a sheet and widens into place.
+  - The scroll, on phones. Phones get the same motion in the shape their
+    layout has, not a cut-down copy. The project row follows the swipe: the
+    picture of the tile in view is up, the one peeking in sits lower and
+    rises as it is swiped into place. Stacked tiles (the beliefs, the
+    smaller projects) each land as they arrive. The steps and the line
+    through the jobs are drawn one item at a time as each comes up.
   - The pointer and the click. The showcase takes turns and holds while
     pointed at, and its caption rises in with each project; a picture lifts
     under the pointer; a service slides open as the last one closes; the

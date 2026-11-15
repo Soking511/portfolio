@@ -88,7 +88,8 @@ lib/
   contact.ts      form enums (mirrored in firestore.rules)
   analytics.ts    Umami event helpers
   gsap.ts         GSAP set up once: plugins, the motion media queries, and
-                  the "draw in order" helper. Import GSAP from here only
+                  the "draw in order" and "land each" helpers. Import GSAP
+                  from here only
   firebase.ts     client init
 ```
 
@@ -146,6 +147,11 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
   in turn and the steps are drawn in order (`principles.tsx`), the line
   through the jobs is drawn (`experience.tsx`), and the dark band widens
   into place (`contact.tsx`).
+- On phones the same motion takes the layout's shape: the project row's
+  pictures follow the sideways swipe (the tile in view is up, the next one
+  rises as it comes in), and stacked tiles each land as they arrive
+  (`landEach` in `lib/gsap.ts`). The phone's address-bar resize is ignored
+  so nothing re-measures under the thumb.
 - Click motion: a service slides open while the last one closes
   (`capabilities.tsx`), the menu's mark slides to the section in view and the
   phone menu's links arrive in order (`header.tsx`), the showcase caption
