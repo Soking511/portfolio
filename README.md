@@ -156,6 +156,9 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
   (`capabilities.tsx`), the menu's mark slides to the section in view and the
   phone menu's links arrive in order (`header.tsx`), the showcase caption
   rises in when the project changes (`hero-showcase.tsx`).
+- GreenSock's official GSAP skills are in `.claude/skills/`, so a Claude
+  Code session on this repository writes GSAP the way its makers document
+  it. `DESIGN.md` still decides what the motion should do.
 - Every tween is created in `useGSAP`, inside `gsap.matchMedia()` under the
   `MOTION` query, so it is undone when the component leaves or the visitor
   turns motion off.
