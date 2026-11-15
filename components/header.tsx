@@ -72,7 +72,10 @@ export function Header() {
 
   // The mark under the menu: one dot that slides to the section in view,
   // rather than one per link that blinks on and off.
-  const placeDot = (slide: boolean) => {
+  // Called from a resize listener as well as from the hook below, so it is
+  // made context-safe: whatever it tweens is undone when the header leaves.
+  const { contextSafe } = useGSAP();
+  const placeDot = contextSafe((slide: boolean) => {
     const dot = dotRef.current;
     const link = navRef.current?.querySelector<HTMLElement>('a[aria-current="true"]');
     if (!dot) return;
@@ -83,14 +86,19 @@ export function Header() {
     }
     const x = link.offsetLeft + link.offsetWidth / 2;
     if (slide && dotShown.current && motionAllowed()) {
-      gsap.to(dot, { x, autoAlpha: 1, duration: 0.5, ease: EASE, overwrite: true });
+      gsap.to(dot, { x, autoAlpha: 1, duration: 0.35, ease: EASE, overwrite: true });
     } else {
       gsap.set(dot, { x });
       gsap.to(dot, { autoAlpha: 1, duration: motionAllowed() ? 0.2 : 0, overwrite: "auto" });
     }
     dotShown.current = true;
-  };
-  useGSAP(() => placeDot(true), { dependencies: [active] });
+  });
+  useGSAP(
+    () => {
+      placeDot(true);
+    },
+    { dependencies: [active] },
+  );
   useEffect(() => {
     // The links move when the window does, and once more when the font lands.
     const onResize = () => placeDot(false);
@@ -107,7 +115,9 @@ export function Header() {
       const rows = panelRef.current.querySelectorAll(".nav-panel__link, .nav-panel__tools");
       const mm = gsap.matchMedia();
       mm.add(MOTION, () => {
-        gsap.from(rows, { y: 18, autoAlpha: 0, duration: 0.45, ease: EASE, stagger: 0.04, clearProps: "all" });
+        // Short, and capped: the last link is in place about half a second
+        // after the tap, so the menu never makes anyone wait for it.
+        gsap.from(rows, { y: 14, autoAlpha: 0, duration: 0.35, ease: EASE, stagger: 0.03, clearProps: "all" });
       });
     },
     { dependencies: [open], revertOnUpdate: true },

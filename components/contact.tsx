@@ -125,9 +125,15 @@ export function Contact() {
         const room = text ? text.getBoundingClientRect().left - band.getBoundingClientRect().left : 20;
         return gsap.utils.clamp(8, 64, Math.round(room - 20));
       };
+      // The sheet's corners are the panel radius, from the stylesheet, so
+      // this is not a second radius kept in a script.
+      const radius = () => parseFloat(getComputedStyle(band).getPropertyValue("--r-panel")) || 20;
       gsap.fromTo(
         band,
-        { clipPath: () => `inset(0px ${inset()}px 0px ${inset()}px round 28px 28px 0px 0px)` },
+        {
+          clipPath: () =>
+            `inset(0px ${inset()}px 0px ${inset()}px round ${radius()}px ${radius()}px 0px 0px)`,
+        },
         {
           clipPath: "inset(0px 0px 0px 0px round 0px 0px 0px 0px)",
           ease: "none",

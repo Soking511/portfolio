@@ -59,8 +59,8 @@ export function RootShell({
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#F5F4F0" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#F4F4F1" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)" />
         <PreHydrationScript />
       </head>
       <body>

@@ -70,15 +70,17 @@ export function WorkFeatured() {
       let frame = 0;
       const place = () => {
         frame = 0;
+        // Every measurement first, then every move, so the browser lays the
+        // row out once per frame instead of once per tile.
         const row = list.getBoundingClientRect();
         const middle = row.left + row.width / 2;
-        tiles.forEach((tile, i) => {
+        const away = tiles.map((tile) => {
           const box = tile.getBoundingClientRect();
-          const away = Math.abs(box.left + box.width / 2 - middle) / box.width;
-          // The tile in view rests a little off the middle (it lines up with
-          // the page's gutter, not the centre); that still counts as "up".
-          lower[i]?.(gsap.utils.clamp(0, 1, (away - 0.12) / 0.8) * 28);
+          return Math.abs(box.left + box.width / 2 - middle) / box.width;
         });
+        // The tile in view rests a little off the middle (it lines up with
+        // the page's gutter, not the centre); that still counts as "up".
+        away.forEach((a, i) => lower[i]?.(gsap.utils.clamp(0, 1, (a - 0.12) / 0.8) * 28));
       };
       const onMove = () => {
         if (!frame) frame = requestAnimationFrame(place);

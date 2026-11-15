@@ -90,21 +90,19 @@ export function Capabilities() {
     d.removeAttribute("data-closing");
     d.open = true;
     gsap.killTweensOf(wrap);
-    gsap.fromTo(
+    // One timeline: the body opens, and its projects follow a beat later.
+    const opening = gsap.timeline({ defaults: { ease: EASE } });
+    opening.fromTo(
       wrap,
       { height: from, overflow: "hidden" },
-      { height: "auto", duration: 0.5, ease: EASE, clearProps: "height,overflow" },
+      { height: "auto", duration: 0.5, clearProps: "height,overflow" },
     );
     if (!from) {
-      gsap.from(wrap.querySelectorAll(".svc__proof li"), {
-        y: 16,
-        autoAlpha: 0,
-        duration: 0.45,
-        ease: EASE,
-        stagger: 0.05,
-        delay: 0.1,
-        clearProps: "all",
-      });
+      opening.from(
+        wrap.querySelectorAll(".svc__proof li"),
+        { y: 14, autoAlpha: 0, duration: 0.35, stagger: 0.05, clearProps: "all" },
+        0.1,
+      );
     }
   });
 
