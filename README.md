@@ -66,8 +66,8 @@ components/
   capabilities.tsx         services: a list opened one item at a time
                            (native <details>), each with its proof projects;
                            tools as four columns
-  principles.tsx           three beliefs as tiles, and how a project goes
-                           as four numbered steps
+  principles.tsx           how a project goes as four numbered steps, each
+                           explained, then three promises with their proof
   about.tsx                who I am, and the four things I care about as a list
   experience.tsx           positions as one line through time
   contact.tsx  footer.tsx  header.tsx
@@ -90,8 +90,7 @@ lib/
   contact.ts      form enums (mirrored in firestore.rules)
   analytics.ts    Umami event helpers
   gsap.ts         GSAP set up once: plugins, the motion media queries, and
-                  the "draw in order" and "land each" helpers. Import GSAP
-                  from here only
+                  the "draw in order" helper. Import GSAP from here only
   firebase.ts     client init
 ```
 
@@ -145,14 +144,13 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
 
 - Scroll motion is scrubbed, never triggered: it moves as far as the page
   has moved and goes back with it. The header's edge fills, a project's
-  picture rises into its panel (`work-featured.tsx`), the three beliefs land
-  in turn and the steps are drawn in order (`principles.tsx`), the line
+  picture rises into its panel (`work-featured.tsx`), the rule over each
+  step is drawn in order (`principles.tsx`), the line
   through the jobs is drawn (`experience.tsx`), and the dark band widens
   into place (`contact.tsx`).
 - On phones the same motion takes the layout's shape: the project row's
   pictures follow the sideways swipe (the tile in view is up, the next one
-  rises as it comes in), and the stacked belief tiles each land as they
-  arrive (`landEach` in `lib/gsap.ts`). The phone's address-bar resize is ignored
+  rises as it comes in). The phone's address-bar resize is ignored
   so nothing re-measures under the thumb.
 - Click motion: a service slides open while the last one closes
   (`capabilities.tsx`), the menu's mark slides to the section in view and the

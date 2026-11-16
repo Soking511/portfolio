@@ -126,6 +126,9 @@ export type Strings = {
     /** The hero showcase's control: hold the turns, or let them run again. */
     showcase_pause: string;
     showcase_play: string;
+    /** The phone's project row: buttons either side of its marks. */
+    prev_project: string;
+    next_project: string;
     featured: FeaturedWork[];
     selected_headline: string;
     selected_note: string;
@@ -171,11 +174,14 @@ export type Strings = {
   principles: {
     title: string;
     intro: string;
-    beliefs_label: string;
-    items: Array<{ title: string; body: string; anchor: string }>;
-    /** How a project goes: a real sequence, so it is shown as numbered steps. */
+    /** How a project goes: a real sequence, so it is shown as numbered steps.
+     *  Each step says what happens and what the client gets from it. */
     process_title: string;
-    steps: string[];
+    steps: Array<{ title: string; body: string }>;
+    /** What a client can rely on, in their words, each with the project that
+     *  shows it. `slug` is that project's case study. */
+    promises_title: string;
+    items: Array<{ title: string; body: string; anchor: string; slug: string }>;
   };
   about: {
     title: string;
@@ -318,6 +324,8 @@ const en: Strings = {
     case_study: "Read the case study",
     showcase_pause: "Pause the projects",
     showcase_play: "Play the projects",
+    prev_project: "Previous project",
+    next_project: "Next project",
     featured: [
       {
         n: "01",
@@ -530,32 +538,47 @@ const en: Strings = {
   },
   principles: {
     title: "How I work",
-    intro: "What I believe about building software, and how working with me goes.",
-    beliefs_label: "What I believe",
-    items: [
+    intro: "What happens when we work together, step by step, and what you can rely on.",
+    process_title: "How a project goes",
+    steps: [
       {
-        title: "Correct beats clever.",
-        body: "A stale price is worse than no price. I work on what happens when things fail before anything else.",
-        anchor: "In practice: EG-Pricey’s live prices",
+        title: "We talk",
+        body: "You tell me what you need, by message or in a call. I ask questions until the problem is clear to both of us.",
       },
       {
-        title: "Arabic is not a translation.",
-        body: "Right-to-left changes layout, type and numbers. Both languages come from one system, so neither is an afterthought.",
-        anchor: "In practice: TileGreen, and this site",
+        title: "You get a written plan",
+        body: "What will be built and when you will receive it, in writing, before any work starts.",
       },
       {
-        title: "Buy the hard parts.",
-        body: "Tax, payments and bot traffic are solved problems. I use proven services and spend the time on what makes the product different.",
-        anchor: "In practice: XTranslator’s billing",
+        title: "You try it as it is built",
+        body: "I send you a working version to try at each stage, so you can ask for changes early and not at the end.",
+      },
+      {
+        title: "I stay after launch",
+        body: "Once it is live I am still reachable for fixes and questions.",
       },
     ],
 
-    process_title: "How a project goes",
-    steps: [
-      "We talk through the problem.",
-      "I write down what gets built and when.",
-      "You try working versions as I go.",
-      "After launch I stay reachable.",
+    promises_title: "What you can rely on",
+    items: [
+      {
+        title: "It stays correct when something goes wrong",
+        body: "Connections drop and data arrives late. I plan for those moments first, so your customers never see wrong information.",
+        anchor: "Example: EG-Pricey’s live prices",
+        slug: "eg-pricey",
+      },
+      {
+        title: "Arabic and English, both done properly",
+        body: "Arabic is part of the site from the first day: right-to-left pages, the right fonts and numbers. It is not an English site translated afterwards.",
+        anchor: "Example: TileGreen",
+        slug: "tilegreen",
+      },
+      {
+        title: "Your budget goes on what is yours",
+        body: "Payments, tax and protection from fake visits already have trusted services. I use them, and spend the time on the features only your product has.",
+        anchor: "Example: payments in XTranslator",
+        slug: "xtranslator",
+      },
     ],
   },
   about: {
@@ -797,6 +820,8 @@ const ar: Strings = {
     case_study: "اقرأ دراسة الحالة",
     showcase_pause: "إيقاف عرض المشاريع مؤقتًا",
     showcase_play: "تشغيل عرض المشاريع",
+    prev_project: "المشروع السابق",
+    next_project: "المشروع التالي",
     featured: [
       {
         n: "٠١",
@@ -1009,32 +1034,47 @@ const ar: Strings = {
   },
   principles: {
     title: "طريقتي في العمل",
-    intro: "ما أؤمن به في بناء البرمجيات، وكيف يسير العمل معي.",
-    beliefs_label: "ما أؤمن به",
-    items: [
+    intro: "ما الذي يحدث حين نعمل معًا، خطوة بخطوة، وما الذي تضمنه معي.",
+    process_title: "كيف يسير المشروع",
+    steps: [
       {
-        title: "الصحيح قبل الذكي.",
-        body: "السعر القديم أسوأ من غياب السعر. أبدأ دائمًا بما يحدث حين يفشل شيء.",
-        anchor: "في التطبيق: الأسعار الحية في EG-Pricey",
+        title: "نتحدث أولًا",
+        body: "تحكي لي ما تحتاجه، برسالة أو في مكالمة. وأسألك حتى تتضح المشكلة لنا نحن الاثنين.",
       },
       {
-        title: "العربية ليست ترجمة.",
-        body: "الاتجاه من اليمين لليسار يغيّر التخطيط والخطوط والأرقام. اللغتان من نظام واحد، فلا تكون إحداهما فكرة لاحقة.",
-        anchor: "في التطبيق: TileGreen، وهذا الموقع",
+        title: "تستلم خطة مكتوبة",
+        body: "ما الذي سأبنيه ومتى تستلمه، مكتوبًا، قبل أن يبدأ أي عمل.",
       },
       {
-        title: "اشترِ الأجزاء الصعبة.",
-        body: "الضرائب والمدفوعات والروبوتات مشكلات محلولة. أستخدم خدمات مجرَّبة وأوجّه الوقت لما يميّز المنتج.",
-        anchor: "في التطبيق: الفوترة في XTranslator",
+        title: "تجرّب بنفسك أثناء البناء",
+        body: "أرسل لك نسخة تعمل في كل مرحلة لتجرّبها، فتطلب التعديل مبكرًا لا في النهاية.",
+      },
+      {
+        title: "أبقى معك بعد الإطلاق",
+        body: "بعد أن يعمل الموقع أظل متاحًا لأي إصلاح أو سؤال.",
       },
     ],
 
-    process_title: "كيف يسير المشروع",
-    steps: [
-      "نتحدث عن المشكلة.",
-      "أكتب ما سيُبنى ومتى.",
-      "تجرّب نسخًا تعمل أثناء البناء.",
-      "بعد الإطلاق أبقى متاحًا.",
+    promises_title: "ما تضمنه معي",
+    items: [
+      {
+        title: "يبقى صحيحًا حتى لو حدث خلل",
+        body: "الإنترنت ينقطع والبيانات تتأخر. أجهّز لهذه اللحظات أولًا، حتى لا يرى عملاؤك معلومة خاطئة أبدًا.",
+        anchor: "مثال: الأسعار الحية في EG-Pricey",
+        slug: "eg-pricey",
+      },
+      {
+        title: "العربية والإنجليزية، كلتاهما بإتقان",
+        body: "العربية جزء من الموقع من اليوم الأول: صفحات من اليمين لليسار، وخطوط وأرقام مناسبة. وليست موقعًا إنجليزيًا تُرجم لاحقًا.",
+        anchor: "مثال: TileGreen",
+        slug: "tilegreen",
+      },
+      {
+        title: "ميزانيتك تُصرف على ما يخص مشروعك",
+        body: "الدفع والضرائب والحماية من الزيارات المزيّفة لها خدمات موثوقة جاهزة. أستخدمها، وأصرف الوقت على المزايا التي تخص مشروعك وحده.",
+        anchor: "مثال: الدفع في XTranslator",
+        slug: "xtranslator",
+      },
     ],
   },
   about: {

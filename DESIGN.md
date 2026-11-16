@@ -69,21 +69,21 @@ color:
   paper:       "#F4F4F1"   # soft neutral ground, never white
   surface:     "#EAEAE5"   # alternate sections, picture panels, small tiles
   ink:         "#17171A"   # text and headings
-  ink-soft:    "#5A5A63"   # secondary text, 5.7:1 on surface
+  ink-soft:    "#4C4C55"   # secondary text, 7:1 on surface (AAA)
   line:        "#DCDCD6"   # dividers only
   line-strong: "#83838B"   # control edges, 3:1
-  accent:      "#CF4318"   # the one colour, as a fill. White on it is 4.7:1
-  accent-text: "#B5380F"   # the accent as text on the neutral grounds
+  accent:      "#C23E15"   # the one colour, as a fill. White on it is 5.3:1
+  accent-text: "#A8330D"   # the accent as text on the neutral grounds, 6:1
   accent-soft: "#FBE3D8"   # the accent as a quiet ground
   band:        "#17171A"   # the dark block: contact and footer
 dark:
-  paper: "#111113"  surface: "#1B1B1F"  ink: "#F0EFEB"  ink-soft: "#A6A6B0"
+  paper: "#111113"  surface: "#1B1B1F"  ink: "#F0EFEB"  ink-soft: "#B4B4BD"
   accent: "#FF7A4D"  accent-text: "#FF8F69"  accent-soft: "#3A1E14"  band: "#09090B"
 type:
   display: Rubik (variable), Arabic + Latin: the name and headings at 800,
            the second script at 300
   text:    IBM Plex Sans / IBM Plex Sans Arabic, 400 and 600
-  body:    17px EN, 18px AR
+  body:    18px EN, 19px AR. Nothing a visitor reads is under 16px
 radius:
   panel: 20px (16px on phones)   field: 12px   button: 12px
   pill: the form's choices only
@@ -124,7 +124,18 @@ radius:
   - In the contact section WhatsApp is the first, full-width action.
   - Every target is at least 44px tall; body text is 17px or more; nothing
     scrolls sideways except the project row.
-- Tiles are for pictures and for the three beliefs. Anything that is a line
+- Readable at forty and after. Many clients are business owners in their
+  forties and fifties, not engineers, and eyes lose near focus and contrast
+  from about that age. So: no text under 16px, body at 18px; secondary text
+  at 7:1 against its ground, not the 4.5:1 minimum; nothing dimmed for
+  effect; controls that say what they do (a button to move the project row,
+  not only a swipe); and words a client uses, not ours.
+- "How I work" is written for the person hiring. First what happens after
+  they say yes, as four numbered steps, each a name and a sentence. Then
+  what they can rely on, as three plain promises, each linked to the project
+  that shows it. No slogans to decode: "Correct beats clever" and "Buy the
+  hard parts" were replaced for that reason.
+- Tiles are for pictures and for the three promises. Anything that is a line
   or two of text is a row under a rule, read across like a table: the
   smaller projects, the four things in About, the facts. A box holding one
   sentence reads as empty.
@@ -134,8 +145,9 @@ radius:
   naming it. On a phone the picture comes before the text, and at the top of
   a case study before the facts.
 - A diagram standing in for a screenshot is sized to its panel.
-- Tiles are flat: `--surface` (or the accent or ink, once each, for the
-  three beliefs), a 20px radius, no border, no shadow.
+- Tiles are flat: `--surface`, ink text, a 20px radius, no border, no
+  shadow. No tile is filled with the accent: white on it is the weakest
+  contrast on the page, and a tile is where the reading happens.
 - Headings are plain sentences. No accent word in another colour.
 - Numbers only on real sequences: the request diagrams and "How a project
   goes". Step numbers follow the page's language.
@@ -148,14 +160,12 @@ radius:
   both built with GSAP (`lib/gsap.ts`):
   - The scroll. Scroll motion is scrubbed, not triggered: it moves exactly
     as far as the page has moved and goes back with it. The header's edge
-    fills; a project's picture rises into its panel; the three beliefs land
-    one after another; the steps and the line through the jobs are drawn in
-    order; the dark band comes up as a sheet and widens into place.
+    fills; a project's picture rises into its panel; the rule over each
+    step and the line through the jobs are drawn in order; the dark band comes up as a sheet and widens into place.
   - The scroll, on phones. Phones get the same motion in the shape their
     layout has, not a cut-down copy. The project row follows the swipe: the
     picture of the tile in view is up, the one peeking in sits lower and
-    rises as it is swiped into place. The stacked belief tiles each land as
-    they arrive. The steps and the line
+    rises as it is swiped into place. The steps and the line
     through the jobs are drawn one item at a time as each comes up.
   - The pointer and the click. The showcase takes turns and holds while
     pointed at, and its caption rises in with each project; a picture lifts

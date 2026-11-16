@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useT } from "@/components/lang/provider";
+import { Arrow } from "@/components/arrow";
 import { ProjectLink } from "@/components/project-link";
 import { ProjectPanel } from "@/components/project-panel";
 import { SectionHead } from "@/components/section-head";
@@ -30,6 +31,8 @@ import { MOTION_PHONE, MOTION_WIDE, gsap, useGSAP } from "@/lib/gsap";
  *
  * On phones the tiles are one row to swipe, the next always peeking in, with
  * a row of marks under it that show where you are and jump to any project.
+ * A button either side of the marks moves one project at a time: not
+ * everyone thinks to swipe, and a button says it can be done.
  *
  * The remaining projects follow as three small tiles.
  */
@@ -164,6 +167,15 @@ export function WorkFeatured() {
         </ul>
 
         <div className="work-marks" role="group" aria-label={W.title}>
+          <button
+            type="button"
+            className="work-step"
+            aria-label={W.prev_project}
+            disabled={inView === 0}
+            onClick={() => show(inView - 1)}
+          >
+            <Arrow size={18} back />
+          </button>
           {W.featured.map((project, i) => (
             <button
               key={FEATURED[i].slug}
@@ -176,6 +188,15 @@ export function WorkFeatured() {
               <span />
             </button>
           ))}
+          <button
+            type="button"
+            className="work-step"
+            aria-label={W.next_project}
+            disabled={inView === W.featured.length - 1}
+            onClick={() => show(inView + 1)}
+          >
+            <Arrow size={18} />
+          </button>
         </div>
 
         <WorkSelected />
