@@ -117,6 +117,9 @@ export type Strings = {
     label_contribution: string;
     label_decision: string;
     label_role: string;
+    label_year: string;
+    /** Over the project's link, or the line saying why there is none. */
+    label_link: string;
     label_stack: string;
     outcome_label: string;
     case_study: string;
@@ -178,7 +181,9 @@ export type Strings = {
     title: string;
     p1: string;
     p2: string;
-    p3: string;
+    /** One line, then the things it names, shown as a list. */
+    care_intro: string;
+    cares: string[];
     portrait_alt: string;
   };
   cv: {
@@ -306,6 +311,8 @@ const en: Strings = {
     label_contribution: "My part",
     label_decision: "Key decision",
     label_role: "Role",
+    label_year: "Year",
+    label_link: "Where to see it",
     label_stack: "Built with",
     outcome_label: "Used by",
     case_study: "Read the case study",
@@ -555,7 +562,13 @@ const en: Strings = {
     title: "I like owning the whole problem",
     p1: "I’m Youseef Tareq, a software engineer in Cairo. I studied computer science at Cairo Higher Institute, trained on the MEAN stack at NTI, and freelanced for clients in several countries before joining The POST as a full-stack developer.",
     p2: "Freelancing taught me the part of the job that isn’t code: scoping honestly, asking the awkward question early, and delivering on the date I gave. At The POST I build internal tools, dashboards and customer portals with a small remote team, shipping every week.",
-    p3: "I care most about what people feel even when they never see it: pages that load fast, forms that don’t lose your work, prices that are never quietly wrong, and Arabic that reads as if it was written first.",
+    care_intro: "I care most about what people feel even when they never see it.",
+    cares: [
+      "Pages that load fast",
+      "Forms that don’t lose your work",
+      "Prices that are never quietly wrong",
+      "Arabic that reads as if it was written first",
+    ],
     portrait_alt: "Portrait of Youseef Tareq",
   },
   cv: {
@@ -777,6 +790,8 @@ const ar: Strings = {
     label_contribution: "دوري تحديدًا",
     label_decision: "القرار الأهم",
     label_role: "الدور",
+    label_year: "السنة",
+    label_link: "أين تراه",
     label_stack: "التقنيات المستخدمة",
     outcome_label: "من يستخدمه",
     case_study: "اقرأ دراسة الحالة",
@@ -1026,7 +1041,13 @@ const ar: Strings = {
     title: "أحب أن أتولى المشكلة كاملة",
     p1: "أنا يوسف طارق، مهندس برمجيات من القاهرة. درست علوم الحاسب في معهد القاهرة العالي، وتدرّبت على تقنيات MEAN في المعهد القومي للاتصالات (NTI)، ثم عملت مستقلًا لعملاء من دول مختلفة قبل أن أنضم إلى The POST مطوّرًا Full-Stack.",
     p2: "علّمني العمل الحر الجزء الذي لا يتعلق بالكود: أن أقدّر نطاق العمل بصدق، وأطرح السؤال المحرج مبكرًا، وأسلّم في الموعد الذي التزمت به. وفي The POST أبني أدوات داخلية ولوحات تحليلات وبوابات للعملاء مع فريق صغير يعمل عن بُعد، ونُطلق تحديثات كل أسبوع.",
-    p3: "أكثر ما يهمني هو ما يشعر به الناس حتى لو لم يروه: صفحات تُحمَّل بسرعة، ونماذج لا تضيّع ما كتبته، وأسعار لا تكون خاطئة بصمت، وعربية تُقرأ كأنها كُتبت أولًا.",
+    care_intro: "أكثر ما يهمني هو ما يشعر به الناس حتى لو لم يروه.",
+    cares: [
+      "صفحات تُحمَّل بسرعة",
+      "نماذج لا تضيّع ما كتبته",
+      "أسعار لا تكون خاطئة بصمت",
+      "عربية تُقرأ كأنها كُتبت أولًا",
+    ],
     portrait_alt: "صورة يوسف طارق",
   },
   cv: {

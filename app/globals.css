@@ -549,8 +549,10 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: clamp(36px, 5vw, 56px) 0 0; }
 .fact { display: grid; gap: 6px; align-content: start; padding-top: 14px; border-top: 1.5px solid var(--ink); }
 .fact dd { margin: 0; font-weight: 600; text-wrap: balance; }
-/* Availability is the first fact, and carries the live dot. */
-.fact:first-child dt::before {
+/* A list set inside a fact reads as the fact, not as a quieter aside. */
+.fact .tags { font-size: inherit; color: inherit; }
+/* Availability is the home page's first fact, and carries the live dot. */
+.hero .fact:first-child dt::before {
   content: "";
   display: inline-block;
   width: 8px;
@@ -590,6 +592,16 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
    two add up. */
 .panel__rise { position: absolute; inset: 0; }
 .panel--diagram { display: grid; place-items: center; }
+/* A diagram standing in for a screenshot is sized to its panel, so it fills
+   a large one instead of floating small in the middle of it. Five stages
+   keep the small size: they would not fit the panel's height. */
+.panel { container-type: inline-size; }
+@container (min-width: 480px) {
+  .flow--compact:not(:has(.flow-node:nth-child(5))) .flow-steps { max-width: 430px; gap: 12px; }
+  .flow--compact:not(:has(.flow-node:nth-child(5))) .flow-node { padding: 11px 18px; gap: 16px; }
+  .flow--compact:not(:has(.flow-node:nth-child(5))) .flow-name { font-size: 17.5px; }
+  .flow--compact:not(:has(.flow-node:nth-child(5))) .flow-node + .flow-node::before { top: -12px; height: 12px; inset-inline-start: 26px; }
+}
 /* Sized by its stages rather than by a ratio, where it must show them all. */
 .panel--free { aspect-ratio: auto; }
 /* Phones load the portrait capture, so the shot is phone-shaped there. */
@@ -657,19 +669,18 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 .shipped { margin-top: clamp(64px, 8vw, 96px); }
 .shipped__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-bottom: 20px; }
-.shipped__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.shipped__item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 22px;
-  border-radius: var(--r-panel);
-  background: var(--surface);
-}
-.shipped__item:target { outline: 2px solid var(--accent); outline-offset: 4px; }
+/* Rows and rules, read across like a table: name, one line, tools, link. */
+.shipped__list { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.shipped__item { display: grid; gap: 4px 24px; padding-block: 18px; border-bottom: 1px solid var(--line-strong); }
+.shipped__item:target { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 6px; }
 .shipped__kicker { color: var(--ink-soft); }
-.shipped__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin-top: auto; padding-top: 14px; font-size: 15px; }
-@media (min-width: 900px) { .shipped__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+.shipped__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; font-size: 15px; }
+@media (min-width: 900px) {
+  .shipped__item { grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 3fr) minmax(0, 2.6fr); align-items: baseline; padding-block: 20px; }
+  /* The tools and the link each take a column of their own. */
+  .shipped__meta { display: contents; }
+  .shipped__meta > :last-child { justify-self: end; text-align: end; }
+}
 
 /* ── services ─────────────────────────────────────────────────────────
    A list opened one item at a time: the service, what it means, and the
@@ -787,9 +798,26 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 /* ── about ────────────────────────────────────────────────────────────── */
 
-.about { display: grid; gap: 28px; }
-.about__lead { display: grid; gap: 24px; align-content: start; }
-.about__text { display: grid; gap: 18px; align-content: start; }
+.about { display: grid; gap: 24px; }
+.about__head { display: grid; gap: 24px; align-content: start; }
+.about__history { max-width: 46ch; }
+.about__cares { display: grid; gap: 14px; align-content: start; }
+.about__cares > p { color: var(--ink-soft); }
+/* What I care about: four things, so four lines under a rule each, the same
+   device as the facts on the first screen. */
+.cares { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 24px; }
+.cares li {
+  padding: 14px 0 18px;
+  border-top: 1.5px solid var(--ink);
+  font-family: var(--display);
+  font-size: clamp(19px, 1.9vw, 23px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+[dir="rtl"] .cares li { line-height: 1.5; letter-spacing: 0; }
+@media (min-width: 560px) { .cares { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .about-portrait {
   width: min(100%, 320px);
   height: auto;
@@ -797,7 +825,7 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   object-fit: cover;
   border-radius: var(--r-panel);
 }
-@media (min-width: 900px) { .about { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; } }
+@media (min-width: 900px) { .about { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px 64px; } }
 
 /* ── experience: a line through time, newest first ───────────────────── */
 
@@ -1046,7 +1074,7 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 
 /* ── case study ───────────────────────────────────────────────────────── */
 
-.cs-head { padding-top: calc(var(--header-h) + 36px); padding-bottom: 36px; }
+.cs-head { padding-top: calc(var(--header-h) + 36px); padding-bottom: 32px; }
 .back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 16px; color: var(--ink-soft); }
 .back-link:hover { color: var(--ink); }
 .cs-title {
@@ -1060,8 +1088,17 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 }
 [dir="rtl"] .cs-title:not(.latin) { line-height: 1.3; letter-spacing: 0; }
 .cs-kicker { margin-top: 16px; max-width: 40ch; }
-.cs-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-top: 28px; }
-.cs-meta__role { font-weight: 600; }
+/* Title, facts, picture, in that order; a phone shows the picture before
+   the facts, so the work is on the first screen there too. */
+.cs-top { display: grid; }
+.cs-top > * { min-width: 0; width: 100%; }
+.cs-facts { margin: 0; }
+.cs-top__facts { padding-block: 0 36px; }
+@media (max-width: 719px) {
+  .cs-top__facts { order: 3; padding-block: 28px 0; }
+}
+/* Columns as wide as what they hold: a year needs little, the tools a lot. */
+@media (min-width: 900px) { .cs-facts { grid-template-columns: minmax(0, 3fr) minmax(0, 1.2fr) minmax(0, 4fr) minmax(0, 2.6fr); } }
 .cs-hero-media { aspect-ratio: 16 / 9; }
 .cs-hero-media .panel__shot { inset: 8% 8% 0; }
 @media (max-width: 720px) { .cs-hero-media .panel__shot { inset: 8% 21% 0; } }
@@ -1069,8 +1106,6 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .cs-section { padding-block: 48px; border-top: 1px solid var(--line); }
 .cs-section--first { border-top: 0; }
 .cs-text { display: grid; gap: 16px; }
-.cs-stack { margin-top: 36px; }
-.cs-stack .tags { margin-top: 4px; font-size: 16px; }
 
 /* What it is, my part and the decision: one per row, label beside the text.
    The decision is the answer worth reading, so it sits on the accent's quiet
@@ -1086,7 +1121,6 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   .cs-text { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
   .answers > div { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
   .answers dt { padding-top: 5px; }
-  .cs-stack { padding-inline-start: 268px; }
 }
 @media (max-width: 720px) { .answers .answers__key { padding: 20px; margin-inline: 0; } }
 /* The desktop view is the picture at the top; this adds the phone view. On
@@ -1104,7 +1138,19 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 .cs-cta .lead { margin-top: 16px; max-width: 48ch; }
 .cs-cta .actions { margin-top: 28px; }
 .cs-next { padding-block: 56px 72px; }
-.cs-next a { display: grid; gap: 8px; }
+/* The next project, shown: its name on one side and its picture on the
+   other; on a phone the picture comes first. */
+.cs-next__link { display: grid; gap: 20px; align-items: center; }
+.cs-next__text { display: grid; gap: 8px; }
+.cs-next__panel { order: -1; }
+@media (min-width: 900px) {
+  .cs-next__link { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; }
+  .cs-next__panel { order: 0; }
+}
+@media (hover: hover) {
+  .cs-next__link:hover .cs-next__panel { background: var(--accent-soft); }
+  .cs-next__link:hover .panel__shot { transform: translateY(-10px); }
+}
 .cs-next__title { justify-self: start; font-family: var(--display); font-size: clamp(32px, 5.4vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; }
 
 /* ── notes ────────────────────────────────────────────────────────────── */
@@ -1190,7 +1236,7 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   .hero-statement { margin-top: 16px; font-size: 18px; }
   .hero .actions { margin-top: 20px; }
   .hero .actions .btn { flex: 1 1 auto; padding-inline: 18px; }
-  .facts { display: none; }
+  .hero .facts { display: none; }
 
   /* Work: straight after the pitch, so a project is on the first screen. */
   #work { padding-top: 36px; }
@@ -1207,9 +1253,8 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 
   .shipped { margin-top: 40px; }
   .shipped__head { margin-bottom: 14px; }
-  .shipped__item { padding: 16px 18px; gap: 4px; }
+  .shipped__item { padding-block: 14px; }
   .shipped__item .tags { display: none; }
-  .shipped__meta { padding-top: 6px; }
 
   .svc__name { min-height: 60px; }
   .stack-table { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
@@ -1293,11 +1338,11 @@ textarea.field-input { resize: vertical; min-height: 132px; }
 
   /* The one arrival: the first screen settles in order, once. The name
      itself does not wait. */
-  :is(.hero-status, .hero-statement, .hero .actions, .showcase, .facts) { animation: settle .7s var(--ease) both; }
+  :is(.hero-status, .hero-statement, .hero .actions, .showcase, .hero .facts) { animation: settle .7s var(--ease) both; }
   .hero-statement { animation-delay: .1s; }
   .hero .actions { animation-delay: .2s; }
   .showcase { animation-delay: .25s; }
-  .facts { animation-delay: .4s; }
+  .hero .facts { animation-delay: .4s; }
 }
 @keyframes settle {
   from { opacity: 0; transform: translateY(14px); }

@@ -50,7 +50,9 @@ app/
 components/
   shell/root-shell.tsx     fonts, head, providers, analytics — shared by both layouts
   pages/home.tsx           section order
-  pages/case-study.tsx     one featured project on its own URL
+  pages/case-study.tsx     one featured project on its own URL: title, a row
+                           of facts, the picture, the answers, and the next
+                           project shown with its picture
   hero.tsx                 the fold: the name in both scripts, one sentence,
                            two actions, the showcase, and four facts
   hero-showcase.tsx        the projects one at a time, taking turns (desktop
@@ -59,14 +61,14 @@ components/
   work-featured.tsx        the projects as picture tiles, two to a row, and
                            one swipe row with position marks on phones;
                            Answers for the case study
-  work-selected.tsx        remaining projects as three small tiles
+  work-selected.tsx        remaining projects as three rows under a rule
   project-panel.tsx        a project's screenshot or diagram on a panel
   capabilities.tsx         services: a list opened one item at a time
                            (native <details>), each with its proof projects;
                            tools as four columns
   principles.tsx           three beliefs as tiles, and how a project goes
                            as four numbered steps
-  about.tsx                who I am
+  about.tsx                who I am, and the four things I care about as a list
   experience.tsx           positions as one line through time
   contact.tsx  footer.tsx  header.tsx
   testimonials.tsx         hidden until strings.ts has a real quote
@@ -149,8 +151,8 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
   into place (`contact.tsx`).
 - On phones the same motion takes the layout's shape: the project row's
   pictures follow the sideways swipe (the tile in view is up, the next one
-  rises as it comes in), and stacked tiles each land as they arrive
-  (`landEach` in `lib/gsap.ts`). The phone's address-bar resize is ignored
+  rises as it comes in), and the stacked belief tiles each land as they
+  arrive (`landEach` in `lib/gsap.ts`). The phone's address-bar resize is ignored
   so nothing re-measures under the thumb.
 - Click motion: a service slides open while the last one closes
   (`capabilities.tsx`), the menu's mark slides to the section in view and the

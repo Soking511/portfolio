@@ -124,6 +124,16 @@ radius:
   - In the contact section WhatsApp is the first, full-width action.
   - Every target is at least 44px tall; body text is 17px or more; nothing
     scrolls sideways except the project row.
+- Tiles are for pictures and for the three beliefs. Anything that is a line
+  or two of text is a row under a rule, read across like a table: the
+  smaller projects, the four things in About, the facts. A box holding one
+  sentence reads as empty.
+- The row of facts is one device, used twice: the home page's first screen,
+  and the top of a case study (role, year, tools, where to see it).
+- A case study ends by showing the next one, picture and name, not only
+  naming it. On a phone the picture comes before the text, and at the top of
+  a case study before the facts.
+- A diagram standing in for a screenshot is sized to its panel.
 - Tiles are flat: `--surface` (or the accent or ink, once each, for the
   three beliefs), a 20px radius, no border, no shadow.
 - Headings are plain sentences. No accent word in another colour.
@@ -144,8 +154,8 @@ radius:
   - The scroll, on phones. Phones get the same motion in the shape their
     layout has, not a cut-down copy. The project row follows the swipe: the
     picture of the tile in view is up, the one peeking in sits lower and
-    rises as it is swiped into place. Stacked tiles (the beliefs, the
-    smaller projects) each land as they arrive. The steps and the line
+    rises as it is swiped into place. The stacked belief tiles each land as
+    they arrive. The steps and the line
     through the jobs are drawn one item at a time as each comes up.
   - The pointer and the click. The showcase takes turns and holds while
     pointed at, and its caption rises in with each project; a picture lifts

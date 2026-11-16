@@ -35,6 +35,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
   const home = homePath(lang);
   const diagram = meta.diagram ? t.misc.diagrams[meta.diagram] : undefined;
   const quote = t.testimonials.items.find((q) => q.project === slug);
+  const nextDiagram = next.meta.diagram ? t.misc.diagrams[next.meta.diagram] : undefined;
 
   return (
     <>
@@ -44,50 +45,68 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       <Header />
       <main id="main">
         <article aria-labelledby="cs-title">
-          <header className="container cs-head">
-            <a href={`${home}#${slug}`} className="back-link">
-              <Arrow size={14} back />
-              {CS.back}
-            </a>
+          {/* Title, facts, picture. One grid, so a phone can put the picture
+              ahead of the facts: there the picture belongs on the first screen. */}
+          <div className="cs-top">
+            <header className="container cs-head">
+              <a href={`${home}#${slug}`} className="back-link">
+                <Arrow size={14} back />
+                {CS.back}
+              </a>
 
-            <h1 className="cs-title latin" id="cs-title" style={{ viewTransitionName: `title-${slug}` }}>
-              {project.title}
-            </h1>
-            <p className="lead soft cs-kicker">{project.kicker}</p>
-
-            <div className="cs-meta">
-              <p className="cs-meta__role">
-                {project.role}, {project.year}
-              </p>
-              <ProjectLink meta={meta} />
+              <h1 className="cs-title latin" id="cs-title" style={{ viewTransitionName: `title-${slug}` }}>
+                {project.title}
+              </h1>
+              <p className="lead soft cs-kicker">{project.kicker}</p>
+            </header>
+            <div className="container cs-top__facts">
+              {/* The same row of facts as the home page's first screen: what a
+                  reader checks before deciding to read on. */}
+              <dl className="facts cs-facts">
+                <div className="fact">
+                  <dt className="label">{W.label_role}</dt>
+                  <dd>{project.role}</dd>
+                </div>
+                <div className="fact">
+                  <dt className="label">{W.label_year}</dt>
+                  <dd>{project.year}</dd>
+                </div>
+                <div className="fact">
+                  <dt className="label">{W.label_stack}</dt>
+                  <dd>
+                    <ul className="tags">
+                      {project.stack.map((s) => (
+                        <li key={s} className="tag">
+                          <span className="latin">{s}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+                <div className="fact">
+                  <dt className="label">{W.label_link}</dt>
+                  <dd>
+                    <ProjectLink meta={meta} />
+                  </dd>
+                </div>
+              </dl>
             </div>
-          </header>
-
-          <div className="container">
-            <ProjectPanel
-              meta={meta}
-              title={project.title}
-              alt={t.misc.screenshot_alt(project.title)}
-              diagram={diagram}
-              priority
-              className="cs-hero-media"
-              style={{ viewTransitionName: `media-${slug}` }}
-            />
+            <div className="container cs-top__media">
+              <ProjectPanel
+                meta={meta}
+                title={project.title}
+                alt={t.misc.screenshot_alt(project.title)}
+                diagram={diagram}
+                priority
+                className="cs-hero-media"
+                style={{ viewTransitionName: `media-${slug}` }}
+              />
+            </div>
           </div>
 
           <section className="container" aria-label={project.title}>
             <div className="cs-section cs-section--first">
               <Answers project={project} labels={W} />
-              <div className="cs-stack">
-                <h2 className="label">{W.label_stack}</h2>
-                <ul className="tags">
-                  {project.stack.map((s) => (
-                    <li key={s} className="tag">
-                      <span className="latin">{s}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </section>
 
@@ -181,13 +200,31 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           </section>
 
           <nav className="container cs-next" aria-label={CS.next}>
+            {/* The next project is shown, not only named, and a click carries
+                its picture and title to the top of its own page. */}
             <a
               href={workPath(lang, next.meta.slug)}
+              className="cs-next__link"
               {...trackAttrs("case_study_open", { project: next.meta.slug, from: "next" })}
             >
-              <span className="label">{CS.next}</span>
-              <span className="cs-next__title latin">{next.project.title}</span>
-              <span className="soft">{next.project.kicker}</span>
+              <span className="cs-next__text">
+                <span className="label">{CS.next}</span>
+                <span
+                  className="cs-next__title latin"
+                  style={{ viewTransitionName: `title-${next.meta.slug}` }}
+                >
+                  {next.project.title}
+                </span>
+                <span className="soft">{next.project.kicker}</span>
+              </span>
+              <ProjectPanel
+                meta={next.meta}
+                title={next.project.title}
+                diagram={nextDiagram}
+                compact
+                className="cs-next__panel"
+                style={{ viewTransitionName: `media-${next.meta.slug}` }}
+              />
             </a>
           </nav>
         </article>

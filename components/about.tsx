@@ -4,11 +4,12 @@ import { useT } from "@/components/lang/provider";
 import { PORTRAIT } from "@/lib/site";
 
 /**
- * Who I am, in my own words, in two columns so neither side of the page is
- * empty: the heading and the path here on one side, what freelancing taught
- * me and what I care about on the other. A portrait appears under the
- * heading once lib/site.ts points at one. No stat bar: the numbers that
- * would go in one are not verifiable.
+ * Who I am, in my own words, as two rows of two so no side of the page is
+ * empty. Across the top, the heading and the path here. Under them, what
+ * freelancing taught me, and beside it what I care about: four things, so
+ * they are set as four lines to scan, not buried in a sentence. A portrait
+ * appears under the heading once lib/site.ts points at one. No stat bar: the
+ * numbers that would go in one are not verifiable.
  */
 export function About() {
   const { t } = useT();
@@ -17,11 +18,10 @@ export function About() {
   return (
     <section id="about" className="section section--surface" aria-labelledby="about-title">
       <div className="container about">
-        <div className="about__lead">
+        <div className="about__head">
           <h2 className="h2" id="about-title">
             {A.title}
           </h2>
-          <p className="lead">{A.p1}</p>
           {PORTRAIT && (
             <img
               src={PORTRAIT}
@@ -34,11 +34,18 @@ export function About() {
             />
           )}
         </div>
+        <p className="lead about__intro">{A.p1}</p>
 
-        <div className="about__text">
-          {/* The working history; phones leave it to Experience, just below. */}
-          <p className="about__history">{A.p2}</p>
-          <p>{A.p3}</p>
+        {/* The working history; phones leave it to Experience, just below. */}
+        <p className="about__history">{A.p2}</p>
+
+        <div className="about__cares">
+          <p id="cares-title">{A.care_intro}</p>
+          <ul className="cares" aria-labelledby="cares-title">
+            {A.cares.map((care) => (
+              <li key={care}>{care}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
