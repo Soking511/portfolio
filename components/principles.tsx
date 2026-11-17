@@ -14,8 +14,9 @@ import { MOTION, drawInOrder, gsap, useGSAP } from "@/lib/gsap";
  * steps, each with a name and a sentence saying what happens and what they
  * get from it. The numbers follow the page's language.
  *
- * Then what they can rely on: three plain promises, each with a link to the
- * project that shows it, so none of them is only a claim. These replaced
+ * Then what they can expect: three standards in plain professional terms,
+ * each with a link to the case study that shows it, so none of them is only
+ * a claim. These replaced
  * three slogans ("Correct beats clever", "Buy the hard parts") that a
  * visitor had to decode.
  *

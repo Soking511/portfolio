@@ -132,9 +132,14 @@ radius:
   not only a swipe); and words a client uses, not ours.
 - "How I work" is written for the person hiring. First what happens after
   they say yes, as four numbered steps, each a name and a sentence. Then
-  what they can rely on, as three plain promises, each linked to the project
+  what they can expect, as three standards, each linked to the case study
   that shows it. No slogans to decode: "Correct beats clever" and "Buy the
   hard parts" were replaced for that reason.
+- The tone is professional and general wherever the page speaks about me:
+  the hero, Services, How I work, About. Detail that belongs to one project
+  (live prices, right-to-left Arabic) stays in that project's case study and
+  is not turned into a selling point for the whole site; the owner found it
+  too narrow. Arabic and English appear once as a service, not as a theme.
 - Tiles are for pictures and for the three promises. Anything that is a line
   or two of text is a row under a rule, read across like a table: the
   smaller projects, the four things in About, the facts. A box holding one
