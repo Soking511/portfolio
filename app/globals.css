@@ -683,58 +683,21 @@ body { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 }
 
 /* ── services ─────────────────────────────────────────────────────────
-   A list opened one item at a time: the service, what it means, and the
-   projects that show it. Type and hairlines, no icon tiles.             */
+   Every service on show at once, in a grid of three, two or one: its name
+   under a rule, one line, and the projects that show it. Nothing opens or
+   closes, so nothing moves when the visitor clicks. Type and rules, no
+   cards and no icon tiles.                                               */
 
-.svc-list { border-top: 1.5px solid var(--ink); }
-.svc { border-bottom: 1px solid var(--line-strong); }
-.svc__name {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 68px;
-  padding-block: 14px;
-  cursor: pointer;
-  list-style: none;
-}
-.svc__name::-webkit-details-marker { display: none; }
-.svc__name .h3 { font-size: clamp(22px, 2.7vw, 34px); letter-spacing: -0.02em; transition: color .2s ease; }
-[dir="rtl"] .svc__name .h3 { letter-spacing: 0; }
-/* An item on its way shut already reads as closed: the name and the mark
-   answer the click at once and the body follows. */
-.svc[open]:not([data-closing]) .svc__name .h3 { color: var(--accent-text); }
-@media (hover: hover) { .svc__name:hover .h3 { color: var(--accent-text); } }
-/* A plus that becomes a minus: the upright bar lies down when open. */
-.svc__mark { position: relative; flex: none; width: 22px; height: 22px; }
-.svc__mark::before, .svc__mark::after {
-  content: "";
-  position: absolute;
-  inset: 9.5px 0 auto;
-  height: 3px;
-  background: currentColor;
-  transition: transform .3s var(--ease);
-}
-.svc__mark::after { transform: rotate(90deg); }
-.svc[open]:not([data-closing]) .svc__mark::after { transform: none; }
-
-.svc__body { display: grid; gap: 18px; padding-bottom: 28px; }
-.svc__body .lead { max-width: 30ch; }
-.svc__proof { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.svc__proof a {
-  display: grid;
-  gap: 2px;
-  padding: 14px 18px;
-  border-radius: var(--r-btn);
-  background: var(--paper);
-  transition: background-color .2s ease;
-}
-.svc__proof a:hover { background: var(--accent-soft); }
-.svc__project { font-family: var(--display); font-size: 19px; font-weight: 600; }
-.svc__kicker { font-size: 17px; color: var(--ink-soft); }
-@media (min-width: 900px) {
-  .svc__body { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; padding-bottom: 36px; }
-}
+.svc-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 40px; }
+.svc { display: flex; flex-direction: column; gap: 10px; padding: 22px 0 32px; border-top: 1.5px solid var(--ink); }
+.svc__title { font-size: clamp(22px, 2.1vw, 26px); font-weight: 700; }
+.svc__body { text-wrap: pretty; }
+.svc__proof { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; margin-top: auto; padding-top: 6px; }
+.svc__label { color: var(--ink-soft); }
+.svc__proof ul { display: contents; list-style: none; }
+.svc__proof li { display: inline; }
+@media (min-width: 640px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .svc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .stack-table { display: grid; gap: 12px 16px; margin: clamp(28px, 4vw, 40px) 0 0; }
 .stack-table div { display: grid; gap: 4px; align-content: start; }
@@ -1288,7 +1251,6 @@ textarea.field-input { resize: vertical; min-height: 132px; }
   .shipped__item { padding-block: 14px; }
   .shipped__item .tags { display: none; }
 
-  .svc__name { min-height: 60px; }
   .stack-table { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
 
   .belief { padding: 22px; gap: 10px; }
@@ -1347,9 +1309,9 @@ textarea.field-input { resize: vertical; min-height: 132px; }
    with it. Sections do not fade in on a timer as you scroll.
 
    The pointer and the click: the showcase takes turns and holds when pointed
-   at; a picture lifts under the pointer; a service slides open; the menu's
-   mark slides to the section being read; a click carries the picture and
-   name into the project's page; controls answer a press.
+   at; a picture lifts under the pointer; the menu's mark slides to the
+   section being read; a click carries the picture and name into the
+   project's page; controls answer a press.
 
    This file draws everything in its finished state, so the page is whole
    with no script. All of it is off under reduced motion, and the name never

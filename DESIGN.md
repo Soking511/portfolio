@@ -37,8 +37,10 @@ on the next most common one. These are the tells this site has removed or
 never had. Check a change against the list before shipping it.
 
 - No grid of identical rounded cards with an icon tile above each heading.
-  Services are a typographic list opened one item at a time, and each shows
-  the projects that prove it.
+  Services are a typographic grid, every one on show: a name under a rule,
+  one line, and links to the projects that prove it. Not an accordion: one
+  opening and the one above it closing moved the clicked item hundreds of
+  pixels away from the pointer, which the owner found confusing.
 - No capital-letter, letter-spaced labels. Labels are small sentence-case
   text.
 - No pill buttons. Buttons are 12px rounded rectangles; pills are only the
@@ -113,8 +115,8 @@ radius:
     always on it. The showcase and the facts row stay on wider screens.
   - The projects are one swipe row with the next always peeking in, and a
     row of marks under it that show the position and jump to any project.
-  - Sections are cut to what a thumb can scan: services open one at a time,
-    earlier jobs show name and years only, the working history paragraph in
+  - Sections are cut to what a thumb can scan: earlier jobs show name and
+    years only, the working history paragraph in
     About is left to Experience.
   - The language link is in the bar itself, not inside the menu. That holds
     wherever the links fold into a menu, so on tablets too (under 900px).
@@ -174,9 +176,8 @@ radius:
     through the jobs are drawn one item at a time as each comes up.
   - The pointer and the click. The showcase takes turns and holds while
     pointed at, and its caption rises in with each project; a picture lifts
-    under the pointer; a service slides open as the last one closes; the
-    menu's mark slides to the section being read; the phone menu's links
-    arrive in order; a click carries the picture and title into the
+    under the pointer; the menu's mark slides to the section being read;
+    the phone menu's links arrive in order; a click carries the picture and title into the
     project's page; buttons answer a press.
   - The limits. Reading text never waits on an animation; what the scroll
     moves is pictures, rules, whole tiles and outlines. One easing

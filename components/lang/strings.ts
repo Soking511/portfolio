@@ -469,7 +469,7 @@ const en: Strings = {
   capabilities: {
     title: "Services",
     intro: "Each one links to a project that shows it.",
-    proof_label: "See",
+    proof_label: "Examples:",
     items: [
       {
         title: "Complete web apps",
@@ -965,7 +965,7 @@ const ar: Strings = {
   capabilities: {
     title: "الخدمات",
     intro: "ولكل مهارة رابط لمشروع يثبتها.",
-    proof_label: "شاهد",
+    proof_label: "أمثلة:",
     items: [
       {
         title: "تطبيقات ويب متكاملة",

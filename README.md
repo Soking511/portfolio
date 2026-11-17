@@ -63,9 +63,8 @@ components/
                            Answers for the case study
   work-selected.tsx        remaining projects as three rows under a rule
   project-panel.tsx        a project's screenshot or diagram on a panel
-  capabilities.tsx         services: a list opened one item at a time
-                           (native <details>), each with its proof projects;
-                           tools as four columns
+  capabilities.tsx         services: all six on show in a grid, each with
+                           links to its proof projects; tools as four columns
   principles.tsx           how a project goes as four numbered steps, each
                            explained, then three promises with their proof
   about.tsx                who I am, and the four things I care about as a list
@@ -152,8 +151,7 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
   pictures follow the sideways swipe (the tile in view is up, the next one
   rises as it comes in). The phone's address-bar resize is ignored
   so nothing re-measures under the thumb.
-- Click motion: a service slides open while the last one closes
-  (`capabilities.tsx`), the menu's mark slides to the section in view and the
+- Click motion: the menu's mark slides to the section in view and the
   phone menu's links arrive in order (`header.tsx`), the showcase caption
   rises in when the project changes (`hero-showcase.tsx`).
 - GreenSock's official GSAP skills are in `.claude/skills/`, so a Claude
@@ -165,13 +163,8 @@ rules are in `DESIGN.md`, the setup in `lib/gsap.ts`):
 - The lines are drawn through a `--draw` custom property (0 to 1) that the
   stylesheet reads; it is 1 unless GSAP is driving it.
 - `header.tsx` re-measures every scroll position when the page's height
-  changes (a service opens, a font lands). Anything new that changes the
+  changes (a font lands, the form shows an error). Anything new that changes the
   page's height needs nothing more.
-
-**The services list is native `<details>` with GSAP on top.** Without
-script, or under reduced motion, the shared `name` keeps one item open, as
-the browser does it. With motion on, the name comes off so the item being
-left can be seen closing, and the component keeps the one-open rule itself.
 
 **A project tile is one link with a second link on top.** The project's name
 is the link to its case study and covers the whole tile; the live-site link
